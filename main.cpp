@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/simulador/Simulador.h"
 
-// Programa principal do simulador de jardim.
+// Programa principal do simulador de jardim..
 // Responsável apenas por iniciar a execução e tratar o loop de comandos.
 int main() {
     Simulador sim;
