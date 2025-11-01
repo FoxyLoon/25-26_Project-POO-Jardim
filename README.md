@@ -1,8 +1,9 @@
 # 🌿 Simulador de Jardim – Meta 1  
 ### Unidade Curricular: POO – 2526
 
-**Autores:** -_Gabriel Dinis Paixão dos Santos | LEI-PL | 2024134576_
-             -_Diogo Simões Martins | LEI | 2024120298_
+**Autores:**
+   -_Gabriel Dinis Paixão dos Santos | LEI-PL | 2024134576_
+   -_Diogo Simões Martins | LEI | 2024120298_
 **Ano:** _2025/2026_  
 **Versão:** Meta 1 – Estrutura base e validação sintática  
 **Linguagem:** C++ 20  
