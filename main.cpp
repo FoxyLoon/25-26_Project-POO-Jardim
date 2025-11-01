@@ -13,12 +13,20 @@ int main() {
 
     while (true) {
         cout << "> ";
+
         if (!getline(cin, linha)) break;
+
+        //Mantem a interface mais limpa ao simular que limpou
+        //o histórico de comandos
+        for (int i=0; i<50; i++)
+            cout << "\n";
+
         if (linha.empty()) continue;
 
         if (!sim.processaComando(linha)) {
-            cout << "Comando inválido ou erro de sintaxe.\n";
+            cout << "\n";
         }
+
     }
 
     return 0;
