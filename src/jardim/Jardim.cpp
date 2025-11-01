@@ -65,6 +65,12 @@ void Jardim::mostrar() const {
         cout << '\n';
     }
 
+    cout << "______";
+    for (int c = 0; c < 2*colunas; ++c)
+        cout << "_";
+    cout << "_";
+    cout << "\n";
+
 
 }
 
@@ -93,4 +99,10 @@ void Jardim::mostrarComJardineiro(const Jardineiro &j) const {
         cout << "|";
         cout << '\n';
     }
+
+    cout << "______";
+    for (int c = 0; c < 2*colunas; ++c)
+        cout << "_";
+    cout << "_";
+    cout << "\n";
 }

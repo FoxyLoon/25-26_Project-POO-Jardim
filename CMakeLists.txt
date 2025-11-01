@@ -15,4 +15,5 @@ add_executable(Project_POO_Jardim_25_26 main.cpp
         src/plantas/Cacto.cpp
         src/plantas/ErvaDaninha.cpp
         src/plantas/Planta.cpp
-        src/plantas/Roseira.cpp)
+        src/plantas/Roseira.cpp
+)
