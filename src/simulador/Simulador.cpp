@@ -31,6 +31,7 @@ bool Simulador::processaComando(const string &linha) {
     if (cmd == "sai") return comandoSai();
 
     //Retorna "false" caso o comando não for nenhum dos de cima
+    cout << "[ERRO] Comando desconhecido: " << cmd << "\n";
     return false;
 }
 
