@@ -151,15 +151,48 @@ TP/
 
 ---
 
-## 👨‍🔬 Execução
+## 👨‍💻 Execução (CLion)
 
-```bash
-# No CLion ou terminal:
-mkdir build && cd build
-cmake ..
-make
-./TP
-```
+Este projeto foi desenvolvido para ser executado diretamente no **CLion**.
+
+### Passos para compilar e executar:
+
+1. **Abrir o projeto**
+   - Abre o CLion.
+   - Seleciona **File → Open...** e escolhe a pasta principal do projeto  
+     (`Project_POO_Jardim_25-26`).
+
+2. **Construir o projeto**
+   - Clica no botão 🛠️ **Build** (ou usa `Ctrl + F9`).
+   - O CLion vai compilar automaticamente todos os ficheiros `.cpp`  
+     definidos no `CMakeLists.txt`.
+
+3. **Executar o simulador**
+   - Seleciona a configuração **TP** no canto superior direito.
+   - Clica em ▶️ **Run** (ou usa `Shift + F10`).
+   - A consola integrada do CLion abrirá automaticamente.
+
+4. **Interagir com o simulador**
+   - Introduz os comandos diretamente na consola, por exemplo:
+     ```
+     jardim 10 10
+     entra aa
+     larea
+     sai
+     fim
+     ```
+
+7. **Parar o programa**
+   - Usa o botão vermelho ⏹️ **Stop** na barra de execução do CLion.
+
+---
+
+### ℹ️ Nota importante
+- Não é necessário criar pastas `build/` nem executar comandos no terminal.  
+- Todas as compilações e execuções são geridas automaticamente pelo **CLion** através do **CMake**.  
+- O executável gerado pode ser encontrado em:
+
+
 
 
 
