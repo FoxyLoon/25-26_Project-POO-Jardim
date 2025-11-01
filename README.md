@@ -96,35 +96,37 @@ A **Meta 1** foca-se em:
 
 ## 🧱 Estrutura do Projeto
 
+```text
 TP/
 ├── main.cpp
 ├── Settings.h
 ├── CMakeLists.txt
 └── src/
-├── simulador/
-│ ├── Simulador.h
-│ └── Simulador.cpp
-├── jardim/
-│ ├── Jardim.h
-│ ├── Jardim.cpp
-│ ├── Solo.h
-│ └── Solo.cpp
-├── jardineiro/
-│ ├── Jardineiro.h
-│ └── Jardineiro.cpp
-├── plantas/
-│ ├── Planta.h
-│ ├── Cacto.h
-│ ├── Roseira.h
-│ ├── ErvaDaninha.h
-│ └── Exotica.h
-└── faramentas/
-├── Ferramenta.h
-├── Regador.h
-├── Adubo.h
-├── TesouraPoda.h
-└── FerramentaZ.h
+    ├── simulador/
+    │   ├── Simulador.h
+    │   └── Simulador.cpp
+    ├── jardim/
+    │   ├── Jardim.h
+    │   ├── Jardim.cpp
+    │   ├── Solo.h
+    │   └── Solo.cpp
+    ├── jardineiro/
+    │   ├── Jardineiro.h
+    │   └── Jardineiro.cpp
+    ├── plantas/
+    │   ├── Planta.h
+    │   ├── Cacto.h
+    │   ├── Roseira.h
+    │   ├── ErvaDaninha.h
+    │   └── Exotica.h
+    └── faramentas/
+        ├── Ferramenta.h
+        ├── Regador.h
+        ├── Adubo.h
+        ├── TesouraPoda.h
+        └── FerramentaZ.h
 
+```
 
 ---
 
@@ -156,4 +158,5 @@ mkdir build && cd build
 cmake ..
 make
 ./TP
+
 
