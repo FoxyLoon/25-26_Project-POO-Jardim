@@ -1,10 +1,11 @@
 # 🌿 Simulador de Jardim – Meta 1  
 ### Unidade Curricular: POO – 2526
 
-**Autores:** _[a preencher]_  
-**Data:** _[a preencher]_  
+**Autores:** -_Gabriel Dinis Paixão dos Santos | LEI-PL | 2024134576_
+             -_Diogo Simões Martins | LEI | 2024120298_
+**Ano:** _2025/2026_  
 **Versão:** Meta 1 – Estrutura base e validação sintática  
-**Linguagem:** C++ 17/20  
+**Linguagem:** C++ 20  
 **Compilador:** CLion + CMake  
 **Configuração:** `Settings.h` (uso obrigatório e não modificável)
 
@@ -158,6 +159,7 @@ mkdir build && cd build
 cmake ..
 make
 ./TP
+
 
 
 
