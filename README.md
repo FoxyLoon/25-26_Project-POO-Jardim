@@ -99,9 +99,9 @@ A **Meta 1** foca-se em:
 ```text
 TP/
 ├── main.cpp
-├── Settings.h
 ├── CMakeLists.txt
 └── src/
+    ├── Settings.h
     ├── simulador/
     │   ├── Simulador.h
     │   └── Simulador.cpp
@@ -158,5 +158,6 @@ mkdir build && cd build
 cmake ..
 make
 ./TP
+
 
 
