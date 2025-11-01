@@ -24,11 +24,32 @@ bool Simulador::processaComando(const string &linha) {
     //Nota: Os parametros depois do espaço ficam e são usados mais tarde
     ss >> cmd;
 
-    if (cmd == "fim") return comandoFim();
-    if (cmd == "jardim") return comandoJardim(ss);
-    if (cmd == "estado") return comandoEstado();
+    if (cmd == "avanca") return comandoAvanca(ss);
+    if (cmd == "lplantas") return comandoLplantas();
+    if (cmd == "lplanta") return comandoLplanta(ss);
+    if (cmd == "larea") return comandoLarea();
+    if (cmd == "lsolo") return comandoLsolo(ss);
+    if (cmd == "lferr") return comandoLferr();
+    if (cmd == "colhe") return comandoColhe(ss);
+    if (cmd == "planta") return comandoPlanta(ss);
+    if (cmd == "larga") return comandoLarga();
+    if (cmd == "pega") return comandoPega(ss);
+    if (cmd == "compra") return comandoCompra(ss);
+    if (cmd == "e") return comandoE();
+    if (cmd == "d") return comandoD();
+    if (cmd == "c") return comandoC();
+    if (cmd == "b") return comandoB();
     if (cmd == "entra") return comandoEntra(ss);
     if (cmd == "sai") return comandoSai();
+    if (cmd == "jardim") return comandoJardim(ss);
+    if (cmd == "grava") return comandoGrava(ss);
+    if (cmd == "recupera") return comandoRecupera(ss);
+    if (cmd == "apaga") return comandoApaga(ss);
+    if (cmd == "executa") return comandoExecuta(ss);
+    if (cmd == "fim") return comandoFim();
+
+
+
 
     //Retorna "false" caso o comando não for nenhum dos de cima
     cout << "[ERRO] Comando desconhecido: " << cmd << "\n";
@@ -45,18 +66,31 @@ bool Simulador::comandoFim() {
 }
 
 bool Simulador::comandoJardim(stringstream &ss) {
-    int l, c;
-    if (!(ss >> l >> c)) return false;
-    if (l < 1 || l > 26 || c < 1 || c > 26) return false;
-
-    if (jardimCriado) {
-        cout << "O jardim já foi criado.\n";
+    int linhas, colunas;
+    if (!(ss >> linhas >> colunas)) {
+        cout << "[ERRO] Faltam valoresE!\n";
+        return false;
+    }
+    if (linhas < 1 || linhas > 26){
+        cout << "[ERRO] Número de Linhas Inválido!\n";
+        return false;
+    }
+    if (colunas < 1 || colunas > 26){
+        cout << "[ERRO] Número de Colunas Inválido!\n";
         return false;
     }
 
-    jardim = new Jardim(l, c);
+    if (jardimCriado) {
+        cout << "[INFO] Já existe um jardim criado!\n";
+        return false;
+    }
+
+    jardim = new Jardim(linhas, colunas);
     jardimCriado = true;
-    cout << "Jardim criado com " << l << " linhas e " << c << " colunas.\n";
+    cout << "[INFO] O Jardim foi criado com "
+        << linhas << " linhas e "
+        << colunas << " colunas.\n";
+
     jardim->mostrar();
     return true;
 }
