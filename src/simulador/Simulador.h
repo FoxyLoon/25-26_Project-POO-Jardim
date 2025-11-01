@@ -9,6 +9,8 @@
 // É permitido segundo o enunciado pois não armazena estruturas do jardim.
 #include <sstream>
 
+using std::string;
+
 // Classe responsável pela interação com o utilizador e pela coordenação
 // entre Jardim, Jardineiro, Plantas e Ferramentas.
 class Simulador {
@@ -21,7 +23,7 @@ public:
     Simulador();
     ~Simulador();
 
-    bool processaComando(const std::string &linha);  // interpreta e executa comandos
+    bool processaComando(const string &linha);  // interpreta e executa comandos
 };
 
 #endif

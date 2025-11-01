@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstdlib>
 
+using namespace std;
+
 Simulador::Simulador() : jardim(nullptr), jardimCriado(false) {}
 
 Simulador::~Simulador() {
@@ -9,21 +11,21 @@ Simulador::~Simulador() {
 }
 
 // Função auxiliar para verificar se uma posição é válida (duas letras minúsculas)
-bool isPosicaoValida(const std::string &p) {
+bool isPosicaoValida(const string &p) {
     return p.size() == 2 &&
-           std::islower(p[0]) &&
-           std::islower(p[1]);
+           islower(p[0]) &&
+           islower(p[1]);
 }
 
-bool Simulador::processaComando(const std::string &linha) {
-    std::stringstream ss(linha);
-    std::string cmd;
+bool Simulador::processaComando(const string &linha) {
+    stringstream ss(linha);
+    string cmd;
     ss >> cmd;
 
     // --- Comando fim ---
     if (cmd == "fim") {
-        std::cout << "Encerrando simulador...\n";
-        std::exit(0);
+        cout << "Encerrando simulador...\n";
+        exit(0);
     }
 
     // --- Criação do jardim ---
@@ -33,13 +35,13 @@ bool Simulador::processaComando(const std::string &linha) {
         if (l < 1 || l > 26 || c < 1 || c > 26) return false;
 
         if (jardimCriado) {
-            std::cout << "O jardim já foi criado.\n";
+            cout << "O jardim já foi criado.\n";
             return false;
         }
 
         jardim = new Jardim(l, c);
         jardimCriado = true;
-        std::cout << "Jardim criado com " << l << " linhas e " << c << " colunas.\n";
+        cout << "Jardim criado com " << l << " linhas e " << c << " colunas.\n";
         jardim->mostrar();
         return true;
     }
@@ -47,7 +49,7 @@ bool Simulador::processaComando(const std::string &linha) {
     // --- Mostrar estado do jardim ---
     if (cmd == "larea") {
         if (!jardimCriado) {
-            std::cout << "Crie primeiro o jardim.\n";
+            cout << "Crie primeiro o jardim.\n";
             return false;
         }
         jardim->mostrar();
@@ -57,10 +59,10 @@ bool Simulador::processaComando(const std::string &linha) {
     // --- Comando entra <pos> ---
     if (cmd == "entra") {
         if (!jardimCriado) return false;
-        std::string pos;
+        string pos;
         if (!(ss >> pos) || !isPosicaoValida(pos)) return false;
         jardineiro.entrarNoJardim(pos[0]-'a', pos[1]-'a');
-        std::cout << "Jardineiro entrou na posição " << pos << ".\n";
+        cout << "Jardineiro entrou na posição " << pos << ".\n";
         jardim->mostrarComJardineiro(jardineiro);
         return true;
     }
@@ -69,11 +71,11 @@ bool Simulador::processaComando(const std::string &linha) {
     if (cmd == "sai") {
         if (!jardimCriado) return false;
         jardineiro.sairDoJardim();
-        std::cout << "Jardineiro saiu do jardim.\n";
+        cout << "Jardineiro saiu do jardim.\n";
         jardim->mostrar();
         return true;
     }
 
-    std::cout << "Comando não reconhecido.\n";
+    cout << "Comando não reconhecido.\n";
     return false;
 }
