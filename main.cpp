@@ -4,7 +4,7 @@
 using namespace std;
 
 // Programa principal do simulador de jardim.
-// Responsável apenas por iniciar a execução e tratar o loop de comandos.
+// Responsável apenas por iniciar a execução e tratar o “loop” de comandos.
 int main() {
     Simulador sim;
     string linha;
@@ -16,7 +16,7 @@ int main() {
 
         if (!getline(cin, linha)) break;
 
-        //Mantem a interface mais limpa ao simular que limpou
+        //Mantem a “interface” mais limpa ao simular que limpou
         //o histórico de comandos
         for (int i=0; i<50; i++)
             cout << "\n";
