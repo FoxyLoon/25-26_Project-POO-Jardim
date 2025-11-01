@@ -31,7 +31,37 @@ private:
     bool comandoJardim(stringstream &ss);
     bool comandoEstado() const;
     bool comandoEntra(stringstream &ss);
+
+    // ----- COMANDOS DO TEMPO SIMULADO -----
+    bool comandoAvanca(stringstream &ss);
+
+    // ----- COMANDOS DE LISTAGEM -----
+    bool comandoLplantas();
+    bool comandoLplanta(stringstream &ss);
+    bool comandoLarea();
+    bool comandoLsolo(stringstream &ss);
+    bool comandoLferr();
+
+    // ----- COMANDOS DE AÇÃO -----
+    bool comandoColhe(stringstream &ss);
+    bool comandoPlanta(stringstream &ss);
+    bool comandoLarga();
+    bool comandoPega(stringstream &ss);
+    bool comandoCompra(stringstream &ss);
+
+    // ----- COMANDOS DE MOVIMENTO -----
+    bool comandoE();
+    bool comandoD();
+    bool comandoC();
+    bool comandoB();
     bool comandoSai();
+
+    // ----- COMANDOS GERAIS -----
+    bool comandoGrava(stringstream &ss);
+    bool comandoRecupera(stringstream &ss);
+    bool comandoApaga(stringstream &ss);
+    bool comandoExecuta(stringstream &ss);
+
 
     // Função auxiliar para validar posições
     static bool isPosicaoValida(const string &p);
