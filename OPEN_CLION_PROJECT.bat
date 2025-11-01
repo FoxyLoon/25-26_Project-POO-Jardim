@@ -9,3 +9,6 @@ clion64.exe ""
 ::5. Cola o caminho para a pasta bin da tua instalação do CLion (exemplo: C:\Program Files\JetBrains\CLion 2023.1.3\bin)
 ::6. Adiciona também às variáveis do usuario (User Variables) o mesmo caminho na linha do Path
 ::7. Clica em OK em todas as janelas abertas para aplicares as mudanças
+
+
+::Nota: Poderá ser necessário modificar o comando se houver alguma atualização do CLion
