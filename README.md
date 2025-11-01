@@ -136,7 +136,7 @@ TP/
 - As instâncias de `Solo` são criadas com valores aleatórios dentro dos intervalos definidos em `Settings.h`.  
 - O `Jardineiro` tem posição e estado (`dentro` / `fora`).  
 - O `Simulador` coordena todos os objetos e processa os comandos via `std::stringstream`.  
-- Cada classe está separada em `.h` e `.cpp` e documentada em português.  
+- Cada classe está separada em `.h` e `.cpp` e documentada.  
 - Nenhuma coleção STL é utilizada em qualquer parte do projeto.
 
 ---
@@ -159,6 +159,7 @@ mkdir build && cd build
 cmake ..
 make
 ./TP
+```
 
 
 
