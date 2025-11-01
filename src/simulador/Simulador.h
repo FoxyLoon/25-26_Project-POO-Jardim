@@ -2,6 +2,7 @@
 #define SIMULADOR_H
 
 #include <string>
+#include <sstream>
 
 #include "../jardim/Jardim.h"
 #include "../jardineiro/Jardineiro.h"
