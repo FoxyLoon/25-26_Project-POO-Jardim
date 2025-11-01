@@ -16,3 +16,4 @@ void Jardineiro::sairDoJardim() {
 bool Jardineiro::isNoJardim() const { return noJardim; }
 int Jardineiro::getLinha() const { return linha; }
 int Jardineiro::getColuna() const { return coluna; }
+

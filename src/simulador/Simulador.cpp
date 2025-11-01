@@ -12,7 +12,7 @@ Simulador::~Simulador() {
 
 // --- Função auxiliar ---
 bool Simulador::isPosicaoValida(const string &p) {
-    return p.size() == 2 && islower(p[0]) && islower(p[1]);
+    return p.size() == 2 && islower(static_cast<unsigned char>(p[0])) && islower(static_cast<unsigned char>(p[1]));
 }
 
 // --- Processamento dos Comandos ---
@@ -63,12 +63,13 @@ bool Simulador::processaComando(const string &linha) {
 bool Simulador::comandoFim() {
     cout << "A encerrar o simulador...\n";
     exit(0);
+    return true; // nunca alcançado, mas satisfaz o tipo
 }
 
 bool Simulador::comandoJardim(stringstream &ss) {
     int linhas, colunas;
     if (!(ss >> linhas >> colunas)) {
-        cout << "[ERRO] Faltam valoresE!\n";
+        cout << "[ERRO] Faltam valores!\n";
         return false;
     }
     if (linhas < 1 || linhas > 26){
@@ -111,7 +112,10 @@ bool Simulador::comandoEntra(stringstream &ss) {
     }
 
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos)) return false;
+    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+        cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
+        return false;
+    }
 
     jardineiroCriado = true;
     jardineiro.entrarNoJardim(pos[0]-'a', pos[1]-'a');
@@ -292,7 +296,7 @@ bool Simulador::comandoPlanta(stringstream &ss) {
     }
 
     // Tipos aceites: C, R, E, X (aceita minusculas tambem)
-    tipo = toupper(tipo);
+    tipo = static_cast<char>(toupper(static_cast<unsigned char>(tipo)));
     if (tipo != 'C' && tipo != 'R' && tipo != 'E' && tipo != 'X') {
         cout << "[ERRO] Tipo de planta invalido. Use C, R, E ou X.\n";
         return false;
@@ -442,20 +446,20 @@ bool Simulador::comandoB() {
 
 bool Simulador::comandoGrava(stringstream &ss) {
     cout << "[INFO] Gravar estado nao implementado (sem persistencia nesta fase).\n";
-    return false;
+    return true;
 }
 
 bool Simulador::comandoRecupera(stringstream &ss) {
     cout << "[INFO] Recuperar estado nao implementado (sem persistencia nesta fase).\n";
-    return false;
+    return true;
 }
 
 bool Simulador::comandoApaga(stringstream &ss) {
     cout << "[INFO] Apagar copia nao implementado (sem persistencia nesta fase).\n";
-    return false;
+    return true;
 }
 
 bool Simulador::comandoExecuta(stringstream &ss) {
     cout << "[INFO] Executar ficheiro de comandos nao implementado (I/O de ficheiros nao disponivel nesta fase).\n";
-    return false;
+    return true;
 }
