@@ -100,34 +100,29 @@ A **Meta 1** foca-se em:
 ## 🧱 Estrutura do Projeto
 
 ```text
-TP/
+Trabalho_Prático/
 ├── main.cpp
 ├── CMakeLists.txt
 └── src/
     ├── Settings.h
     ├── simulador/
-    │   ├── Simulador.h
-    │   └── Simulador.cpp
+    │   └── Simulador.h/.cpp
     ├── jardim/
-    │   ├── Jardim.h
-    │   ├── Jardim.cpp
-    │   ├── Solo.h
-    │   └── Solo.cpp
+    │   ├── Jardim.h/.cpp
+    │   └─── Solo.h/.cpp
     ├── jardineiro/
     │   ├── Jardineiro.h
     │   └── Jardineiro.cpp
     ├── plantas/
-    │   ├── Planta.h
-    │   ├── Cacto.h
-    │   ├── Roseira.h
-    │   ├── ErvaDaninha.h
-    │   └── Exotica.h
-    └── faramentas/
-        ├── Ferramenta.h
-        ├── Regador.h
-        ├── Adubo.h
-        ├── TesouraPoda.h
-        └── FerramentaZ.h
+    │   ├── Planta.h/.cpp
+    │   ├── Cacto.h/.cpp
+    │   ├── Roseira.h/.cpp
+    │   └── ErvaDaninha.h/.cpp
+    └── ferramentas/
+        ├── Ferramenta.h/.cpp
+        ├── Regador.h/.cpp
+        ├── Adubo.h/.cpp
+        └── TesouraPoda.h/.cpp
 
 ```
 
