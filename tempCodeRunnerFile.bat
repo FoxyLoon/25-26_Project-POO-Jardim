@@ -1,1 +1,0 @@
-clion64.exe "D:\ISEC 2025-2026\1º Semestre\POO\Trabalho_Pratico\Project_POO_Jardim_25-26"
