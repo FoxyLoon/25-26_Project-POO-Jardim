@@ -8,7 +8,7 @@ add_executable(Project_POO_Jardim_25-26 main.cpp
         src/ferramentas/Adubo.cpp
         src/ferramentas/Ferramenta.cpp
         src/ferramentas/Regador.cpp
-        src/ferramentas/TesouraPoda.cpp
+        src/ferramentas/Tesoura.cpp
         src/jardim/Jardim.cpp
         src/jardim/Solo.cpp
         src/jardineiro/Jardineiro.cpp
@@ -17,4 +17,8 @@ add_executable(Project_POO_Jardim_25-26 main.cpp
         src/plantas/ErvaDaninha.cpp
         src/plantas/Planta.cpp
         src/plantas/Roseira.cpp
+        src/plantas/PlantaExotica.cpp
+        src/plantas/PlantaExotica.h
+        src/ferramentas/FerramentaZ.cpp
+        src/ferramentas/FerramentaZ.h
 )

@@ -29,12 +29,16 @@ public:
     // hook virtual para comportamento específico de cada espécie (p.ex. crescer, gastar recursos)
     virtual void atualizar(Solo &solo);
 
-protected:
-    // Os membros abaixo são 'protected' para permitir que classes derivadas (p.ex. Cacto, Roseira)
-    // acedam e ajustem diretamente as reservas internas (água e nutrientes).
-    // Isto simplifica a implementação de comportamentos específicos na função `atualizar` sem
-    // expor esses detalhes ao código externo. Uma alternativa mais segura seria torná-los
-    // 'private' e fornecer métodos 'protected' controlados para manipulação.
+    // Métodos para classes derivadas manipularem os dados de forma controlada
+    void setAguaInterna(int valor);
+    void setNutrientesInternos(int valor);
+    void adicionarAguaInterna(int quantidade);
+    void adicionarNutrientesInternos(int quantidade);
+    void removerAguaInterna(int quantidade);
+    void removerNutrientesInternos(int quantidade);
+
+private:
+    // Dados privados - encapsulamento correto
     int aguaInterna;
     int nutrientesInternos;
     std::string beleza;
