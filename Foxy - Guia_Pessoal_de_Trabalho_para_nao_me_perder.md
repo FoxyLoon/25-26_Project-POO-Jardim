@@ -102,4 +102,4 @@ Simulador
 				- Caracteristicas do Jardim
 				- Outros Fatores
 	
-	- Termina quando o Utilizador decidir
+	- Termina quando o Utilizador assim decidir
