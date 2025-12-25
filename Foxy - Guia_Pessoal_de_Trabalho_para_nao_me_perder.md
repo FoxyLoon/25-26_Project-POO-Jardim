@@ -83,15 +83,92 @@ Ferramentas
         	- Tesoura nunca se desgasta
         	- Material -> Feito de Aço Cromado
             	
-      	- FerramentaZ (z)
-        	- (Ainda por definir)
-	
+      	- FerramentaZ (z) (necessário rever)
+        	- Ferramenta tecnológica avançada que equilibra o solo para condições ideais.
+        	- Analisa o solo e ajusta água e nutrientes para valores ótimos
+            - Valores ótimos: água = 90, nutrientes = 45
+            - Cada uso consome 1 carga de bateria
+            - Capacidade: 50 cargas
+        	- Quando a bateria acaba, deve ser reciclada
+			- Settings:
+            	- Se água < 90: adiciona até 15 unidades (aproxima do ótimo)
+            	- Se água > 90: remove até 15 unidades (aproxima do ótimo)
+              	- Se nutrientes < 45: adiciona até 10 unidades
+            	- Se nutrientes > 45: remove até 10 unidades
+
+
+Plantas
+	- Constituida por várias espécies
+  	- Todas as espécies têm algumas caracteristicas em comum (Herança)
+  	- Todas as espécies também têm as suas próprias características e comportamentos únicos
+  	- Cada uma tem a sua própria reserva...
+    	- ...De nutrientes
+    	- ...De água
+  	- Plantas podem RETIRAR água e nutrientes do solo
+	- Plantas podem COLOCAR água e nutrientes no solo
+	- Plantas têm um atributo de beleza:
+    	- Feia
+    	- Bonita
+    	- Neutra
+    	- (não há mais nenhum outro atributo de beleza para além destes três)
+  	- Plantas Disponíveis:
+    	- Cacto (c)
+        	- Beleza = Neutra
+        	
+			- A cada instante:
+            	- Absorve 25% de água existente no solo
+            	- Absorve até 5 unidades de nutrientes do solo (valor random de 1 a 5)
+          	
+			- Condição de Morte:
+            	- Se o solo tiver mais que 100 unidades de água em 3 instantes seguidos, morre
+            	- Se o solo tiver 0 nutrientes durante 3 instantes seguidos, morre
+          	
+			- Pós-Morte:
+            	- Deposita os nutrientes do seu depósito/reserva no solo em que está
+            	- Água do seu depósito desaparece (a água que ainda está no solo mantêm-se)
+            	
+			- Multiplicação:
+    			- SE 
+        			- houver espaço numa posição vizinha
+    				- Nutrientes do depósito do Cacto Falecido > 100 !!!
+    				- Água do depósito do Cacto Falecido > 50 !!!
+
+				- ENTÃO
+    				- Nasce dois cactos, um na posição de onde o antigo faleceu, e outro numa posição vizinha aleatória.
+    				- Os nutrientes do cacto falecido são dividos em 2, cada metade para os dois novos cactos que nasceram
+    	
+		- Roseira
+    		- Beleza = Bonita
+
+			- A cada instante:
+    			- Perde 4 unidades de água
+    			- Perde 4 unidades de nutrientes
+    			- Absorve 5 unidades de água do solo (se existir)
+    			- Absorve 8 unidades de nutrientes do solo (se existir)
+
+			- Condições de Morte
+    			- Se a quantidade de água do seu depósito for igual ou menor que 0
+    			- Se a quantidade de nutrientes do seu depósito for igual ou menor que 0
+    			- Se a quantidade de nutrientes do seu depósito for igual ou maior que 200
+    			- Se todas as posições vizinhas tiverem uma planta
+			
+			- Pós-Morte
+    			- Deixa metade dos nutrientes do seu depósito no solo
+    			- Deixa metade da água do seu depósito no solo
+  			
+			- Multiplicação:
+    			- SE
+        			- Houver posição vizinha vazia
+        			- Nutrientes do Depósito da Roseira Falecida > 100
+
+    			- ENTÃO
+        			- 
 
 Simulador
-	- Simula passagem de tempo
-		- Afeta Crescimento das plantas
-		- Afeta Multiplicação das plantas
-		- Afeta Morte das Plantas
+	- Simula Tempo:
+		- Tempo Afeta Crescimento das plantas
+		- Tempo Afeta Multiplicação das plantas
+		- Tempo Afeta Morte das Plantas
 		
 		- Tempo definido por Instantes
 			- Cada instante passa por cada ação do jogador (dar um comando na consola)
