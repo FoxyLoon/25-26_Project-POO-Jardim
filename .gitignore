@@ -1,4 +1,6 @@
+# VSCODE
 build/
+.cache/
 
 # CLION
 .idea/
