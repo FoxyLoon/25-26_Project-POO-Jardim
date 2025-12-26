@@ -16,12 +16,12 @@ std::string Tesoura::nome() const {
 
 bool Tesoura::aplicar(Solo &solo) {
     // Elimina plantas FEIAS
-    if (solo.temPlanta()) {
-        if (solo.planta->getBeleza() == "FEIA") {
+    if (solo.temPlanta()) {  // ✅ CORRIGIDO: usar método
+        Planta* p = solo.getPlanta();  // ✅ CORRIGIDO: usar getter
+        if (p->getBeleza() == "FEIA") {
             // Remove a planta feia
-            delete solo.planta;
-            solo.planta = nullptr;
-            // Podia deixar algo no solo (nutrientes), mas o enunciado não especifica
+            solo.setPlanta(nullptr);  // ✅ CORRIGIDO: usar setter
+            delete p;
         }
     }
 
@@ -29,7 +29,7 @@ bool Tesoura::aplicar(Solo &solo) {
 }
 
 bool Tesoura::estaUtilizavel() const {
-    return true;  // sempre utilizável (aço cromado)
+    return true;
 }
 
 std::string Tesoura::getInfo() const {

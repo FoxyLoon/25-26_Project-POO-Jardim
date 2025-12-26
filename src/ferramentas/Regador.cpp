@@ -15,11 +15,11 @@ std::string Regador::nome() const {
 
 bool Regador::aplicar(Solo &solo) {
     if (!estaUtilizavel()) {
-        return false;  // ferramenta inútil
+        return false;
     }
 
     // Adiciona água ao solo
-    solo.agua += Settings::Regador::dose;
+    solo.adicionarAgua(Settings::Regador::dose);  // ✅ CORRIGIDO: usar método
 
     // Subtrai do regador
     aguaDisponivel -= Settings::Regador::dose;
@@ -27,10 +27,10 @@ bool Regador::aplicar(Solo &solo) {
     // Se ficou sem água, torna-se inútil
     if (aguaDisponivel <= 0) {
         aguaDisponivel = 0;
-        return false;  // deve ser descartado
+        return false;
     }
 
-    return true;  // ainda utilizável
+    return true;
 }
 
 bool Regador::estaUtilizavel() const {

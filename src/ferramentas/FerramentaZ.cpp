@@ -19,36 +19,38 @@ bool FerramentaZ::aplicar(Solo &solo) {
     }
     
     // Ajusta água para o valor ótimo
-    int diferencaAgua = AGUA_OTIMA - solo.agua;
+    int aguaAtual = solo.getAgua();  // ✅ CORRIGIDO: usar getter
+    int diferencaAgua = AGUA_OTIMA - aguaAtual;
+
     if (diferencaAgua > 0) {
         // Precisa adicionar água (até 15 unidades)
         int adicionar = (diferencaAgua > 15) ? 15 : diferencaAgua;
-        solo.agua += adicionar;
+        solo.adicionarAgua(adicionar);  // ✅ CORRIGIDO: usar método
     } else if (diferencaAgua < 0) {
         // Precisa remover água (até 15 unidades)
         int remover = (-diferencaAgua > 15) ? 15 : -diferencaAgua;
-        solo.agua -= remover;
-        if (solo.agua < 0) solo.agua = 0;
+        solo.removerAgua(remover);  // ✅ CORRIGIDO: usar método
     }
-    
+
     // Ajusta nutrientes para o valor ótimo
-    int diferencaNutrientes = NUTRIENTES_OTIMOS - solo.nutrientes;
+    int nutrientesAtuais = solo.getNutrientes();  // ✅ CORRIGIDO: usar getter
+    int diferencaNutrientes = NUTRIENTES_OTIMOS - nutrientesAtuais;
+
     if (diferencaNutrientes > 0) {
         // Precisa adicionar nutrientes (até 10 unidades)
         int adicionar = (diferencaNutrientes > 10) ? 10 : diferencaNutrientes;
-        solo.nutrientes += adicionar;
+        solo.adicionarNutrientes(adicionar);  // ✅ CORRIGIDO: usar método
     } else if (diferencaNutrientes < 0) {
         // Precisa remover nutrientes (até 10 unidades)
         int remover = (-diferencaNutrientes > 10) ? 10 : -diferencaNutrientes;
-        solo.nutrientes -= remover;
-        if (solo.nutrientes < 0) solo.nutrientes = 0;
+        solo.removerNutrientes(remover);  // ✅ CORRIGIDO: usar método
     }
-    
+
     // Consome uma carga
     cargasBateria--;
-    
+
     if (cargasBateria <= 0) {
-        return false;  // bateria esgotada, deve ser reciclado
+        return false;
     }
     
     return true;

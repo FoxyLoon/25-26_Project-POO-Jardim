@@ -15,7 +15,7 @@ char Cacto::simbolo() const {
 
 void Cacto::atualizar(Solo &solo) {
     // Absorve 25% da água existente no solo
-    int aguaDisponivel = solo.agua;
+    int aguaDisponivel = solo.getAgua();  // ✅ CORRIGIDO: usar getter
     int aguaAbsorver = (aguaDisponivel * Settings::Cacto::absorcao_agua_percentagem) / 100;
     if (aguaAbsorver > 0) {
         obterAgua(solo, aguaAbsorver);
@@ -27,17 +27,17 @@ void Cacto::atualizar(Solo &solo) {
 
     // Verifica condições de morte
     // 1. Água no solo > 100 durante 3 instantes seguidos
-    if (solo.agua > Settings::Cacto::morre_agua_solo_maior) {
+    if (solo.getAgua() > Settings::Cacto::morre_agua_solo_maior) {  // ✅ CORRIGIDO
         instantesAguaExcessiva++;
     } else {
-        instantesAguaExcessiva = 0; // reset se a condição não se mantém
+        instantesAguaExcessiva = 0;
     }
 
     // 2. Nutrientes no solo = 0 durante mais de 3 instantes seguidos
-    if (solo.nutrientes < Settings::Cacto::morre_nutrientes_solo_menor) {
+    if (solo.getNutrientes() < Settings::Cacto::morre_nutrientes_solo_menor) {  // ✅ CORRIGIDO
         instantesSemNutrientes++;
     } else {
-        instantesSemNutrientes = 0; // reset
+        instantesSemNutrientes = 0;
     }
 }
 
@@ -62,6 +62,6 @@ bool Cacto::podeMultiplicar() const {
 
 void Cacto::morrer(Solo &solo) {
     // Ao morrer, deixa no solo todos os nutrientes que absorveu durante a vida
-    solo.nutrientes += totalNutrientesAbsorvidos;
+    solo.adicionarNutrientes(totalNutrientesAbsorvidos);  // ✅ CORRIGIDO: usar método
     // A água não é devolvida
 }

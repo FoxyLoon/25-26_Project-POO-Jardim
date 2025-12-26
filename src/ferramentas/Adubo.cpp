@@ -15,11 +15,11 @@ std::string Adubo::nome() const {
 
 bool Adubo::aplicar(Solo &solo) {
     if (!estaUtilizavel()) {
-        return false;  // ferramenta inútil
+        return false;
     }
 
     // Adiciona nutrientes ao solo
-    solo.nutrientes += Settings::Adubo::dose;
+    solo.adicionarNutrientes(Settings::Adubo::dose);  // ✅ CORRIGIDO: usar método
 
     // Subtrai do pacote
     quantidadeDisponivel -= Settings::Adubo::dose;
@@ -27,10 +27,10 @@ bool Adubo::aplicar(Solo &solo) {
     // Se ficou vazio, é levado pelo vento
     if (quantidadeDisponivel <= 0) {
         quantidadeDisponivel = 0;
-        return false;  // deve ser descartado
+        return false;
     }
 
-    return true;  // ainda utilizável
+    return true;
 }
 
 bool Adubo::estaUtilizavel() const {

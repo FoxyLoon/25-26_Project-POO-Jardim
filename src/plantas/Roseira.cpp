@@ -56,8 +56,8 @@ bool Roseira::podeMultiplicar() const {
 
 void Roseira::morrer(Solo &solo) {
     // Ao morrer deixa no solo metade dos nutrientes e metade da água absorvidos
-    solo.nutrientes += totalNutrientesAbsorvidos / 2;
-    solo.agua += totalAguaAbsorvida / 2;
+    solo.adicionarNutrientes(totalNutrientesAbsorvidos / 2);  // ✅ CORRIGIDO
+    solo.adicionarAgua(totalAguaAbsorvida / 2);              // ✅ CORRIGIDO
 }
 
 int Roseira::prepararMultiplicacao() {
