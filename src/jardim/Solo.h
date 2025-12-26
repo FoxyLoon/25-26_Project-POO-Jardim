@@ -5,25 +5,51 @@
 class Planta;
 class Ferramenta;
 
-// Estrutura para representar um pedaço de solo do jardim.
-// Cada posição pode conter:
-// - Propriedades do solo (água e nutrientes)
-// - 0 ou 1 planta (ponteiro)
-// - 0 ou 1 ferramenta (ponteiro)
+// Classe Solo - representa um pedaço de solo do jardim
+// Cada posição pode conter propriedades (água, nutrientes) e entidades (planta, ferramenta)
 class Solo {
-public:
+private:
     int agua;
     int nutrientes;
-    Planta* planta;           // ponteiro para planta (nullptr se não houver)
-    Ferramenta* ferramenta;   // ponteiro para ferramenta (nullptr se não houver)
+    Planta* planta;
+    Ferramenta* ferramenta;
 
-    // Construtor padrão
-    Solo() : agua(0), nutrientes(0), planta(nullptr), ferramenta(nullptr) {}
+public:
+    // Construtores
+    Solo();
+    Solo(int agua_inicial, int nutrientes_iniciais);
 
-    // Métodos auxiliares
-    bool temPlanta() const { return planta != nullptr; }
-    bool temFerramenta() const { return ferramenta != nullptr; }
-    bool estaVazio() const { return !temPlanta() && !temFerramenta(); }
+    // Destrutor - NÃO liberta planta/ferramenta (geridas pelo Jardim)
+    ~Solo();
+
+    // Getters para propriedades do solo
+    int getAgua() const;
+    int getNutrientes() const;
+
+    // Setters para propriedades do solo (com validação)
+    void setAgua(int valor);
+    void setNutrientes(int valor);
+
+    // Modificadores de água e nutrientes
+    void adicionarAgua(int quantidade);
+    void removerAgua(int quantidade);
+    void adicionarNutrientes(int quantidade);
+    void removerNutrientes(int quantidade);
+
+    // Gestão de Planta
+    Planta* getPlanta() const;
+    void setPlanta(Planta* p);
+    bool temPlanta() const;
+    Planta* removerPlanta();  // Remove e retorna a planta (sem delete)
+
+    // Gestão de Ferramenta
+    Ferramenta* getFerramenta() const;
+    void setFerramenta(Ferramenta* f);
+    bool temFerramenta() const;
+    Ferramenta* removerFerramenta();  // Remove e retorna a ferramenta (sem delete)
+
+    // Verifica se está vazio
+    bool estaVazio() const;
 
     // Retorna o símbolo a ser exibido (considerando prioridades)
     // Prioridade: Jardineiro > Planta > Ferramenta > vazio

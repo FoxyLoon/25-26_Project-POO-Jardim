@@ -29,7 +29,8 @@ public:
     // hook virtual para comportamento específico de cada espécie (p.ex. crescer, gastar recursos)
     virtual void atualizar(Solo &solo);
 
-    // Métodos para classes derivadas manipularem os dados de forma controlada
+protected:
+    // Métodos protegidos para classes derivadas manipularem os dados de forma controlada
     void setAguaInterna(int valor);
     void setNutrientesInternos(int valor);
     void adicionarAguaInterna(int quantidade);

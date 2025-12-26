@@ -13,16 +13,16 @@ static int my_min(int a, int b) { return (a < b) ? a : b; }
 
 int Planta::obterAgua(Solo &solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int retirada = my_min(quantidade, solo.agua);
-    solo.agua -= retirada;
+    int retirada = my_min(quantidade, solo.getAgua());
+    solo.removerAgua(retirada);
     adicionarAguaInterna(retirada);
     return retirada;
 }
 
 int Planta::obterNutrientes(Solo &solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int retirada = my_min(quantidade, solo.nutrientes);
-    solo.nutrientes -= retirada;
+    int retirada = my_min(quantidade, solo.getNutrientes());
+    solo.removerNutrientes(retirada);
     adicionarNutrientesInternos(retirada);
     return retirada;
 }
@@ -31,7 +31,7 @@ int Planta::depositarAgua(Solo &solo, int quantidade) {
     if (quantidade <= 0) return 0;
     int deposito = my_min(quantidade, getAguaInterna());
     removerAguaInterna(deposito);
-    solo.agua += deposito;
+    solo.adicionarAgua(deposito);
     return deposito;
 }
 
@@ -39,12 +39,12 @@ int Planta::depositarNutrientes(Solo &solo, int quantidade) {
     if (quantidade <= 0) return 0;
     int deposito = my_min(quantidade, getNutrientesInternos());
     removerNutrientesInternos(deposito);
-    solo.nutrientes += deposito;
+    solo.adicionarNutrientes(deposito);
     return deposito;
 }
 
-void Planta::atualizar(Solo & /*solo*/) {
-    // implementação por defeito: não faz nada. Espécies concretas podem sobrescrever.
+void Planta::atualizar(Solo &) {
+    // implementação por defeito: não faz nada. Espécies  concretaspodem sobrescrever.
 }
 
 // Métodos protegidos para manipulação controlada pelos derivados
