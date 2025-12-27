@@ -6,52 +6,75 @@ using namespace std;
 
 Simulador::Simulador() : jardim(nullptr), jardimCriado(false), jardineiroCriado(false) {}
 
-Simulador::~Simulador() {
+Simulador::~Simulador()
+{
     delete jardim;
 }
 
 // --- Função auxiliar ---
-bool Simulador::isPosicaoValida(const string &p) {
+bool Simulador::isPosicaoValida(const string &p)
+{
     return p.size() == 2 && islower(static_cast<unsigned char>(p[0])) && islower(static_cast<unsigned char>(p[1]));
 }
 
 // --- Processamento dos Comandos ---
-bool Simulador::processaComando(const string &linha) {
+bool Simulador::processaComando(const string &linha)
+{
     stringstream ss(linha);
     string cmd;
 
-    //lê até ao primeiro espaço (apenas a primeira palavra)
-    //Nota: Os parametros depois do espaço ficam e são usados mais tarde
+    // lê até ao primeiro espaço (apenas a primeira palavra)
+    // Nota: Os parametros depois do espaço ficam e são usados mais tarde
     ss >> cmd;
 
-    if (cmd == "avanca") return comandoAvanca(ss);
-    if (cmd == "lplantas") return comandoLplantas();
-    if (cmd == "lplanta") return comandoLplanta(ss);
-    if (cmd == "larea") return comandoLarea();
-    if (cmd == "lsolo") return comandoLsolo(ss);
-    if (cmd == "lferr") return comandoLferr();
-    if (cmd == "colhe") return comandoColhe(ss);
-    if (cmd == "planta") return comandoPlanta(ss);
-    if (cmd == "larga") return comandoLarga();
-    if (cmd == "pega") return comandoPega(ss);
-    if (cmd == "compra") return comandoCompra(ss);
-    if (cmd == "e") return comandoE();
-    if (cmd == "d") return comandoD();
-    if (cmd == "c") return comandoC();
-    if (cmd == "b") return comandoB();
-    if (cmd == "entra") return comandoEntra(ss);
-    if (cmd == "sai") return comandoSai();
-    if (cmd == "jardim") return comandoJardim(ss);
-    if (cmd == "grava") return comandoGrava(ss);
-    if (cmd == "recupera") return comandoRecupera(ss);
-    if (cmd == "apaga") return comandoApaga(ss);
-    if (cmd == "executa") return comandoExecuta(ss);
-    if (cmd == "fim") return comandoFim();
+    if (cmd == "avanca")
+        return comandoAvanca(ss);
+    if (cmd == "lplantas")
+        return comandoLplantas();
+    if (cmd == "lplanta")
+        return comandoLplanta(ss);
+    if (cmd == "larea")
+        return comandoLarea();
+    if (cmd == "lsolo")
+        return comandoLsolo(ss);
+    if (cmd == "lferr")
+        return comandoLferr();
+    if (cmd == "colhe")
+        return comandoColhe(ss);
+    if (cmd == "planta")
+        return comandoPlanta(ss);
+    if (cmd == "larga")
+        return comandoLarga();
+    if (cmd == "pega")
+        return comandoPega(ss);
+    if (cmd == "compra")
+        return comandoCompra(ss);
+    if (cmd == "e")
+        return comandoE();
+    if (cmd == "d")
+        return comandoD();
+    if (cmd == "c")
+        return comandoC();
+    if (cmd == "b")
+        return comandoB();
+    if (cmd == "entra")
+        return comandoEntra(ss);
+    if (cmd == "sai")
+        return comandoSai();
+    if (cmd == "jardim")
+        return comandoJardim(ss);
+    if (cmd == "grava")
+        return comandoGrava(ss);
+    if (cmd == "recupera")
+        return comandoRecupera(ss);
+    if (cmd == "apaga")
+        return comandoApaga(ss);
+    if (cmd == "executa")
+        return comandoExecuta(ss);
+    if (cmd == "fim")
+        return comandoFim();
 
-
-
-
-    //Retorna "false" caso o comando não for nenhum dos de cima
+    // Retorna "false" caso o comando não for nenhum dos de cima
     cout << "[ERRO] Comando desconhecido: " << cmd << "\n";
     return false;
 }
@@ -60,28 +83,34 @@ bool Simulador::processaComando(const string &linha) {
 
 // --- Implementação de cada comando ---
 
-bool Simulador::comandoFim() {
+bool Simulador::comandoFim()
+{
     cout << "A encerrar o simulador...\n";
     exit(0);
     return true; // nunca alcançado, mas satisfaz o tipo
 }
 
-bool Simulador::comandoJardim(stringstream &ss) {
+bool Simulador::comandoJardim(stringstream &ss)
+{
     int linhas, colunas;
-    if (!(ss >> linhas >> colunas)) {
+    if (!(ss >> linhas >> colunas))
+    {
         cout << "[ERRO] Faltam valores!\n";
         return false;
     }
-    if (linhas < 1 || linhas > 26){
+    if (linhas < 1 || linhas > 26)
+    {
         cout << "[ERRO] Número de Linhas Inválido!\n";
         return false;
     }
-    if (colunas < 1 || colunas > 26){
+    if (colunas < 1 || colunas > 26)
+    {
         cout << "[ERRO] Número de Colunas Inválido!\n";
         return false;
     }
 
-    if (jardimCriado) {
+    if (jardimCriado)
+    {
         cout << "[INFO] Já existe um jardim criado!\n";
         return false;
     }
@@ -89,15 +118,17 @@ bool Simulador::comandoJardim(stringstream &ss) {
     jardim = new Jardim(linhas, colunas);
     jardimCriado = true;
     cout << "[INFO] O Jardim foi criado com "
-        << linhas << " linhas e "
-        << colunas << " colunas.\n";
+         << linhas << " linhas e "
+         << colunas << " colunas.\n";
 
     jardim->mostrar();
     return true;
 }
 
-bool Simulador::comandoEstado() const {
-    if (!jardimCriado) {
+bool Simulador::comandoEstado() const
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de ver o seu estado.\n";
         return false;
     }
@@ -105,33 +136,39 @@ bool Simulador::comandoEstado() const {
     return true;
 }
 
-bool Simulador::comandoEntra(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoEntra(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] Nao e possivel adicionar um Jardineiro sem ter um jardim criado primeiro!\n";
         return false;
     }
 
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+    if (!(ss >> pos) || !isPosicaoValida(pos))
+    {
         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
         return false;
     }
 
     jardineiroCriado = true;
-    jardineiro.entrarNoJardim(pos[0]-'a', pos[1]-'a');
+    jardineiro.entrarNoJardim(pos[0] - 'a', pos[1] - 'a');
     cout << "Jardineiro entrou na posição " << pos << ".\n";
     jardim->mostrarComJardineiro(jardineiro);
 
     return true;
 }
 
-bool Simulador::comandoSai() {
-    if (!jardimCriado) {
+bool Simulador::comandoSai()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] Não e possivel remover um Jardineiro sem ter um jardim criado primeiro!\n";
         return false;
     }
 
-    if (!jardineiroCriado) {
+    if (!jardineiroCriado)
+    {
         cout << "[ERRO] Nao e possivel remover um Jardineiro que nao existe!\n";
         return false;
     }
@@ -143,23 +180,28 @@ bool Simulador::comandoSai() {
     return true;
 }
 
-bool Simulador::comandoAvanca(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoAvanca(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de avançar o tempo.\n";
         return false;
     }
 
     int n = 1;
-    if (!(ss >> n)) {
+    if (!(ss >> n))
+    {
         n = 1; // padrão
     }
-    if (n <= 0) {
+    if (n <= 0)
+    {
         cout << "[ERRO] O numero de instantes deve ser positivo.\n";
         return false;
     }
 
-    for (int i = 0; i < n; ++i) {
-        cout << "[INFO] Avancando 1 instante (" << i+1 << "/" << n << ")...\n";
+    for (int i = 0; i < n; ++i)
+    {
+        cout << "[INFO] Avancando 1 instante (" << i + 1 << "/" << n << ")...\n";
         // Atualmente não existem plantas com estado a atualizar; se existissem,
         // aqui invocar-se-ia a sua atualização.
     }
@@ -169,8 +211,10 @@ bool Simulador::comandoAvanca(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoLplantas() {
-    if (!jardimCriado) {
+bool Simulador::comandoLplantas()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de listar plantas.\n";
         return false;
     }
@@ -181,14 +225,17 @@ bool Simulador::comandoLplantas() {
     return true;
 }
 
-bool Simulador::comandoLplanta(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoLplanta(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de listar uma planta.\n";
         return false;
     }
 
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+    if (!(ss >> pos) || !isPosicaoValida(pos))
+    {
         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
         return false;
     }
@@ -196,7 +243,8 @@ bool Simulador::comandoLplanta(stringstream &ss) {
     int l = pos[0] - 'a';
     int c = pos[1] - 'a';
     Solo *s = jardim->getSolo(l, c);
-    if (!s) {
+    if (!s)
+    {
         cout << "[ERRO] Posicao fora do jardim.\n";
         return false;
     }
@@ -206,8 +254,10 @@ bool Simulador::comandoLplanta(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoLarea() {
-    if (!jardimCriado) {
+bool Simulador::comandoLarea()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de listar area.\n";
         return false;
     }
@@ -216,33 +266,41 @@ bool Simulador::comandoLarea() {
     return true;
 }
 
-bool Simulador::comandoLsolo(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoLsolo(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de listar solo.\n";
         return false;
     }
 
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+    if (!(ss >> pos) || !isPosicaoValida(pos))
+    {
         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
         return false;
     }
 
     int raio = 0;
-    if (!(ss >> raio)) {
+    if (!(ss >> raio))
+    {
         raio = 0; // se não fornecido, apenas a posição indicada
     }
-    if (raio < 0) raio = 0;
+    if (raio < 0)
+        raio = 0;
 
     int li = pos[0] - 'a';
     int ci = pos[1] - 'a';
 
-    for (int dl = -raio; dl <= raio; ++dl) {
-        for (int dc = -raio; dc <= raio; ++dc) {
+    for (int dl = -raio; dl <= raio; ++dl)
+    {
+        for (int dc = -raio; dc <= raio; ++dc)
+        {
             int l = li + dl;
             int c = ci + dc;
             Solo *s = jardim->getSolo(l, c);
-            if (s) {
+            if (s)
+            {
                 char pl = char('a' + l);
                 char pc = char('a' + c);
 
@@ -255,8 +313,10 @@ bool Simulador::comandoLsolo(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoLferr() {
-    if (!jardimCriado) {
+bool Simulador::comandoLferr()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de listar ferramentas.\n";
         return false;
     }
@@ -265,14 +325,17 @@ bool Simulador::comandoLferr() {
     return true;
 }
 
-bool Simulador::comandoColhe(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoColhe(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de colher.\n";
         return false;
     }
 
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+    if (!(ss >> pos) || !isPosicaoValida(pos))
+    {
         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
         return false;
     }
@@ -283,22 +346,26 @@ bool Simulador::comandoColhe(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoPlanta(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoPlanta(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de plantar.\n";
         return false;
     }
 
     string pos;
     char tipo;
-    if (!(ss >> pos >> tipo) || !isPosicaoValida(pos)) {
+    if (!(ss >> pos >> tipo) || !isPosicaoValida(pos))
+    {
         cout << "[ERRO] Uso: planta <l><c> <tipo> (ex: planta ab C).\n";
         return false;
     }
 
     // Tipos aceites: C, R, E, X (aceita minusculas tambem)
     tipo = static_cast<char>(toupper(static_cast<unsigned char>(tipo)));
-    if (tipo != 'C' && tipo != 'R' && tipo != 'E' && tipo != 'X') {
+    if (tipo != 'C' && tipo != 'R' && tipo != 'E' && tipo != 'X')
+    {
         cout << "[ERRO] Tipo de planta invalido. Use C, R, E ou X.\n";
         return false;
     }
@@ -308,8 +375,10 @@ bool Simulador::comandoPlanta(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoLarga() {
-    if (!jardimCriado) {
+bool Simulador::comandoLarga()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de largar ferramentas.\n";
         return false;
     }
@@ -318,14 +387,17 @@ bool Simulador::comandoLarga() {
     return true;
 }
 
-bool Simulador::comandoPega(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoPega(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de pegar uma ferramenta.\n";
         return false;
     }
 
     int id;
-    if (!(ss >> id)) {
+    if (!(ss >> id))
+    {
         cout << "[ERRO] Uso: pega <numero_de_serie>.\n";
         return false;
     }
@@ -334,14 +406,17 @@ bool Simulador::comandoPega(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoCompra(stringstream &ss) {
-    if (!jardimCriado) {
+bool Simulador::comandoCompra(stringstream &ss)
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de comprar ferramentas.\n";
         return false;
     }
 
     char tipo;
-    if (!(ss >> tipo)) {
+    if (!(ss >> tipo))
+    {
         cout << "[ERRO] Uso: compra <tipo>. Tipos: g a t z.\n";
         return false;
     }
@@ -349,118 +424,138 @@ bool Simulador::comandoCompra(stringstream &ss) {
     return true;
 }
 
-bool Simulador::comandoE() {
-    if (!jardimCriado) {
+bool Simulador::comandoE()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de mover o jardineiro.\n";
         return false;
     }
-    if (!jardineiroCriado) {
+    if (!jardineiroCriado)
+    {
         cout << "[ERRO] O jardineiro nao foi colocado no jardim.\n";
         return false;
     }
 
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    Solo *dest = jardim->getSolo(l, c-1);
-    if (!dest) {
+    Solo *dest = jardim->getSolo(l, c - 1);
+    if (!dest)
+    {
         cout << "[ERRO] Movimento invalido (fora dos limites).\n";
         return false;
     }
 
-    jardineiro.entrarNoJardim(l, c-1);
+    jardineiro.entrarNoJardim(l, c - 1);
     cout << "Jardineiro deslocou-se para a esquerda.\n";
     jardim->mostrarComJardineiro(jardineiro);
     return true;
 }
 
-bool Simulador::comandoD() {
-    if (!jardimCriado) {
+bool Simulador::comandoD()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de mover o jardineiro.\n";
         return false;
     }
-    if (!jardineiroCriado) {
+    if (!jardineiroCriado)
+    {
         cout << "[ERRO] O jardineiro nao foi colocado no jardim.\n";
         return false;
     }
 
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    Solo *dest = jardim->getSolo(l, c+1);
-    if (!dest) {
+    Solo *dest = jardim->getSolo(l, c + 1);
+    if (!dest)
+    {
         cout << "[ERRO] Movimento invalido (fora dos limites).\n";
         return false;
     }
 
-    jardineiro.entrarNoJardim(l, c+1);
+    jardineiro.entrarNoJardim(l, c + 1);
     cout << "Jardineiro deslocou-se para a direita.\n";
     jardim->mostrarComJardineiro(jardineiro);
     return true;
 }
 
-bool Simulador::comandoC() {
-    if (!jardimCriado) {
+bool Simulador::comandoC()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de mover o jardineiro.\n";
         return false;
     }
-    if (!jardineiroCriado) {
+    if (!jardineiroCriado)
+    {
         cout << "[ERRO] O jardineiro nao foi colocado no jardim.\n";
         return false;
     }
 
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    Solo *dest = jardim->getSolo(l-1, c);
-    if (!dest) {
+    Solo *dest = jardim->getSolo(l - 1, c);
+    if (!dest)
+    {
         cout << "[ERRO] Movimento invalido (fora dos limites).\n";
         return false;
     }
 
-    jardineiro.entrarNoJardim(l-1, c);
+    jardineiro.entrarNoJardim(l - 1, c);
     cout << "Jardineiro deslocou-se para cima.\n";
     jardim->mostrarComJardineiro(jardineiro);
     return true;
 }
 
-bool Simulador::comandoB() {
-    if (!jardimCriado) {
+bool Simulador::comandoB()
+{
+    if (!jardimCriado)
+    {
         cout << "[ERRO] E necessario criar o jardim antes de mover o jardineiro.\n";
         return false;
     }
-    if (!jardineiroCriado) {
+    if (!jardineiroCriado)
+    {
         cout << "[ERRO] O jardineiro nao foi colocado no jardim.\n";
         return false;
     }
 
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    Solo *dest = jardim->getSolo(l+1, c);
-    if (!dest) {
+    Solo *dest = jardim->getSolo(l + 1, c);
+    if (!dest)
+    {
         cout << "[ERRO] Movimento invalido (fora dos limites).\n";
         return false;
     }
 
-    jardineiro.entrarNoJardim(l+1, c);
+    jardineiro.entrarNoJardim(l + 1, c);
     cout << "Jardineiro deslocou-se para baixo.\n";
     jardim->mostrarComJardineiro(jardineiro);
     return true;
 }
 
-bool Simulador::comandoGrava(stringstream &ss) {
+bool Simulador::comandoGrava(stringstream &ss)
+{
     cout << "[INFO] Gravar estado nao implementado (sem persistencia nesta fase).\n";
     return true;
 }
 
-bool Simulador::comandoRecupera(stringstream &ss) {
+bool Simulador::comandoRecupera(stringstream &ss)
+{
     cout << "[INFO] Recuperar estado nao implementado (sem persistencia nesta fase).\n";
     return true;
 }
 
-bool Simulador::comandoApaga(stringstream &ss) {
+bool Simulador::comandoApaga(stringstream &ss)
+{
     cout << "[INFO] Apagar copia nao implementado (sem persistencia nesta fase).\n";
     return true;
 }
 
-bool Simulador::comandoExecuta(stringstream &ss) {
+bool Simulador::comandoExecuta(stringstream &ss)
+{
     cout << "[INFO] Executar ficheiro de comandos nao implementado (I/O de ficheiros nao disponivel nesta fase).\n";
     return true;
 }
