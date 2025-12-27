@@ -52,7 +52,7 @@ Utilizador = Jardineiro
         		- Sempre que uma ferramenta é apanhada, uma nova ferramenta aleatoria aparece numa posição aleatória (não pode aparecer por cima do proprio jardineiro.)
       		- Ao "comprar online"
         		- Compra efetuada por comando do utilizador
-		
+	- Pode solcitar informações adicionais sobre "determinados aspetos" (é o que está escrito no enunciado, página 6, 3ºParagrafo, "Funcionamento e uso do simulador")
 
 Ferramentas
 	- Desempenham ações especificas da ferramenta
@@ -111,9 +111,14 @@ Plantas
     	- Bonita
     	- Neutra
     	- (não há mais nenhum outro atributo de beleza para além destes três)
-  	- Plantas Disponíveis:
+  	
+	
+	- Plantas Disponíveis:
     	- Cacto (c)
         	- Beleza = Neutra
+            
+			- Começa no seu deposito
+    			- (Não especificado)
         	
 			- A cada instante:
             	- Absorve 25% de água existente no solo
@@ -129,16 +134,20 @@ Plantas
             	
 			- Multiplicação:
     			- SE 
-        			- houver espaço numa posição vizinha
-    				- Nutrientes do depósito do Cacto Falecido > 100 !!!
-    				- Água do depósito do Cacto Falecido > 50 !!!
+        			- houver uma posição aleatória vizinha vazia
+    				- Nutrientes do depósito do Cacto original > 100 !!!
+    				- Água do depósito do Cacto original > 50 !!!
 
 				- ENTÃO
-    				- Nasce dois cactos, um na posição de onde o antigo faleceu, e outro numa posição vizinha aleatória.
-    				- Os nutrientes do cacto falecido são dividos em 2, cada metade para os dois novos cactos que nasceram
+    				- Nasce um cacto na posição vizinha escolhida.
+    				- Os nutrientes do cacto original são dividos em 2. Metade para o cacto original e a outra metade para o novo cacto
     	
-		- Roseira
+		- Roseira (r)
     		- Beleza = Bonita
+      		
+			- Começa no seu deposito:
+    			- Nutrientes = 25
+    			- Água = 25
 
 			- A cada instante:
     			- Perde 4 unidades de água
@@ -147,9 +156,9 @@ Plantas
     			- Absorve 8 unidades de nutrientes do solo (se existir)
 
 			- Condições de Morte
-    			- Se a quantidade de água do seu depósito for igual ou menor que 0
-    			- Se a quantidade de nutrientes do seu depósito for igual ou menor que 0
-    			- Se a quantidade de nutrientes do seu depósito for igual ou maior que 200
+    			- Se a quantidade de água do seu depósito <= 0
+    			- Se a quantidade de nutrientes do seu depósito <= 0
+    			- Se a quantidade de nutrientes do seu depósito >= 200
     			- Se todas as posições vizinhas tiverem uma planta
 			
 			- Pós-Morte
@@ -158,11 +167,97 @@ Plantas
   			
 			- Multiplicação:
     			- SE
-        			- Houver posição vizinha vazia
-        			- Nutrientes do Depósito da Roseira Falecida > 100
+        			- Houver posição aleatória vizinha vazia
+        			- Nutrientes do Depósito da Roseira > 100
+        			- Água não é tomada em consideração
 
     			- ENTÃO
+        			- Nasce Nova Roseira com:
+            			- Nutrientes = 25
+            			- Água = (Água da Roseira Original) / 2
+        			- E Roseira Original fica com:
+            			- Nutrientes = 100
+            			- Água = (Água da Roseira Original) / 2
+    	
+		- Erva Daninha (e)
+    		- Beleza = Feia
+    		
+			- Começa no seu depósito:
+    			- Nutrientes = 5
+    			- Água = 5
+    		
+			- A cada instante:
+    			- Absorve 1 unidades de água do solo (se existir)
+    			- Absorve 1 unidades de nutrientes do solo (se existir)
+  			
+			- Condições de Morte
+    			- Após 60 instantes
+    		
+			- Pós-Morte
+    			- (Não especificado)
+  			
+			- Multiplicação:
+    			- SE
+        			- Houver posição aleatória vizinha vazia 
+        			- Houver posição aleatória vizinha com planta
+        			- Nutrientes > 30 && 5 instantes seguidos
         			- 
+      			
+  				- ENTÃO
+    				- Se houver planta na posição escolhida, mata a planta e substitui
+    				- Se não houver planta, apenas ocupa o espaço normalmente
+    				- Nova Erva Daninha fica:
+        				- Água = 5
+        				- Nutrientes = 5
+      				- E a Erva Daninha original fica:
+        				- Igual - não há mudanças
+		
+		- Planta Exótica (x) - BAMBU LUNAR
+		Planta exótica importada de um país distante no Oriente.
+
+        	- Beleza: BONITA
+        	
+			- Começa no seu depósito:
+				- Água = 30
+				- Nutrientes = 30
+    		
+			- Ciclos de crescimento:
+            	- Jovem: 0-20 instantes (absorve recursos)
+            	- Adulta: 21-40 instantes (equilíbrio)
+            	- Madura: 41+ instantes (produz nutrientes)
+        	
+			- A cada instante:
+    			- Fase Jovem:
+        			- Absorve 3 unidades de água do solo (se existir)
+                	- Absorve 2 unidades de nutrientes do solo (se existir)
+              	
+				- Fase Adulta:
+                	- (Apenas existe e não faz nada)
+              	
+				- Fase Madura:
+                	- Produz 2 unidades de nutrientes para o solo
+                	- Perde 2 unidades de água
+                	- Perde 1 unidade de nutrientes
+
+			- Condições de Morte
+            	- Água interna < 5
+            	- Nutrientes internos < 3
+            	- Após 80 instantes (ciclo de vida completo)
+    		
+			- Pós-Morte
+    			- Deixa 75% dos seus recursos no solo
+
+        	- Multiplicação:
+            	- SE:
+                	- Houver posições diagonais disponiveis vazias (NE, SE, SW, NW)
+                	- Nutrientes da Exotica original > 70
+                	- Água da Exotica Original > 60
+              	- ENTÃO:
+                  	- Nova Exotica fica:
+                    	- Água = 30
+                    	- Nutrientes = 30
+                  	- E Exotica Original fica:
+                    	- Metade dos recursos que tinha no seu deposito
 
 Simulador
 	- Simula Tempo:
@@ -171,12 +266,23 @@ Simulador
 		- Tempo Afeta Morte das Plantas
 		
 		- Tempo definido por Instantes
-			- Cada instante passa por cada ação do jogador (dar um comando na consola)
+			- Cada instante passa por cada ação do jogador (dar o comando "avança" na consola)
+			- Instantes apenas crescem sem limites
+			- Instantes nunca decrescem
 			- Verificar a cada instante se o Jardineiro tem uma ferramenta e se tiver, executar a sua ação automaticamente.
 			- Verificar em cada instante se o jardineiro possui a ferramenta "Tesoura de Poda" na mão e se na posição em que o jardineiro está, se está uma planta considerada como "feia", eliminá-la!
 			- Plantas podem desempenhar comportamentos unicos a cada instante dependendo de:
 				- Espécie
 				- Caracteristicas do Jardim
 				- Outros Fatores
+		
+		- Consequencias de cada ação devem ser mostradas imediatamente após cada instante
 	
+	- A cada turno/instante:
+    	- Deverá ser mostrado informação
+        	- Plantas que morreram
+        	- Plantas que apareceram
+        	- Nova representação do jardim
+  	
+
 	- Termina quando o Utilizador assim decidir
