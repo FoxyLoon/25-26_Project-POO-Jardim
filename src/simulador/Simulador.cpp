@@ -250,7 +250,7 @@ bool Simulador::comandoLplanta(stringstream &ss)
     }
 
     cout << "[INFO] Informacao da planta em " << pos << ": (nao implementado).\n";
-    cout << "Solo - agua: " << s->agua << ", nutrientes: " << s->nutrientes << "\n";
+    cout << "Solo - agua: " << s->getAgua() << ", nutrientes: " << s->getNutrientes() << "\n";
     return true;
 }
 
@@ -303,8 +303,9 @@ bool Simulador::comandoLsolo(stringstream &ss)
             {
                 char pl = char('a' + l);
                 char pc = char('a' + c);
-                cout << "Posicao " << pl << pc << " -> agua: " << s->agua
-                     << ", nutrientes: " << s->nutrientes << "\n";
+
+                cout << "Posicao " << pl << pc << " -> agua: " << s->getAgua()
+                     << ", nutrientes: " << s->getNutrientes() << "\n";
             }
         }
     }

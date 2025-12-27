@@ -1,7 +1,9 @@
 #include "src/simulador/Simulador.h"
 #include <iostream>
 
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #define byte win_byte_override
 #include <windows.h>
 #undef byte

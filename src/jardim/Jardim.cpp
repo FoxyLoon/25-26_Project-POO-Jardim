@@ -1,6 +1,8 @@
 #include "Jardim.h"
 #include <iostream>
 #include <ctime>
+#include "../plantas/Planta.h"
+#include "../ferramentas/Ferramenta.h"
 
 using namespace std;
 
@@ -16,15 +18,31 @@ Jardim::Jardim(int l, int c) : linhas(l), colunas(c) {
     // Inicialização dos valores aleatórios com Settings
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
-            area[i][j].agua = Settings::Jardim::agua_min +
+            int agua = Settings::Jardim::agua_min +
                 rand() % (Settings::Jardim::agua_max - Settings::Jardim::agua_min + 1);
-            area[i][j].nutrientes = Settings::Jardim::nutrientes_min +
+            int nutrientes = Settings::Jardim::nutrientes_min +
                 rand() % (Settings::Jardim::nutrientes_max - Settings::Jardim::nutrientes_min + 1);
+
+            area[i][j].setAgua(agua);
+            area[i][j].setNutrientes(nutrientes);
         }
     }
 }
 
 Jardim::~Jardim() {
+    // Limpar todas as plantas e ferramentas
+    for (int i = 0; i < linhas; ++i) {
+        for (int j = 0; j < colunas; ++j) {
+            if (area[i][j].temPlanta()) {
+                delete area[i][j].getPlanta();
+            }
+            if (area[i][j].temFerramenta()) {
+                delete area[i][j].getFerramenta();
+            }
+        }
+    }
+
+    // Limpar a área
     for (int i = 0; i < linhas; ++i)
         delete[] area[i];
     delete[] area;
@@ -58,8 +76,9 @@ void Jardim::mostrar() const {
     for (int i = 0; i < linhas; ++i) {
         cout << "| ";
         cout << char('A' + i) << " | ";
-        for (int j = 0; j < colunas; ++j)
-            cout << "_" << " "; // imprime colunas de pontos de uma vez
+        for (int j = 0; j < colunas; ++j) {
+            cout << area[i][j].getSimboloVisivel() << " ";
+        }
         cout << "|";
         cout << '\n';
     }
@@ -69,8 +88,6 @@ void Jardim::mostrar() const {
         cout << "_";
     cout << "_";
     cout << "\n";
-
-
 }
 
 void Jardim::mostrarComJardineiro(const Jardineiro &j) const {
@@ -93,7 +110,7 @@ void Jardim::mostrarComJardineiro(const Jardineiro &j) const {
             if (j.isNoJardim() && j.getLinha() == i && j.getColuna() == k)
                 cout << "*" << " ";  // jardineiro tem prioridade visual
             else
-                cout << "_" << " ";
+                cout << area[i][k].getSimboloVisivel() << " ";
         }
         cout << "|";
         cout << '\n';
