@@ -34,44 +34,72 @@ private:
     bool jardimCriado;
     bool jardineiroCriado;
 
-    // Métodos privados para cada comando
-    static bool comandoFim();
-    bool comandoJardim(stringstream &ss);   // OK
     /* bool comandoEstado() const; */       // Não existe no enunciado
-    bool comandoEntra(stringstream &ss);    // OK
 
-    // ----- COMANDOS DO TEMPO SIMULADO -----
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
+    // Comandos Gerais
     bool comandoAvanca(stringstream &ss);   // Não Implementado
+    static bool comandoFim();               // OK
+    bool comandoJardim(stringstream &ss);   // OK
+    bool comandoGrava(stringstream &ss);    // Não Implementado
+    bool comandoRecupera(stringstream &ss); // Não Implementado
+    bool comandoApaga(stringstream &ss);    // Não Implementado
+    bool comandoExecuta(stringstream &ss);  // Não Implementado
 
-    // ----- COMANDOS DE LISTAGEM -----
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
+    // Comandos para listar informação
     bool comandoLplantas();                 // Não Implementado
     bool comandoLplanta(stringstream &ss);  // Não Implementado
     bool comandoLarea();                    // Não Implementado
     bool comandoLsolo(stringstream &ss);    // Não Implementado
     bool comandoLferr();                    // Não Implementado
 
-    // ----- COMANDOS DE AÇÃO -----
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
+    // Comandos para ações
     bool comandoColhe(stringstream &ss);    // Não Implementado
     bool comandoPlanta(stringstream &ss);   // Não Implementado
     bool comandoLarga();                    // Não Implementado
     bool comandoPega(stringstream &ss);     // Não Implementado
     bool comandoCompra(stringstream &ss);   // Não Implementado
 
-    // ----- COMANDOS DE MOVIMENTO -----
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
+    // Comandos para controlar o jardineiro
     bool comandoE();    // OK
     bool comandoD();    // OK
     bool comandoC();    // OK
     bool comandoB();    // OK
-    bool comandoSai();
+    bool comandoEntra(stringstream &ss);    // OK
+    bool comandoSai();  // OK
+    
+    // ========================================================
+    // ========================================================
+    // ========================================================
 
-    // ----- COMANDOS GERAIS -----
-    bool comandoGrava(stringstream &ss);    // Não Implementado
-    bool comandoRecupera(stringstream &ss); // Não Implementado
-    bool comandoApaga(stringstream &ss);    // Não Implementado
-    bool comandoExecuta(stringstream &ss);  // Não Implementado
+    // Funções auxiliares
 
-    // Função auxiliar para validar posições
+    // Valida posições no jardim
     static bool isPosicaoValida(const string &p);
+    
+    // Verifica se existe um Jardim
+    static bool isJardimCriado(const bool &jm_c);
+
+    // Verifica se existe um Jardineiro
+    static bool isJardineiroCriado(const bool &jo_c);
+
+    // Verifica se está fora dos limites
+    /* static bool isForaDosLimites(const ); */
 };
 
 #endif
