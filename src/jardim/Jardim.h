@@ -18,8 +18,8 @@ public:
     Jardim(int l, int c);
     ~Jardim();
 
-    void mostrar() const;
-    void mostrarComJardineiro(const Jardineiro &j) const;
+    // Mostra o estado atual do jardim com tudo
+    void mostraJardim(const Jardineiro &j) const;
 
     // Acesso individual a cada posição do Jardim
     Solo *getSolo(int l, int c);

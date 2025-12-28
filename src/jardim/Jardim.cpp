@@ -49,7 +49,6 @@ Jardim::~Jardim()
     }
 }
 
-// Acesso individual a cada posição do Jardim
 Solo *Jardim::getSolo(int l, int c)
 {
     if (l < 0 || l >= linhas || c < 0 || c >= colunas)
@@ -58,46 +57,7 @@ Solo *Jardim::getSolo(int l, int c)
 }
 
 // Mostra o Jardim
-void Jardim::mostrar() const
-{
-    cout << "______";
-    for (int c = 0; c < 2 * colunas; ++c)
-        cout << "_";
-    cout << "_";
-    cout << "\n";
-
-    cout << "| - | ";
-    for (int c = 0; c < colunas; ++c)
-        cout << char('A' + c) << " ";
-    cout << "|";
-    cout << "\n";
-
-    cout << "======";
-    for (int c = 0; c < 2 * colunas; ++c)
-        cout << "=";
-    cout << "=";
-    cout << "\n";
-
-    for (int i = 0; i < linhas; ++i)
-    {
-        cout << "| ";
-        cout << char('A' + i) << " | ";
-        for (int j = 0; j < colunas; ++j)
-        {
-            cout << area[i][j].getSimboloVisivel() << " ";
-        }
-        cout << "|";
-        cout << '\n';
-    }
-
-    cout << "______";
-    for (int c = 0; c < 2 * colunas; ++c)
-        cout << "_";
-    cout << "_";
-    cout << "\n";
-}
-
-void Jardim::mostrarComJardineiro(const Jardineiro &j) const
+void Jardim::mostraJardim(const Jardineiro &jardineiro) const
 {
     // Linha Superior
     cout << "______";
@@ -105,27 +65,37 @@ void Jardim::mostrarComJardineiro(const Jardineiro &j) const
         cout << "_";
     cout << "_\n";
 
+    // Linhas de Letras
     cout << "| - | ";
     for (int c = 0; c < colunas; ++c)
         cout << char('A' + c) << " ";
     cout << "|\n";
 
+    // Separador
+    cout << "======";
+    for (int c = 0; c < 2 * colunas; ++c)
+        cout << "=";
+    cout << "=\n";
+
+    // Solo com Letras à esquerda
     for (int i = 0; i < linhas; ++i)
     {
         cout << "| " << char('A' + i) << " | ";
         for (int k = 0; k < colunas; ++k)
         {
-            if (j.isNoJardim() && j.getLinha() == i && j.getColuna() == k)
-                cout << "*" << " "; // jardineiro tem prioridade visual
+            // Caso o Jardineiro esteja no jardim, mostrar o Jardineiro primeiro
+            // Aqui deverá ser definido a prioridade a mostrar no Jardim!!!
+            if (jardineiro.isNoJardim() && jardineiro.getLinha() == i && jardineiro.getColuna() == k)
+                cout << "*" << " ";
             else
                 cout << area[i][k].getSimboloVisivel() << " ";
         }
         cout << "|\n";
     }
 
+    // Linha Inferior
     cout << "______";
     for (int c = 0; c < 2 * colunas; ++c)
         cout << "_";
     cout << "_\n";
 }
-
