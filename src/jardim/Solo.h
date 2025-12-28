@@ -22,17 +22,15 @@ public:
     // Destrutor - NÃO liberta planta/ferramenta (geridas pelo Jardim)
     ~Solo();
 
-    // Getters para propriedades do solo
+    // Gestão da Água
     int getAgua() const;
-    int getNutrientes() const;
-
-    // Setters para propriedades do solo (com validação)
     void setAgua(int valor);
-    void setNutrientes(int valor);
-
-    // Modificadores de água e nutrientes
     void adicionarAgua(int quantidade);
     void removerAgua(int quantidade);
+    
+    // Gestão dos Nutrientes
+    int getNutrientes() const;
+    void setNutrientes(int valor);
     void adicionarNutrientes(int quantidade);
     void removerNutrientes(int quantidade);
 

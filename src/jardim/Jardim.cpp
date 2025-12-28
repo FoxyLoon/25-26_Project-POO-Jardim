@@ -81,14 +81,14 @@ void Jardim::mostraJardim(const Jardineiro &jardineiro) const
     for (int i = 0; i < linhas; ++i)
     {
         cout << "| " << char('A' + i) << " | ";
-        for (int k = 0; k < colunas; ++k)
+        for (int j = 0; j < colunas; ++j)
         {
             // Caso o Jardineiro esteja no jardim, mostrar o Jardineiro primeiro
             // Aqui deverá ser definido a prioridade a mostrar no Jardim!!!
-            if (jardineiro.isNoJardim() && jardineiro.getLinha() == i && jardineiro.getColuna() == k)
+            if (jardineiro.isNoJardim() && jardineiro.getLinha() == i && jardineiro.getColuna() == j)
                 cout << "*" << " ";
             else
-                cout << area[i][k].getSimboloVisivel() << " ";
+                cout << area[i][j].getSimboloVisivel() << " ";
         }
         cout << "|\n";
     }
