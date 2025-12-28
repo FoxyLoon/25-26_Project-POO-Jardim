@@ -1,12 +1,13 @@
 #include "src/simulador/Simulador.h"
 #include <iostream>
 
-#ifndef NOMINMAX
+// Para windows
+/* #ifndef NOMINMAX
 #define NOMINMAX
 #endif
 #define byte win_byte_override
 #include <windows.h>
-#undef byte
+#undef byte */
 
 using namespace std;
 
@@ -14,32 +15,28 @@ using namespace std;
 // Responsável apenas por iniciar a execução e tratar o “loop” de comandos.
 int main()
 {
-  SetConsoleOutputCP(CP_UTF8);
-  Simulador sim;
+  // Para windows
+  // SetConsoleOutputCP(CP_UTF8);
+
+  Simulador cmd;
   string linha;
+  cout << "\n\n"
+       << string(51, '=') << '\n'
+       << "\t\tSimulador de Jardim\t\t\n"
+       << string(51, '=') << '\n';
 
-  cout << "Simulador de Jardim (Meta 1 - Instanciacao e Interacao)\n";
-
-  while (true)
+  while (cout << "> ", getline(cin, linha))
   {
-    cout << "> ";
-
-    if (!getline(cin, linha))
-      break;
-
-    // Mantem a “interface” mais limpa ao simular que limpou
-    // o histórico de comandos
-    for (int i = 0; i < 50; i++)
-      cout << "=";
-    cout << endl;
-
     if (linha.empty())
-      continue;
-
-    if (!sim.processaComando(linha))
     {
-      cout << "\n";
+      cout << string(51, '=') << '\n';
+      cout << "[INFO] >> Por favor, digite um comando!\n\n";
+      continue;
     }
+    cout << string(51, '=') << '\n';
+
+    if (!cmd.processaComando(linha))
+      cout << '\n';
   }
 
   return 0;

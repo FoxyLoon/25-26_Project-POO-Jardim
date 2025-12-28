@@ -1,6 +1,4 @@
 #include "Simulador.h"
-#include <iostream>
-#include <sstream>
 
 using namespace std;
 
@@ -27,8 +25,25 @@ bool Simulador::processaComando(const string &linha)
     // Nota: Os parametros depois do espaço ficam e são usados mais tarde
     ss >> cmd;
 
+    // Comandos Gerais
+    if (cmd == "fim")
+        return comandoFim();
+    if (cmd == "jardim")
+        return comandoJardim(ss);
+    if (cmd == "grava")
+        return comandoGrava(ss);
+    if (cmd == "recupera")
+        return comandoRecupera(ss);
+    if (cmd == "apaga")
+        return comandoApaga(ss);
+    if (cmd == "executa")
+        return comandoExecuta(ss);
+
+    // Comando para avançar o tempo/instantes
     if (cmd == "avanca")
         return comandoAvanca(ss);
+
+    // Comandos para listar informação
     if (cmd == "lplantas")
         return comandoLplantas();
     if (cmd == "lplanta")
@@ -39,6 +54,8 @@ bool Simulador::processaComando(const string &linha)
         return comandoLsolo(ss);
     if (cmd == "lferr")
         return comandoLferr();
+
+    // Comandos para ações
     if (cmd == "colhe")
         return comandoColhe(ss);
     if (cmd == "planta")
@@ -49,6 +66,8 @@ bool Simulador::processaComando(const string &linha)
         return comandoPega(ss);
     if (cmd == "compra")
         return comandoCompra(ss);
+
+    // Comandos para controlar o jardineiro
     if (cmd == "e")
         return comandoE();
     if (cmd == "d")
@@ -61,18 +80,6 @@ bool Simulador::processaComando(const string &linha)
         return comandoEntra(ss);
     if (cmd == "sai")
         return comandoSai();
-    if (cmd == "jardim")
-        return comandoJardim(ss);
-    if (cmd == "grava")
-        return comandoGrava(ss);
-    if (cmd == "recupera")
-        return comandoRecupera(ss);
-    if (cmd == "apaga")
-        return comandoApaga(ss);
-    if (cmd == "executa")
-        return comandoExecuta(ss);
-    if (cmd == "fim")
-        return comandoFim();
 
     // Retorna "false" caso o comando não for nenhum dos de cima
     cout << "[ERRO] Comando desconhecido: " << cmd << "\n";
@@ -93,31 +100,36 @@ bool Simulador::comandoFim()
 bool Simulador::comandoJardim(stringstream &ss)
 {
     int linhas, colunas;
-    if (!(ss >> linhas >> colunas))
-    {
-        cout << "[ERRO] Faltam valores!\n";
-        return false;
-    }
-    if (linhas < 1 || linhas > 26)
-    {
-        cout << "[ERRO] Número de Linhas Inválido!\n";
-        return false;
-    }
-    if (colunas < 1 || colunas > 26)
-    {
-        cout << "[ERRO] Número de Colunas Inválido!\n";
-        return false;
-    }
-
+    string extra;
     if (jardimCriado)
     {
         cout << "[INFO] Já existe um jardim criado!\n";
         return false;
     }
+    else if (!(ss >> linhas >> colunas))
+    {
+        cout << "[ERRO] >> Faltam valores!\n";
+        return false;
+    }
+    else if (ss >> extra)
+    {
+        cout << "[ERRO] >> Existem parametros a mais!\n";
+        return false;
+    }
+    else if (linhas < 1 || linhas > 26)
+    {
+        cout << "[ERRO] >> Número de LINHAS Inválido!\n";
+        return false;
+    }
+    else if (colunas < 1 || colunas > 26)
+    {
+        cout << "[ERRO] >> Número de COLUNAS Inválido!\n";
+        return false;
+    }
 
     jardim = new Jardim(linhas, colunas);
     jardimCriado = true;
-    cout << "[INFO] O Jardim foi criado com "
+    cout << "[INFO] >> Foi criado um Jardim com "
          << linhas << " linhas e "
          << colunas << " colunas.\n";
 
@@ -125,7 +137,8 @@ bool Simulador::comandoJardim(stringstream &ss)
     return true;
 }
 
-bool Simulador::comandoEstado() const
+// Não é suposto existir - necessário remover
+/* bool Simulador::comandoEstado() const
 {
     if (!jardimCriado)
     {
@@ -134,7 +147,7 @@ bool Simulador::comandoEstado() const
     }
     jardim->mostrar();
     return true;
-}
+} */
 
 bool Simulador::comandoEntra(stringstream &ss)
 {

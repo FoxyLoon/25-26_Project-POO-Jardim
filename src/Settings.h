@@ -1,34 +1,40 @@
 #ifndef SETTINGS_SETTINGS_H
 #define SETTINGS_SETTINGS_H
 
-class Settings {
-    public:
-    class Jardim {
+class Settings
+{
+public:
+    class Jardim
+    {
     public:
         static const int agua_min = 80;
         static const int agua_max = 100;
         static const int nutrientes_min = 40;
         static const int nutrientes_max = 50;
     };
-    class Regador {
+    class Regador
+    {
     public:
         static const int capacidade = 200;
         static const int dose = 10;
     };
-    class Adubo {
+    class Adubo
+    {
     public:
         static const int capacidade = 100;
         static const int dose = 10;
     };
-    class Jardineiro {
+    class Jardineiro
+    {
     public:
         static const int max_movimentos = 10;
         static const int max_entradas_saidas = 1;
         static const int max_plantacoes = 2;
         static const int max_colheitas = 5;
     };
-    class Cacto {
-        public:
+    class Cacto
+    {
+    public:
         static const int absorcao_agua_percentagem = 25;
         static const int absorcao_nutrientes = 5;
         static const int morre_agua_solo_maior = 100;
@@ -38,8 +44,9 @@ class Settings {
         static const int multiplica_nutrientes_maior = 100;
         static const int multiplica_agua_maior = 50;
     };
-    class Roseira {
-        public:
+    class Roseira
+    {
+    public:
         static const int inicial_agua = 25;
         static const int inicial_nutrientes = 25;
         static const int perda_agua = 4;
@@ -55,8 +62,9 @@ class Settings {
         static const int original_nutrientes = 100;
         static const int original_agua_percentagem = 50;
     };
-    class ErvaDaninha {
-        public:
+    class ErvaDaninha
+    {
+    public:
         static const int inicial_agua = 5;
         static const int inicial_nutrientes = 5;
         static const int absorcao_agua = 1;
@@ -69,4 +77,4 @@ class Settings {
     };
 };
 
-#endif //SETTINGS_SETTINGS_H
+#endif // SETTINGS_SETTINGS_H

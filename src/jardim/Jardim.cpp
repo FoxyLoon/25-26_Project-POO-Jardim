@@ -1,27 +1,27 @@
 #include "Jardim.h"
 #include <iostream>
 #include <ctime>
-#include "../plantas/Planta.h"
-#include "../ferramentas/Ferramenta.h"
+#include "../Settings.h"
 
 using namespace std;
 
-Jardim::Jardim(int l, int c) : linhas(l), colunas(c) {
+// Esta classe representa o jardim (grelha retangular constituidas por diversos "Solo's")
+Jardim::Jardim(int l, int c) : linhas(l), colunas(c)
+{
+
+    // Inicialização dos valores aleatórios
     srand(static_cast<unsigned>(time(nullptr)));
 
-    // Alocação dinâmica sem uso de coleções STL
-    area = new Solo*[linhas];
-    for (int i = 0; i < linhas; ++i) {
-        area[i] = new Solo[colunas];
-    }
+    // Criação da grelha/jaridm com vetores
+    area = vector<vector<Solo>>(linhas, vector<Solo>(colunas));
 
-    // Inicialização dos valores aleatórios com Settings
-    for (int i = 0; i < linhas; ++i) {
-        for (int j = 0; j < colunas; ++j) {
-            int agua = Settings::Jardim::agua_min +
-                rand() % (Settings::Jardim::agua_max - Settings::Jardim::agua_min + 1);
-            int nutrientes = Settings::Jardim::nutrientes_min +
-                rand() % (Settings::Jardim::nutrientes_max - Settings::Jardim::nutrientes_min + 1);
+    // Valores aleatórios (depende do header Settings.h)
+    for (int i = 0; i < linhas; ++i)
+    {
+        for (int j = 0; j < colunas; ++j)
+        {
+            int agua = Settings::Jardim::agua_min + rand() % (Settings::Jardim::agua_max - Settings::Jardim::agua_min + 1);
+            int nutrientes = Settings::Jardim::nutrientes_min + rand() % (Settings::Jardim::nutrientes_max - Settings::Jardim::nutrientes_min + 1);
 
             area[i][j].setAgua(agua);
             area[i][j].setNutrientes(nutrientes);
@@ -29,34 +29,39 @@ Jardim::Jardim(int l, int c) : linhas(l), colunas(c) {
     }
 }
 
-Jardim::~Jardim() {
-    // Limpar todas as plantas e ferramentas
-    for (int i = 0; i < linhas; ++i) {
-        for (int j = 0; j < colunas; ++j) {
-            if (area[i][j].temPlanta()) {
+Jardim::~Jardim()
+{
+    // Limpa todas as plantas e ferramentas do jardim
+    // antes de destruir o Jardim por completo
+    for (int i = 0; i < linhas; ++i)
+    {
+        for (int j = 0; j < colunas; ++j)
+        {
+            if (area[i][j].temPlanta())
+            {
                 delete area[i][j].getPlanta();
             }
-            if (area[i][j].temFerramenta()) {
+            if (area[i][j].temFerramenta())
+            {
                 delete area[i][j].getFerramenta();
             }
         }
     }
-
-    // Limpar a área
-    for (int i = 0; i < linhas; ++i)
-        delete[] area[i];
-    delete[] area;
 }
 
-Solo *Jardim::getSolo(int l, int c) {
+// Acesso individual a cada posição do Jardim
+Solo *Jardim::getSolo(int l, int c)
+{
     if (l < 0 || l >= linhas || c < 0 || c >= colunas)
         return nullptr;
     return &area[l][c];
 }
 
-void Jardim::mostrar() const {
+// Mostra o Jardim
+void Jardim::mostrar() const
+{
     cout << "______";
-    for (int c = 0; c < 2*colunas; ++c)
+    for (int c = 0; c < 2 * colunas; ++c)
         cout << "_";
     cout << "_";
     cout << "\n";
@@ -68,15 +73,17 @@ void Jardim::mostrar() const {
     cout << "\n";
 
     cout << "======";
-    for (int c = 0; c < 2*colunas; ++c)
+    for (int c = 0; c < 2 * colunas; ++c)
         cout << "=";
     cout << "=";
     cout << "\n";
 
-    for (int i = 0; i < linhas; ++i) {
+    for (int i = 0; i < linhas; ++i)
+    {
         cout << "| ";
         cout << char('A' + i) << " | ";
-        for (int j = 0; j < colunas; ++j) {
+        for (int j = 0; j < colunas; ++j)
+        {
             cout << area[i][j].getSimboloVisivel() << " ";
         }
         cout << "|";
@@ -84,41 +91,41 @@ void Jardim::mostrar() const {
     }
 
     cout << "______";
-    for (int c = 0; c < 2*colunas; ++c)
+    for (int c = 0; c < 2 * colunas; ++c)
         cout << "_";
     cout << "_";
     cout << "\n";
 }
 
-void Jardim::mostrarComJardineiro(const Jardineiro &j) const {
+void Jardim::mostrarComJardineiro(const Jardineiro &j) const
+{
+    // Linha Superior
     cout << "______";
-    for (int c = 0; c < 2*colunas; ++c)
+    for (int c = 0; c < 2 * colunas; ++c)
         cout << "_";
-    cout << "_";
-    cout << "\n";
+    cout << "_\n";
 
     cout << "| - | ";
     for (int c = 0; c < colunas; ++c)
         cout << char('A' + c) << " ";
-    cout << "|";
-    cout << "\n";
+    cout << "|\n";
 
-    for (int i = 0; i < linhas; ++i) {
-        cout << "| ";
-        cout << char('A' + i) << " | ";
-        for (int k = 0; k < colunas; ++k) {
+    for (int i = 0; i < linhas; ++i)
+    {
+        cout << "| " << char('A' + i) << " | ";
+        for (int k = 0; k < colunas; ++k)
+        {
             if (j.isNoJardim() && j.getLinha() == i && j.getColuna() == k)
-                cout << "*" << " ";  // jardineiro tem prioridade visual
+                cout << "*" << " "; // jardineiro tem prioridade visual
             else
                 cout << area[i][k].getSimboloVisivel() << " ";
         }
-        cout << "|";
-        cout << '\n';
+        cout << "|\n";
     }
 
     cout << "______";
-    for (int c = 0; c < 2*colunas; ++c)
+    for (int c = 0; c < 2 * colunas; ++c)
         cout << "_";
-    cout << "_";
-    cout << "\n";
+    cout << "_\n";
 }
+
