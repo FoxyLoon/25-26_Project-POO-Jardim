@@ -14,29 +14,21 @@ Solo::~Solo()
     // Não fazemos delete aqui - o Jardim é responsável pela gestão de memória
 }
 
-// Getters
+//===================================================================
+//===================================================================
+//===================================================================
+
+// Gestão da Água
 int Solo::getAgua() const
 {
     return agua;
 }
 
-int Solo::getNutrientes() const
-{
-    return nutrientes;
-}
-
-// Setters com validação
 void Solo::setAgua(int valor)
 {
     agua = (valor < 0) ? 0 : valor;
 }
 
-void Solo::setNutrientes(int valor)
-{
-    nutrientes = (valor < 0) ? 0 : valor;
-}
-
-// Modificadores de água
 void Solo::adicionarAgua(int quantidade)
 {
     if (quantidade > 0)
@@ -55,7 +47,21 @@ void Solo::removerAgua(int quantidade)
     }
 }
 
-// Modificadores de nutrientes
+//===================================================================
+//===================================================================
+//===================================================================
+
+// Gestão dos Nutrientes
+int Solo::getNutrientes() const
+{
+    return nutrientes;
+}
+
+void Solo::setNutrientes(int valor)
+{
+    nutrientes = (valor < 0) ? 0 : valor;
+}
+
 void Solo::adicionarNutrientes(int quantidade)
 {
     if (quantidade > 0)
@@ -73,6 +79,10 @@ void Solo::removerNutrientes(int quantidade)
             nutrientes = 0;
     }
 }
+
+//===================================================================
+//===================================================================
+//===================================================================
 
 // Gestão de Planta
 Planta *Solo::getPlanta() const
@@ -97,6 +107,10 @@ Planta *Solo::removerPlanta()
     return temp; // Retorna o ponteiro para o caller gerir a memória
 }
 
+//===================================================================
+//===================================================================
+//===================================================================
+
 // Gestão de Ferramenta
 Ferramenta *Solo::getFerramenta() const
 {
@@ -119,6 +133,10 @@ Ferramenta *Solo::removerFerramenta()
     ferramenta = nullptr;
     return temp; // Retorna o ponteiro para o caller gerir a memória
 }
+
+//===================================================================
+//===================================================================
+//===================================================================
 
 // Verifica se está vazio
 bool Solo::estaVazio() const

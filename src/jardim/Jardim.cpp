@@ -2,6 +2,14 @@
 #include <iostream>
 #include <ctime>
 #include "../Settings.h"
+#include "../plantas/Roseira.h"
+#include "../plantas/Cacto.h"
+#include "../plantas/ErvaDaninha.h"
+#include "../plantas/PlantaExotica.h"
+#include "../ferramentas/Regador.h"
+#include "../ferramentas/Adubo.h"
+#include "../ferramentas/Tesoura.h"
+#include "../ferramentas/FerramentaZ.h"
 
 using namespace std;
 
@@ -15,16 +23,63 @@ Jardim::Jardim(int l, int c) : linhas(l), colunas(c)
     // Criação da grelha/jaridm com vetores
     area = vector<vector<Solo>>(linhas, vector<Solo>(colunas));
 
-    // Valores aleatórios (depende do header Settings.h)
+    // Valores aleatórios de Água e Nutrientes
     for (int i = 0; i < linhas; ++i)
     {
         for (int j = 0; j < colunas; ++j)
         {
             int agua = Settings::Jardim::agua_min + rand() % (Settings::Jardim::agua_max - Settings::Jardim::agua_min + 1);
             int nutrientes = Settings::Jardim::nutrientes_min + rand() % (Settings::Jardim::nutrientes_max - Settings::Jardim::nutrientes_min + 1);
+            ;
 
             area[i][j].setAgua(agua);
             area[i][j].setNutrientes(nutrientes);
+
+            // Probabilidade da Planta
+            if ((rand() % 100) < Settings::Jardim::probabilidade_planta)
+            {
+                int tipo = rand() % 4;
+                switch (tipo)
+                {
+                    case 0:
+                        area[i][j].setPlanta(new Roseira()); // r
+                        break;
+                    case 1:
+                        area[i][j].setPlanta(new Cacto()); // c
+                        break;
+                    case 2:
+                        area[i][j].setPlanta(new ErvaDaninha()); // e
+                        break;
+                    case 3:
+                        area[i][j].setPlanta(new PlantaExotica()); // x
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Probabilidade da Ferramenta
+            if ((rand() % 100) < Settings::Jardim::probabilidade_ferramenta)
+            {
+                int tipo = rand() % 4;
+                switch (tipo)
+                {
+                    case 0:
+                        area[i][j].setFerramenta(new Regador()); // g
+                        break;
+                    case 1:
+                        area[i][j].setFerramenta(new Adubo()); // a
+                        break;
+                    case 2:
+                        area[i][j].setFerramenta(new Tesoura()); // t
+                        break;
+                    case 3:
+                        area[i][j].setFerramenta(new FerramentaZ()); // z
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
