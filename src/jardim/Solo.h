@@ -7,12 +7,13 @@ class Ferramenta;
 
 // Classe Solo - representa um pedaço de solo do jardim
 // Cada posição pode conter propriedades (água, nutrientes) e entidades (planta, ferramenta)
-class Solo {
+class Solo
+{
 private:
     int agua;
     int nutrientes;
-    Planta* planta;
-    Ferramenta* ferramenta;
+    Planta *planta;
+    Ferramenta *ferramenta;
 
 public:
     // Construtores
@@ -22,31 +23,49 @@ public:
     // Destrutor - NÃO liberta planta/ferramenta (geridas pelo Jardim)
     ~Solo();
 
-    // Getters para propriedades do solo
+    //===================================================================
+    //===================================================================
+    //===================================================================
+
+    // Gestão da Água
     int getAgua() const;
-    int getNutrientes() const;
-
-    // Setters para propriedades do solo (com validação)
     void setAgua(int valor);
-    void setNutrientes(int valor);
-
-    // Modificadores de água e nutrientes
     void adicionarAgua(int quantidade);
     void removerAgua(int quantidade);
+
+    //===================================================================
+    //===================================================================
+    //===================================================================
+
+    // Gestão dos Nutrientes
+    int getNutrientes() const;
+    void setNutrientes(int valor);
     void adicionarNutrientes(int quantidade);
     void removerNutrientes(int quantidade);
 
+    //===================================================================
+    //===================================================================
+    //===================================================================
+
     // Gestão de Planta
-    Planta* getPlanta() const;
-    void setPlanta(Planta* p);
+    Planta *getPlanta() const;
+    void setPlanta(Planta *p);
     bool temPlanta() const;
-    Planta* removerPlanta();  // Remove e retorna a planta (sem delete)
+    Planta *removerPlanta(); // Remove e retorna a planta (sem delete)
+
+    //===================================================================
+    //===================================================================
+    //===================================================================
 
     // Gestão de Ferramenta
-    Ferramenta* getFerramenta() const;
-    void setFerramenta(Ferramenta* f);
+    Ferramenta *getFerramenta() const;
+    void setFerramenta(Ferramenta *f);
     bool temFerramenta() const;
-    Ferramenta* removerFerramenta();  // Remove e retorna a ferramenta (sem delete)
+    Ferramenta *removerFerramenta(); // Remove e retorna a ferramenta (sem delete)
+
+    //===================================================================
+    //===================================================================
+    //===================================================================
 
     // Verifica se está vazio
     bool estaVazio() const;

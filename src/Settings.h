@@ -11,6 +11,8 @@ public:
         static const int agua_max = 100;
         static const int nutrientes_min = 40;
         static const int nutrientes_max = 50;
+        static const int probabilidade_planta = 10; // em %
+        static const int probabilidade_ferramenta = 10; // em %
     };
     class Regador
     {
