@@ -7,6 +7,13 @@
 
 #include "../jardim/Jardim.h"
 #include "../jardineiro/Jardineiro.h"
+
+#include "../plantas/Planta.h"
+#include "../plantas/Cacto.h"
+#include "../plantas/Roseira.h"
+#include "../plantas/ErvaDaninha.h"
+#include "../plantas/PlantaExotica.h"
+
 // NOTA: "std::stringstream" é usado APENAS para parsing textual, e não é uma coleção.
 // É permitido segundo o enunciado, pois não armazena estruturas do jardim.
 

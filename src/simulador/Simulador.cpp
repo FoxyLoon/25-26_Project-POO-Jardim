@@ -133,30 +133,44 @@ bool Simulador::processaComando(const string &linha)
 
 // Comandos Gerais
 
-bool Simulador::comandoAvanca(stringstream &ss)
-{
+bool Simulador::comandoAvanca(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
 
     int n = 1;
-    if (!(ss >> n))
-    {
-        n = 1; // padrão
+    if (!(ss >> n)) {
+        n = 1;
+        cout << "[INFO] Numero de instantes nao especificado. Avancando 1 instante por defeito.\n";
     }
-    if (n <= 0)
-    {
+    if (n <= 0) {
         cout << "[ERRO] O numero de instantes deve ser positivo.\n";
         return false;
     }
 
-    for (int i = 0; i < n; ++i)
-    {
-        cout << "[INFO] Avancando 1 instante (" << i + 1 << "/" << n << ")...\n";
-        // Atualmente não existem plantas com estado a atualizar; se existissem,
-        // aqui invocar-se-ia a sua atualização.
+    for (int i = 0; i < n; ++i) {
+        cout << "\n";
+        cout << string(51, '=') << "\n";
+        cout << "[INFO] >> Avancando 1 instante (" << i + 1 << "/" << n << ")...\n";
+        cout << string(51, '=') << "\n";
+
+        // RESETAR CONTADORES DO JARDINEIRO
+        jardineiro.resetarContadores();
+
+        // APLICAR FERRAMENTA (se jardineiro tiver uma na mão E estiver no jardim)
+        if (jardineiroCriado && jardineiro.getFerramentaNaMao()) {
+            Solo* s = jardim->getSolo(jardineiro.getLinha(), jardineiro.getColuna());
+            if (s) {
+                cout << "[INFO] >> Aplicando " << jardineiro.getFerramentaNaMao()->nome()
+                     << "...\n";
+                jardineiro.aplicarFerramentaSeNaMao(*s);
+            }
+        }
+
+        // AQUI VIRÁ: jardim->avancarInstante() para atualizar plantas
+        // (ainda não implementado)
     }
 
-    // Mostrar estado actual do jardim
+    cout << "\n";
     jardim->mostraJardim(jardineiro);
     return true;
 }
@@ -359,12 +373,12 @@ bool Simulador::comandoLsolo(stringstream &ss)
 
 // ========================================================
 
-bool Simulador::comandoLferr()
-{
+bool Simulador::comandoLferr() {
     if (!isJardimCriado(jardimCriado))
         return false;
 
-    cout << "[INFO] Listagem de ferramentas nao implementada nesta fase.\n";
+    jardineiro.listarFerramentas();
+
     return true;
 }
 
@@ -374,95 +388,161 @@ bool Simulador::comandoLferr()
 
 // Comandos para ações
 
-bool Simulador::comandoColhe(stringstream &ss)
-{
+bool Simulador::comandoColhe(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
 
-    string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos))
-    {
-        cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeColher()) {
+        cout << "[ERRO] >> Limite de colheitas atingido! ("
+             << Settings::Jardineiro::max_colheitas << " por turno)\n";
         return false;
     }
 
-    // Nesta fase nao existe colecao de plantas por posicao, logo nao ha colheita real
-    cout << "[INFO] Colhe nao implementado (sem plantas).\n";
+    string pos;
+    if (!(ss >> pos) || !isPosicaoValida(pos)) {
+        cout << "[ERRO] Posicao invalida.\n";
+        return false;
+    }
+
+    int l = pos[0] - 'a';
+    int c = pos[1] - 'a';
+    Solo* s = jardim->getSolo(l, c);
+
+    if (!s) {
+        cout << "[ERRO] Posicao fora do jardim.\n";
+        return false;
+    }
+    if (!s->temPlanta()) {
+        cout << "[ERRO] Nao existe planta nesta posicao.\n";
+        return false;
+    }
+
+    Planta* p = s->removerPlanta();
+    delete p;
+
+    // GASTAR AÇÃO
+    jardineiro.usarColheita();
+
+    cout << "[INFO] >> Planta colhida em " << pos
+         << ". Colheitas restantes: " << jardineiro.getColheitasRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
 
 // ========================================================
 
-bool Simulador::comandoPlanta(stringstream &ss)
-{
+bool Simulador::comandoPlanta(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
 
+    // VERIFICAR LIMITE
+    if (!jardineiro.podePlantar()) {
+        cout << "[ERRO] >> Limite de plantacoes atingido! ("
+             << Settings::Jardineiro::max_plantacoes << " por turno)\n";
+        return false;
+    }
+
     string pos;
     char tipo;
-    if (!(ss >> pos >> tipo) || !isPosicaoValida(pos))
-    {
+    if (!(ss >> pos >> tipo) || !isPosicaoValida(pos)) {
         cout << "[ERRO] Uso: planta <l><c> <tipo> (ex: planta ab C).\n";
         return false;
     }
 
-    // Tipos aceites: C, R, E, X (aceita minusculas tambem)
     tipo = static_cast<char>(toupper(static_cast<unsigned char>(tipo)));
-    if (tipo != 'C' && tipo != 'R' && tipo != 'E' && tipo != 'X')
-    {
+    if (tipo != 'C' && tipo != 'R' && tipo != 'E' && tipo != 'X') {
         cout << "[ERRO] Tipo de planta invalido. Use C, R, E ou X.\n";
         return false;
     }
 
-    cout << "[INFO] Plantar nao implementado nesta fase. (Recebido: " << pos << " " << tipo << ")\n";
+    int l = pos[0] - 'a';
+    int c = pos[1] - 'a';
+
+    Solo* s = jardim->getSolo(l, c);
+    if (!s) {
+        cout << "[ERRO] Posicao fora do jardim.\n";
+        return false;
+    }
+    if (s->temPlanta()) {
+        cout << "[ERRO] Ja existe uma planta nesta posicao.\n";
+        return false;
+    }
+
+    // Criar planta
+    Planta* nova = nullptr;
+    switch(tipo) {
+    case 'C': nova = new Cacto(); break;
+    case 'R': nova = new Roseira(); break;
+    case 'E': nova = new ErvaDaninha(); break;
+    case 'X': nova = new PlantaExotica(); break;
+    }
+
+    s->setPlanta(nova);
+
+    // GASTAR AÇÃO
+    jardineiro.usarPlantacao();
+
+    cout << "[INFO] >> Planta '" << tipo << "' adicionada em " << pos
+         << ". Plantacoes restantes: " << jardineiro.getPlantacoesRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
 
 // ========================================================
 
-bool Simulador::comandoLarga()
-{
+bool Simulador::comandoLarga() {
     if (!isJardimCriado(jardimCriado))
         return false;
 
-    cout << "[INFO] Largar ferramenta nao implementado nesta fase.\n";
+    jardineiro.largarFerramenta();
+
     return true;
 }
 
 // ========================================================
 
-bool Simulador::comandoPega(stringstream &ss)
-{
+bool Simulador::comandoPega(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
 
-    int id;
-    if (!(ss >> id))
-    {
+    int numeroSerie;
+    if (!(ss >> numeroSerie)) {
         cout << "[ERRO] Uso: pega <numero_de_serie>.\n";
         return false;
     }
 
-    cout << "[INFO] Pegar ferramenta nao implementado nesta fase (id=" << id << ").\n";
+    // Pegar ferramenta do inventário
+    jardineiro.pegarFerramenta(numeroSerie);
+
     return true;
 }
 
 // ========================================================
 
-bool Simulador::comandoCompra(stringstream &ss)
-{
+bool Simulador::comandoCompra(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
 
     char tipo;
-    if (!(ss >> tipo))
-    {
+    if (!(ss >> tipo)) {
         cout << "[ERRO] Uso: compra <tipo>. Tipos: g a t z.\n";
         return false;
     }
-    cout << "[INFO] Compra de ferramenta nao implementada nesta fase (tipo=" << tipo << ").\n";
+
+    // Criar ferramenta usando factory method
+    Ferramenta* f = Ferramenta::criar(tipo);
+
+    if (!f) {
+        cout << "[ERRO] >> Tipo de ferramenta invalido. Use g, a, t ou z.\n";
+        return false;
+    }
+
+    // Adicionar ao inventário do jardineiro
+    jardineiro.adicionarFerramenta(f);
+
     return true;
 }
 
@@ -472,23 +552,34 @@ bool Simulador::comandoCompra(stringstream &ss)
 
 // Comandos para controlar o jardineiro
 
-bool Simulador::comandoE()
-{
+bool Simulador::comandoE() {
     if (!isJardimCriado(jardimCriado))
         return false;
     else if (!isJardineiroCriado(jardineiroCriado))
         return false;
 
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeMovimentar()) {
+        cout << "[ERRO] >> Limite de movimentos atingido! ("
+             << Settings::Jardineiro::max_movimentos << " por turno)\n";
+        return false;
+    }
+
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    if (!jardim->getSolo(l, c - 1))
-    {
-        cout << "[ERRO] >> Movimento inválido (fora dos limites).\n";
+    if (!jardim->getSolo(l, c - 1)) {
+        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
         return false;
     }
 
     jardineiro.moveNoJardim(l, c - 1);
-    cout << "[INFO] >> o Jardineiro deslocou-se para a ESQUERDA.\n";
+
+    // GASTAR AÇÃO
+    jardineiro.usarMovimento();
+
+    cout << "[INFO] >> o Jardineiro deslocou-se para a ESQUERDA. "
+         << "Movimentos restantes: " << jardineiro.getMovimentosRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
@@ -502,16 +593,28 @@ bool Simulador::comandoD()
     else if (!isJardineiroCriado(jardineiroCriado))
         return false;
 
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeMovimentar()) {
+        cout << "[ERRO] >> Limite de movimentos atingido! ("
+             << Settings::Jardineiro::max_movimentos << " por turno)\n";
+        return false;
+    }
+
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    if (!jardim->getSolo(l, c + 1))
-    {
-        cout << "[ERRO] >> Movimento inválido (fora dos limites).\n";
+    if (!jardim->getSolo(l, c + 1)) {
+        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
         return false;
     }
 
     jardineiro.moveNoJardim(l, c + 1);
-    cout << "[INFO] >> o Jardineiro deslocou-se para a DIREITA.\n";
+
+    // GASTAR AÇÃO
+    jardineiro.usarMovimento();
+
+    cout << "[INFO] >> o Jardineiro deslocou-se para a DIREITA. "
+         << "Movimentos restantes: " << jardineiro.getMovimentosRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
@@ -525,16 +628,28 @@ bool Simulador::comandoC()
     else if (!isJardineiroCriado(jardineiroCriado))
         return false;
 
-    int l = jardineiro.getLinha();
-    int c = jardineiro.getColuna();
-    if (!jardim->getSolo(l - 1, c))
-    {
-        cout << "[ERRO] >> Movimento inválido (fora dos limites).\n";
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeMovimentar()) {
+        cout << "[ERRO] >> Limite de movimentos atingido! ("
+             << Settings::Jardineiro::max_movimentos << " por turno)\n";
         return false;
     }
 
-    jardineiro.moveNoJardim(l - 1, c);
-    cout << "[INFO] >> o Jardineiro deslocou-se para CIMA.\n";
+    int l = jardineiro.getLinha();
+    int c = jardineiro.getColuna();
+    if (!jardim->getSolo(l- 1, c)) {
+        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
+        return false;
+    }
+
+    jardineiro.moveNoJardim(l -1, c);
+
+    // GASTAR AÇÃO
+    jardineiro.usarMovimento();
+
+    cout << "[INFO] >> o Jardineiro deslocou-se para CIMA. "
+         << "Movimentos restantes: " << jardineiro.getMovimentosRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
@@ -548,41 +663,70 @@ bool Simulador::comandoB()
     else if (!isJardineiroCriado(jardineiroCriado))
         return false;
 
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeMovimentar()) {
+        cout << "[ERRO] >> Limite de movimentos atingido! ("
+             << Settings::Jardineiro::max_movimentos << " por turno)\n";
+        return false;
+    }
+
     int l = jardineiro.getLinha();
     int c = jardineiro.getColuna();
-    if (!jardim->getSolo(l + 1, c))
-    {
-        cout << "[ERRO] >> Movimento inválido (fora dos limites).\n";
+    if (!jardim->getSolo(l + 1, c)) {
+        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
         return false;
     }
 
     jardineiro.moveNoJardim(l + 1, c);
-    cout << "[INFO] >> o Jardineiro deslocou-se para BAIXO.\n";
+
+    // GASTAR AÇÃO
+    jardineiro.usarMovimento();
+
+    cout << "[INFO] >> o Jardineiro deslocou-se para BAIXO. "
+         << "Movimentos restantes: " << jardineiro.getMovimentosRestantes() << "\n";
+
     jardim->mostraJardim(jardineiro);
     return true;
 }
 
 // ========================================================
 
-bool Simulador::comandoEntra(stringstream &ss)
-{
+bool Simulador::comandoEntra(stringstream &ss) {
     if (!isJardimCriado(jardimCriado))
         return false;
-    else if (jardineiroCriado)
-    {
-        cout << "[ERRO] >> O Jardineiro já está no jardim.\n";
+    else if (jardineiroCriado) {
+        cout << "[ERRO] >> O Jardineiro ja esta no jardim.\n";
         return false;
     }
+
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeEntrarSair()) {
+        cout << "[ERRO] >> Limite de entradas/saidas atingido! ("
+             << Settings::Jardineiro::max_entradas_saidas << " por turno)\n";
+        return false;
+    }
+
     string pos;
-    if (!(ss >> pos) || !isPosicaoValida(pos))
-    {
+    if (!(ss >> pos) || !isPosicaoValida(pos)) {
         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
         return false;
     }
 
     jardineiroCriado = true;
     jardineiro.entraNoJardim(pos[0] - 'a', pos[1] - 'a');
-    cout << "[INFO] >> O Jardineiro entrou na posição " << pos << ".\n";
+
+    // GASTAR AÇÃO
+    jardineiro.usarEntradaSaida();
+
+    // APANHAR FERRAMENTA se houver
+    Solo* s = jardim->getSolo(pos[0] - 'a', pos[1] - 'a');
+    if (s && s->temFerramenta()) {
+        Ferramenta* f = s->removerFerramenta();
+        jardineiro.adicionarFerramenta(f);
+        cout << "[INFO] >> Apanhou ferramenta do chao!\n";
+    }
+
+    cout << "[INFO] >> O Jardineiro entrou na posicao " << pos << ".\n";
     jardim->mostraJardim(jardineiro);
 
     return true;
@@ -590,15 +734,25 @@ bool Simulador::comandoEntra(stringstream &ss)
 
 // ========================================================
 
-bool Simulador::comandoSai()
-{
+bool Simulador::comandoSai() {
     if (!isJardimCriado(jardimCriado))
         return false;
     else if (!isJardineiroCriado(jardineiroCriado))
         return false;
 
+    // VERIFICAR LIMITE
+    if (!jardineiro.podeEntrarSair()) {
+        cout << "[ERRO] >> Limite de entradas/saidas atingido! ("
+             << Settings::Jardineiro::max_entradas_saidas << " por turno)\n";
+        return false;
+    }
+
     jardineiroCriado = false;
     jardineiro.saiDoJardim();
+
+    // GASTAR AÇÃO
+    jardineiro.usarEntradaSaida();
+
     cout << "[INFO] >> o Jardineiro SAIU do Jardim.\n";
     jardim->mostraJardim(jardineiro);
     return true;
