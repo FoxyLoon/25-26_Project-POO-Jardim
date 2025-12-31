@@ -147,31 +147,46 @@ bool Simulador::comandoAvanca(stringstream &ss) {
         return false;
     }
 
+    // Avançar N instantes
     for (int i = 0; i < n; ++i) {
         cout << "\n";
-        cout << string(51, '=') << "\n";
-        cout << "[INFO] >> Avancando 1 instante (" << i + 1 << "/" << n << ")...\n";
-        cout << string(51, '=') << "\n";
+        cout << string(60, '=') << "\n";
+        cout << "[INSTANTE " << (i + 1) << "/" << n << "]\n";
+        cout << string(60, '=') << "\n";
 
-        // RESETAR CONTADORES DO JARDINEIRO
+        // ========================================================
+        // 1. RESETAR CONTADORES DO JARDINEIRO
+        // ========================================================
         jardineiro.resetarContadores();
+        cout << "[INFO] Contadores do jardineiro resetados.\n";
 
-        // APLICAR FERRAMENTA (se jardineiro tiver uma na mão E estiver no jardim)
+        // ========================================================
+        // 2. APLICAR FERRAMENTA (se jardineiro tiver uma na mão E estiver no jardim)
+        // ========================================================
         if (jardineiroCriado && jardineiro.getFerramentaNaMao()) {
             Solo* s = jardim->getSolo(jardineiro.getLinha(), jardineiro.getColuna());
             if (s) {
-                cout << "[INFO] >> Aplicando " << jardineiro.getFerramentaNaMao()->nome()
-                     << "...\n";
+                cout << "[INFO] Aplicando " << jardineiro.getFerramentaNaMao()->nome()
+                     << " em " << char('a' + jardineiro.getLinha())
+                     << char('a' + jardineiro.getColuna()) << "...\n";
+
                 jardineiro.aplicarFerramentaSeNaMao(*s);
             }
         }
 
-        // AQUI VIRÁ: jardim->avancarInstante() para atualizar plantas
-        // (ainda não implementado)
+        // ========================================================
+        // 3. AVANÇAR INSTANTE DO JARDIM (plantas processam, morrem, multiplicam)
+        // ========================================================
+        jardim->avancarInstante();
     }
 
     cout << "\n";
+    cout << string(60, '=') << "\n";
+    cout << "[RESULTADO FINAL]\n";
+    cout << string(60, '=') << "\n";
+
     jardim->mostraJardim(jardineiro);
+
     return true;
 }
 
