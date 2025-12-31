@@ -46,7 +46,7 @@ public:
     bool podeMultiplicar() const override;
     Planta* gerarSemente() override;
 
-    // Método auxiliar
+    // Mtodo auxiliar
     Fase getFase() const;
 
 protected:
