@@ -1,7 +1,7 @@
+// ========== Jardim.cpp ==========
 #include "Jardim.h"
 #include <iostream>
 #include <ctime>
-#include <vector>
 #include "../Settings.h"
 #include "../plantas/Roseira.h"
 #include "../plantas/Cacto.h"
@@ -12,17 +12,19 @@
 using namespace std;
 
 // ========================================================
-// CONSTRUTOR E DESTRUTOR
+// CONSTRUTOR - ARRAY DINÂMICO SEM VECTOR
 // ========================================================
 
 Jardim::Jardim(int l, int c) : linhas(l), colunas(c) {
-    // Inicialização do gerador aleatório
     srand(static_cast<unsigned>(time(nullptr)));
 
-    // Criação da grelha
-    area = vector<vector<Solo>>(linhas, vector<Solo>(colunas));
+    // ✅ ALOCAÇÃO DINÂMICA PURA - SEM VECTOR!
+    area = new Solo*[linhas];
+    for (int i = 0; i < linhas; ++i) {
+        area[i] = new Solo[colunas];
+    }
 
-    // Inicializar cada posição do solo
+    // Inicializar cada posição
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
             // Água e nutrientes aleatórios
@@ -34,35 +36,33 @@ Jardim::Jardim(int l, int c) : linhas(l), colunas(c) {
             area[i][j].setAgua(agua);
             area[i][j].setNutrientes(nutrientes);
 
-            // Probabilidade de planta inicial
+            // Probabilidade de planta inicial (opcional, pode remover)
             if ((rand() % 100) < Settings::Jardim::probabilidade_planta) {
                 int tipo = rand() % 4;
+                Planta* p = nullptr;
                 switch (tipo) {
-                    case 0: area[i][j].setPlanta(new Roseira()); break;
-                    case 1: area[i][j].setPlanta(new Cacto()); break;
-                    case 2: area[i][j].setPlanta(new ErvaDaninha()); break;
-                    case 3: area[i][j].setPlanta(new PlantaExotica()); break;
+                    case 0: p = new Roseira(); break;
+                    case 1: p = new Cacto(); break;
+                    case 2: p = new ErvaDaninha(); break;
+                    case 3: p = new PlantaExotica(); break;
                 }
-            }
-
-            // Probabilidade de ferramenta inicial
-            if ((rand() % 100) < Settings::Jardim::probabilidade_ferramenta) {
-                int tipo = rand() % 4;
-                Ferramenta* f = nullptr;
-                switch (tipo) {
-                    case 0: f = Ferramenta::criar('g'); break;
-                    case 1: f = Ferramenta::criar('a'); break;
-                    case 2: f = Ferramenta::criar('t'); break;
-                    case 3: f = Ferramenta::criar('z'); break;
-                }
-                if (f) area[i][j].setFerramenta(f);
+                if (p) area[i][j].setPlanta(p);
             }
         }
     }
+
+    // ✅ INICIAR COM EXATAMENTE 3 FERRAMENTAS (conforme enunciado)
+    for (int i = 0; i < 3; ++i) {
+        criarFerramentaAleatoria();
+    }
 }
 
+// ========================================================
+// DESTRUTOR - LIBERTAR MEMÓRIA
+// ========================================================
+
 Jardim::~Jardim() {
-    // Libertar todas as plantas e ferramentas
+    // Libertar plantas e ferramentas
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
             if (area[i][j].temPlanta()) {
@@ -75,6 +75,43 @@ Jardim::~Jardim() {
             }
         }
     }
+
+    // ✅ LIBERTAR ARRAY DINÂMICO
+    for (int i = 0; i < linhas; ++i) {
+        delete[] area[i];
+    }
+    delete[] area;
+}
+
+// ========================================================
+// FERRAMENTA "POR MAGIA" (Enunciado)
+// ========================================================
+
+void Jardim::criarFerramentaAleatoria() {
+    // Tipos disponíveis
+    char tipos[] = {'g', 'a', 't', 'z'};
+    char tipo = tipos[rand() % 4];
+
+    // Criar ferramenta
+    Ferramenta* nova = Ferramenta::criar(tipo);
+    if (!nova) return;
+
+    // Encontrar posição aleatória vazia
+    // (Tentar até 100 vezes para evitar loop infinito)
+    for (int tentativas = 0; tentativas < 100; ++tentativas) {
+        int l = rand() % linhas;
+        int c = rand() % colunas;
+
+        if (!area[l][c].temFerramenta()) {
+            area[l][c].setFerramenta(nova);
+            cout << "  [SISTEMA] Nova ferramenta (" << nova->nome()
+                 << ") apareceu em " << char('a' + l) << char('a' + c) << "\n";
+            return;
+        }
+    }
+
+    // Se não encontrou posição, descartar
+    delete nova;
 }
 
 // ========================================================
@@ -133,19 +170,14 @@ void Jardim::mostraJardim(const Jardineiro& jardineiro) const {
 }
 
 // ========================================================
-// SIMULAÇÃO - AVANÇAR INSTANTE
+// SIMULAÇÃO
 // ========================================================
 
 void Jardim::avancarInstante() {
     cout << "\n[SIMULAÇÃO] Processando instante...\n";
 
-    // 1. PROCESSAR TODAS AS PLANTAS
     processarPlantas();
-
-    // 2. VERIFICAR E PROCESSAR MORTES
     processarMortes();
-
-    // 3. VERIFICAR E PROCESSAR MULTIPLICAÇÕES
     processarMultiplicacoes();
 
     cout << "[SIMULAÇÃO] Instante concluído.\n";
@@ -155,7 +187,6 @@ void Jardim::processarPlantas() {
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
             if (area[i][j].temPlanta()) {
-                // Cada planta processa seu ciclo de vida
                 area[i][j].getPlanta()->processaInstante(area[i][j]);
             }
         }
@@ -172,25 +203,21 @@ void Jardim::processarMortes() {
             Planta* p = area[i][j].getPlanta();
             bool deveMorrer = false;
 
-            // Verificação básica de morte
+            // Verificação básica
             if (p->verificaMorte(area[i][j])) {
                 deveMorrer = true;
             }
 
-            // Verificação especial para Roseira: cercada por vizinhos
+            // Roseira cercada
             Roseira* roseira = dynamic_cast<Roseira*>(p);
             if (roseira && estaCercada(i, j)) {
                 deveMorrer = true;
             }
 
             if (deveMorrer) {
-                // Executar ações pós-morte
                 p->aoMorrer(area[i][j]);
-
-                // Remover e deletar planta
                 delete p;
                 area[i][j].setPlanta(nullptr);
-
                 totalMortes++;
                 cout << "  [MORTE] Planta em " << char('a' + i) << char('a' + j) << "\n";
             }
@@ -203,124 +230,128 @@ void Jardim::processarMortes() {
 }
 
 void Jardim::processarMultiplicacoes() {
-    // IMPORTANTE: Usar lista temporária para evitar processar plantas recém-criadas
-    struct Multiplicacao {
-        int linha, coluna;
-        Planta* plantaMae;
+    // Estrutura simples para guardar multiplicações
+    struct Mult {
+        int l, c;
+        Planta* mae;
     };
 
-    vector<Multiplicacao> multiplicacoes;
+    // Array dinâmico para multiplicações (máximo: todas as posições)
+    int maxMult = linhas * colunas;
+    Mult* multiplicacoes = new Mult[maxMult];
+    int numMult = 0;
 
-    // 1. IDENTIFICAR PLANTAS QUE PODEM MULTIPLICAR
+    // Identificar plantas que podem multiplicar
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
             if (area[i][j].temPlanta()) {
                 Planta* p = area[i][j].getPlanta();
                 if (p->podeMultiplicar()) {
-                    multiplicacoes.push_back({i, j, p});
+                    multiplicacoes[numMult].l = i;
+                    multiplicacoes[numMult].c = j;
+                    multiplicacoes[numMult].mae = p;
+                    numMult++;
                 }
             }
         }
     }
 
-    // 2. PROCESSAR CADA MULTIPLICAÇÃO
-    for (const auto& mult : multiplicacoes) {
-        multiplicarPlanta(mult.linha, mult.coluna, mult.plantaMae);
+    // Processar cada multiplicação
+    for (int i = 0; i < numMult; ++i) {
+        multiplicarPlanta(multiplicacoes[i].l, multiplicacoes[i].c, multiplicacoes[i].mae);
     }
+
+    delete[] multiplicacoes;
 }
 
 void Jardim::multiplicarPlanta(int l, int c, Planta* mae) {
-    // Encontrar posição vizinha apropriada
-    vector<pair<int, int>> posicoes;
+    // Array de posições vizinhas
+    int vizinhos[4][2];
+    int numVizinhos = 0;
 
-    // Determinar padrão de multiplicação baseado no tipo de planta
+    // Determinar padrão
     ErvaDaninha* erva = dynamic_cast<ErvaDaninha*>(mae);
     PlantaExotica* exotica = dynamic_cast<PlantaExotica*>(mae);
 
     if (exotica) {
-        // Bambu Lunar: multiplica em diagonal (NE, SE, SW, NW)
-        posicoes = {{l-1, c+1}, {l+1, c+1}, {l+1, c-1}, {l-1, c-1}};
-    } else {
-        // Outras plantas: vizinhos ortogonais (N, S, E, W)
-        posicoes = {{l-1, c}, {l+1, c}, {l, c-1}, {l, c+1}};
-    }
-
-    // Embaralhar para aleatoriedade
-    for (size_t i = posicoes.size() - 1; i > 0; --i) {
-        size_t j = rand() % (i + 1);
-        swap(posicoes[i], posicoes[j]);
-    }
-
-    // Tentar colocar em uma posição válida
-    for (const auto& pos : posicoes) {
-        int nl = pos.first;
-        int nc = pos.second;
-
-        // Verifica se está dentro dos limites
-        if (nl < 0 || nl >= linhas || nc < 0 || nc >= colunas) {
-            continue;
+        // Diagonais
+        int diag[4][2] = {{l-1, c+1}, {l+1, c+1}, {l+1, c-1}, {l-1, c-1}};
+        for (int i = 0; i < 4; ++i) {
+            vizinhos[numVizinhos][0] = diag[i][0];
+            vizinhos[numVizinhos][1] = diag[i][1];
+            numVizinhos++;
         }
+    } else {
+        // Ortogonais
+        int ort[4][2] = {{l-1, c}, {l+1, c}, {l, c-1}, {l, c+1}};
+        for (int i = 0; i < 4; ++i) {
+            vizinhos[numVizinhos][0] = ort[i][0];
+            vizinhos[numVizinhos][1] = ort[i][1];
+            numVizinhos++;
+        }
+    }
 
-        // Erva daninha MATA a planta que estiver no destino
+    // Embaralhar
+    for (int i = numVizinhos - 1; i > 0; --i) {
+        int j = rand() % (i + 1);
+        int tempL = vizinhos[i][0];
+        int tempC = vizinhos[i][1];
+        vizinhos[i][0] = vizinhos[j][0];
+        vizinhos[i][1] = vizinhos[j][1];
+        vizinhos[j][0] = tempL;
+        vizinhos[j][1] = tempC;
+    }
+
+    // Tentar colocar
+    for (int i = 0; i < numVizinhos; ++i) {
+        int nl = vizinhos[i][0];
+        int nc = vizinhos[i][1];
+
+        if (nl < 0 || nl >= linhas || nc < 0 || nc >= colunas) continue;
+
+        // Erva mata
         if (erva) {
             if (area[nl][nc].temPlanta()) {
-                Planta* vitima = area[nl][nc].getPlanta();
-                delete vitima;
+                delete area[nl][nc].getPlanta();
                 area[nl][nc].setPlanta(nullptr);
-                cout << "  [MULTIPLICAÇÃO] Erva daninha matou planta em "
+                cout << "  [MULTIPLICAÇÃO] Erva matou planta em "
                      << char('a' + nl) << char('a' + nc) << "\n";
             }
         } else {
-            // Outras plantas: precisa de espaço vazio
-            if (area[nl][nc].temPlanta()) {
-                continue;  // Posição ocupada, tentar próxima
-            }
+            if (area[nl][nc].temPlanta()) continue;
         }
 
-        // CRIAR NOVA PLANTA
+        // Criar semente
         Planta* filha = mae->gerarSemente();
         area[nl][nc].setPlanta(filha);
 
-        // Resetar contador para erva daninha
         if (erva) {
             erva->resetarMultiplicacao();
         }
 
         cout << "  [MULTIPLICAÇÃO] Nova planta em "
-             << char('a' + nl) << char('a' + nc)
-             << " (mãe em " << char('a' + l) << char('a' + c) << ")\n";
-
-        return;  // Sucesso - sair
+             << char('a' + nl) << char('a' + nc) << "\n";
+        return;
     }
-
-    // Se chegou aqui, não encontrou posição válida
-    cout << "  [MULTIPLICAÇÃO] Falhou - sem espaço para "
-         << char('a' + l) << char('a' + c) << "\n";
 }
 
 bool Jardim::estaCercada(int l, int c) const {
-    // Verifica se TODAS as 4 posições ortogonais têm plantas
     int vizinhosComPlantas = 0;
     int vizinhosValidos = 0;
 
-    vector<pair<int, int>> vizinhos = {{l-1, c}, {l+1, c}, {l, c-1}, {l, c+1}};
+    int viz[4][2] = {{l-1, c}, {l+1, c}, {l, c-1}, {l, c+1}};
 
-    for (const auto& viz : vizinhos) {
-        int vl = viz.first;
-        int vc = viz.second;
+    for (int i = 0; i < 4; ++i) {
+        int vl = viz[i][0];
+        int vc = viz[i][1];
 
-        // Ignora posições fora do jardim
-        if (vl < 0 || vl >= linhas || vc < 0 || vc >= colunas) {
-            continue;
-        }
+        if (vl < 0 || vl >= linhas || vc < 0 || vc >= colunas) continue;
 
         vizinhosValidos++;
-
         if (area[vl][vc].temPlanta()) {
             vizinhosComPlantas++;
         }
     }
 
-    // Está cercada se TODOS os vizinhos válidos têm plantas
     return (vizinhosValidos > 0 && vizinhosComPlantas == vizinhosValidos);
 }

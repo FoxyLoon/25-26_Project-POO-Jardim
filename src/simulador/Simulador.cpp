@@ -288,14 +288,40 @@ bool Simulador::comandoExecuta(stringstream &ss)
 // Comandos para listar informação
 
 // Lista todas as plantas
-bool Simulador::comandoLplantas()
-{
+bool Simulador::comandoLplantas() {
     if (!isJardimCriado(jardimCriado))
         return false;
 
-    // Nesta meta ainda não existem plantas armazenadas no solo (estrutura Solo não contem plantas).
-    cout << "[INFO] Listagem de plantas nao implementada nesta fase.\n";
-    jardim->mostraJardim(jardineiro);
+    cout << "\n";
+    cout << string(60, '=') << "\n";
+    cout << "       LISTAGEM DE TODAS AS PLANTAS NO JARDIM\n";
+    cout << string(60, '=') << "\n\n";
+
+    int contador = 0;
+
+    for (int i = 0; i < jardim->getLinhas(); ++i) {
+        for (int j = 0; j < jardim->getColunas(); ++j) {
+            Solo* s = jardim->getSolo(i, j);
+            if (s && s->temPlanta()) {
+                contador++;
+
+                // Posição
+                cout << "[" << char('a' + i) << char('a' + j) << "] ";
+
+                // Info da planta
+                cout << s->getPlanta()->getInfo() << "\n";
+
+                // Info do solo
+                cout << "     Solo -> Agua: " << s->getAgua()
+                     << " | Nutrientes: " << s->getNutrientes() << "\n\n";
+            }
+        }
+    }
+
+    cout << string(60, '=') << "\n";
+    cout << "Total de plantas no jardim: " << contador << "\n";
+    cout << string(60, '=') << "\n\n";
+
     return true;
 }
 
@@ -714,7 +740,6 @@ bool Simulador::comandoEntra(stringstream &ss) {
         return false;
     }
 
-    // VERIFICAR LIMITE
     if (!jardineiro.podeEntrarSair()) {
         cout << "[ERRO] >> Limite de entradas/saidas atingido! ("
              << Settings::Jardineiro::max_entradas_saidas << " por turno)\n";
@@ -727,18 +752,30 @@ bool Simulador::comandoEntra(stringstream &ss) {
         return false;
     }
 
-    jardineiroCriado = true;
-    jardineiro.entraNoJardim(pos[0] - 'a', pos[1] - 'a');
+    int l = pos[0] - 'a';
+    int c = pos[1] - 'a';
 
-    // GASTAR AÇÃO
+    Solo* s = jardim->getSolo(l, c);
+    if (!s) {
+        cout << "[ERRO] Posicao fora do jardim.\n";
+        return false;
+    }
+
+    jardineiroCriado = true;
+    jardineiro.entraNoJardim(l, c);
     jardineiro.usarEntradaSaida();
 
-    // APANHAR FERRAMENTA se houver
-    Solo* s = jardim->getSolo(pos[0] - 'a', pos[1] - 'a');
-    if (s && s->temFerramenta()) {
+    // ✅ APANHAR FERRAMENTA + CRIAR NOVA "POR MAGIA"
+    if (s->temFerramenta()) {
         Ferramenta* f = s->removerFerramenta();
         jardineiro.adicionarFerramenta(f);
-        cout << "[INFO] >> Apanhou ferramenta do chao!\n";
+        jardim->criarFerramentaAleatoria();  // ✅ MAGIA!
+        cout << "[INFO] >> Apanhou " << f->nome() << " #"
+             << f->getNumeroSerie() << " do chao!\n";
+
+        // ✅ CRIAR NOVA FERRAMENTA ALEATÓRIA (ENUNCIADO)
+        cout << "[INFO] >> Uma nova ferramenta apareceu noutro local...\n";
+        // jardim->criarFerramentaAleatoria();  // Se for público
     }
 
     cout << "[INFO] >> O Jardineiro entrou na posicao " << pos << ".\n";
