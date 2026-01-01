@@ -15,32 +15,42 @@
  * - Ao morrer: devolve TODOS os nutrientes absorvidos durante a vida
  * - Multiplica-se se nutrientes > 100 e água > 50
  */
+
 class Cacto : public Planta {
 private:
     // Contadores para condições de morte
     int instantesAguaExcessiva;
     int instantesSemNutrientes;
 
-    // Contabilização de recursos absorvidos durante a vida
+    // Contador de recursos absorvidos durante a vida
     int totalNutrientesAbsorvidos;
 
 public:
     Cacto();
     virtual ~Cacto() = default;
 
-    // Interface obrigatória
-    std::string getInfo() const override;
-    bool verificaMorte(const Solo& s) const override;
-    void aoMorrer(Solo& s) override;
+    // Informação da Planta
+    string getInfo() const override;
+    
+    // ========================================================
+
+    // Processamento de cada instante
+    void removeRecursosSolo(Solo& s) override;
+    void adicionaRecursosPlanta(Solo& s) override;
+    void removeRecursosPlanta() override;
+    void adicionaRecursosSolo(Solo& s) override;
+
+    // ========================================================
+
+    // Condições de Multiplicação
     bool podeMultiplicar() const override;
     Planta* gerarSemente() override;
 
-protected:
-    // Padrão de 4 passos
-    void removeRecursosSolo(Solo& s) override;
-    void adicionaRecursosPlanta(Solo& s) override;
-    void perdeRecursosInternos() override;
-    void forneceRecursosSolo(Solo& s) override;
+    // ========================================================
+    
+    // Condições de Morte
+    bool verificaMorte(const Solo& s) override;
+    void aoMorrer(Solo& s) override;
 };
 
 #endif

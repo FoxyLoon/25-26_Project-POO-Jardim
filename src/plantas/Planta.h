@@ -2,136 +2,107 @@
 #define PLANTA_H
 
 #include <string>
+#include <sstream>
+#include "../jardim/Solo.h"
 #include "../Settings.h"
+using namespace std;
 
-// Forward declaration
+// Declaração de classe porque Planta depende do Solo
 class Solo;
 
-/**
- * Classe abstrata Planta - Base para todas as espécies de plantas
- *
- * ARQUITETURA HÍBRIDA:
- * - Métodos utilitários (da V2) para transferência de recursos
- * - Padrão de 4 passos (da V1) para clareza do ciclo de vida
- */
-class Planta {
-public:
-    // Construtor
-    explicit Planta(int agua_inicial, int nutrientes_inicial,
-                   char simbolo, const std::string& beleza);
-    virtual ~Planta() = default;
-
-    // ========================================================
-    // INTERFACE PÚBLICA
-    // ========================================================
-
-    // Getters básicos
-    char getSimbolo() const;
-    const std::string& getBeleza() const;
-    int getAguaInterna() const;
-    int getNutrientesInternos() const;
-
-    // Informação detalhada (para comandos lplanta, lplantas)
-    virtual std::string getInfo() const = 0;
-
-    // ========================================================
-    // CICLO DE VIDA DA PLANTA (chamado pelo Jardim)
-    // ========================================================
-
-    /**
-     * Metodo principal chamado a cada instante
-     * Executa o padrão de 4 passos
-     */
-    void processaInstante(Solo& s);
-
-    /**
-     * Verifica se a planta deve morrer
-     * IMPORTANTE: Algumas condições precisam ser verificadas pelo Jardim
-     * (ex: Roseira cercada por vizinhos)
-     */
-    virtual bool verificaMorte(const Solo& s) const = 0;
-
-    /**
-     * Chamado quando a planta morre
-     * Devolve recursos ao solo conforme a espécie
-     */
-    virtual void aoMorrer(Solo& s) = 0;
-
-    // ========================================================
-    // MULTIPLICAÇÃO
-    // ========================================================
-
-    /**
-     * Verifica se tem recursos para multiplicar
-     */
-    virtual bool podeMultiplicar() const = 0;
-
-    /**
-     * Cria uma nova planta (semente)
-     * A planta-mãe deve ajustar seus recursos internos aqui
-     */
-    virtual Planta* gerarSemente() = 0;
-
-protected:
-    // ========================================================
-    // MÉTODOS UTILITÁRIOS (V2) - Usados pelos derivados
-    // ========================================================
-
-    /**
-     * Tenta obter recursos do solo
-     * Retorna quantidade efetivamente obtida (pode ser menor que pedido)
-     */
-    int obterAgua(Solo& solo, int quantidade);
-    int obterNutrientes(Solo& solo, int quantidade);
-
-    /**
-     * Deposita recursos no solo
-     * Retorna quantidade efetivamente depositada
-     */
-    int depositarAgua(Solo& solo, int quantidade);
-    int depositarNutrientes(Solo& solo, int quantidade);
-
-    // Manipulação direta dos recursos internos
-    void setAguaInterna(int valor);
-    void setNutrientesInternos(int valor);
-    void adicionarAguaInterna(int quantidade);
-    void adicionarNutrientesInternos(int quantidade);
-    void removerAguaInterna(int quantidade);
-    void removerNutrientesInternos(int quantidade);
-
-    // ========================================================
-    // PADRÃO DE 4 PASSOS (V1) - Interface clara do ciclo
-    // ========================================================
-
-    /**
-     * Passo 1: Remove recursos do solo
-     * Implementado pelas classes derivadas
-     */
-    virtual void removeRecursosSolo(Solo& s) = 0;
-
-    /**
-     * Passo 2: Adiciona recursos removidos à planta
-     * Implementado pelas classes derivadas
-     */
-    virtual void adicionaRecursosPlanta(Solo& s) = 0;
-
-    /**
-     * Passo 3: Metabolismo - perde recursos internos
-     * Implementado pelas classes derivadas
-     */
-    virtual void perdeRecursosInternos() = 0;
-
-    /**
-     * Passo 4: Fornece recursos ao solo (simbiose)
-     * Implementado pelas classes derivadas
-     */
-    virtual void forneceRecursosSolo(Solo& s) = 0;
-
+class Planta
+{
 private:
     int aguaInterna;
     int nutrientesInternos;
     char simbolo;
-    std::string beleza; // "BONITA", "FEIA", "NEUTRA"
+    string beleza; // "BONITA", "FEIA", "NEUTRA"
+public:
+    // Construtor
+    explicit Planta(int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza);
+    virtual ~Planta() = default;
+
+    // ========================================================
+
+    // Informações sobre a planta
+    const char getSimbolo() const;
+    const string getBeleza() const;
+
+    virtual string getInfo() const = 0;
+
+    // ========================================================
+
+    // ==== Planta ====
+
+    // Obtem diretamente a água da planta
+    int getAguaInterna() const;
+    // Define diretamente a água da planta
+    void setAguaInterna(int valor);
+
+    // Obtem diretamente os nutrientes da planta
+    int getNutrientesInternos() const;
+    // Define diretamente os nutrientes da planta
+    void setNutrientesInternos(int valor);
+
+    // Adiciona água na planta
+    void adicionarAguaInterna(int quantidade);
+    // Adiciona nutrientes na planta
+    void adicionarNutrientesInternos(int quantidade);
+
+    // Remove água da planta
+    void removerAguaInterna(int quantidade);
+    // Remove nutrientes da planta
+    void removerNutrientesInternos(int quantidade);
+
+    // ========================================================
+
+    // ==== Solo ====
+
+    // Obtem (remove) água do solo
+    int obterAgua(Solo &solo, int quantidade);
+    // Obtem (remove) nutrientes do solo
+    int obterNutrientes(Solo &solo, int quantidade);
+
+    // Deposita (adiciona) água no solo
+    int depositarAgua(Solo &solo, int quantidade);
+    // Deposita (adiciona) nutrientes no solo
+    int depositarNutrientes(Solo &solo, int quantidade);
+
+    // ========================================================
+
+    // Processamento de Cada Instante (passado para a respetiva planta)
+
+    // Executa os 4 métodos abaixo
+    virtual void processaInstante(Solo &s);
+
+    // Remove recursos do solo
+    virtual void removeRecursosSolo(Solo &s) = 0;
+    // Adiciona recursos removidos do solo à planta
+    virtual void adicionaRecursosPlanta(Solo &s) = 0;
+
+    // Remove recursos da planta
+    virtual void removeRecursosPlanta() = 0;
+    // Deposita recursos removidos da planta para o solo
+    virtual void adicionaRecursosSolo(Solo &s) = 0;
+
+    // ========================================================
+
+    // ==== Multiplicação ====
+
+    // Verifica se tem recursos para multiplicar
+    virtual bool podeMultiplicar() const = 0;
+    virtual Planta *gerarSemente() = 0;
+
+    // ========================================================
+
+    // ==== Morte ====
+
+    // Verifica se a planta deve morrer
+    virtual bool verificaMorte(const Solo &s) = 0;
+
+    // Chama se a planta morrer no método verificaMorte
+    // Devolve recursos ao solo
+    virtual void aoMorrer(Solo &s) = 0;
 };
 
 #endif
