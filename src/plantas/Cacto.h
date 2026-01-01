@@ -2,34 +2,45 @@
 #define CACTO_H
 
 #include "Planta.h"
-#include "../Settings.h"
 
+/**
+ * CACTO
+ * Beleza: NEUTRA
+ *
+ * Comportamento:
+ * - Absorve 25% da água do solo a cada instante
+ * - Absorve até 5 unidades de nutrientes
+ * - Morre se água do solo > 100 por 3 instantes seguidos
+ * - Morre se nutrientes do solo = 0 por mais de 3 instantes seguidos
+ * - Ao morrer: devolve TODOS os nutrientes absorvidos durante a vida
+ * - Multiplica-se se nutrientes > 100 e água > 50
+ */
 class Cacto : public Planta {
 private:
-    int instantesAguaExcessiva;      // contador para morte por água excessiva
-    int instantesSemNutrientes;      // contador para morte por falta de nutrientes
-    int totalNutrientesAbsorvidos;   // total absorvido durante a vida (para devolver ao morrer)
+    // Contadores para condições de morte
+    int instantesAguaExcessiva;
+    int instantesSemNutrientes;
+
+    // Contabilização de recursos absorvidos durante a vida
+    int totalNutrientesAbsorvidos;
 
 public:
     Cacto();
-    virtual ~Cacto();
+    virtual ~Cacto() = default;
 
-    virtual char simbolo() const override;
-    virtual void atualizar(Solo &solo) override;
+    // Interface obrigatória
+    std::string getInfo() const override;
+    bool verificaMorte(const Solo& s) const override;
+    void aoMorrer(Solo& s) override;
+    bool podeMultiplicar() const override;
+    Planta* gerarSemente() override;
 
-    // Verifica se o cacto deve morrer
-    bool deveMorrer(const Solo &solo) const;
-
-    // Verifica se pode e deve multiplicar-se
-    bool podeMultiplicar() const;
-
-    // Ao morrer, devolve nutrientes ao solo
-    void morrer(Solo &solo);
-
-    // Getters para debug/info
-    int getInstantesAguaExcessiva() const { return instantesAguaExcessiva; }
-    int getInstantesSemNutrientes() const { return instantesSemNutrientes; }
-    int getTotalNutrientesAbsorvidos() const { return totalNutrientesAbsorvidos; }
+protected:
+    // Padrão de 4 passos
+    void removeRecursosSolo(Solo& s) override;
+    void adicionaRecursosPlanta(Solo& s) override;
+    void perdeRecursosInternos() override;
+    void forneceRecursosSolo(Solo& s) override;
 };
 
 #endif

@@ -1,33 +1,47 @@
+// ========== ErvaDaninha.h ==========
 #ifndef ERVADANINHA_H
 #define ERVADANINHA_H
 
 #include "Planta.h"
-#include "../Settings.h"
 
+/**
+ * ERVA DANINHA
+ * Beleza: FEIA
+ *
+ * Características:
+ * - Inicialmente: 5 água, 5 nutrientes
+ * - Absorve 1 água e 1 nutriente por instante
+ * - Morre sozinha passados 60 instantes
+ * - Multiplica-se a cada 5 instantes se nutrientes > 30
+ * - Multiplicação: MATA a planta no destino
+ * - Nova planta: 5 água, 5 nutrientes
+ * - Original NÃO perde recursos na multiplicação
+ */
 class ErvaDaninha : public Planta {
 private:
-    int instantesVividos;              // conta quantos instantes a planta viveu
-    int instantesDesdeUltimaMultiplicacao; // conta instantes desde última multiplicação
+    int idade;
+    int instantesDesdeUltimaMultiplicacao;
 
 public:
     ErvaDaninha();
-    virtual ~ErvaDaninha();
+    virtual ~ErvaDaninha() = default;
 
-    virtual char simbolo() const override;
-    virtual void atualizar(Solo &solo) override;
+    // Interface obrigatória
+    std::string getInfo() const override;
+    bool verificaMorte(const Solo& s) const override;
+    void aoMorrer(Solo& s) override;
+    bool podeMultiplicar() const override;
+    Planta* gerarSemente() override;
 
-    // Verifica se deve morrer por idade
-    bool deveMorrer() const;
-
-    // Verifica se pode multiplicar-se (e mata a planta destino)
-    bool podeMultiplicar() const;
-
-    // Reseta o contador de multiplicação (chamado após multiplicar)
+    // Reseta contador após multiplicação
     void resetarMultiplicacao();
 
-    // Getters para debug/info
-    int getInstantesVividos() const { return instantesVividos; }
-    int getInstantesDesdeUltimaMultiplicacao() const { return instantesDesdeUltimaMultiplicacao; }
+protected:
+    // Padrão de 4 passos
+    void removeRecursosSolo(Solo& s) override;
+    void adicionaRecursosPlanta(Solo& s) override;
+    void perdeRecursosInternos() override;
+    void forneceRecursosSolo(Solo& s) override;
 };
 
 #endif

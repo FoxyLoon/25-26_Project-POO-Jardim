@@ -1,75 +1,127 @@
 #include "Planta.h"
+#include "../jardim/Solo.h"
+#include <algorithm>
 
-Planta::Planta(int agua_inicial, int nutrientes_inicial, const std::string &beleza)
-    : aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), beleza(beleza) {}
+// Construtor
+Planta::Planta(int agua_inicial, int nutrientes_inicial,
+               char simbolo, const std::string& beleza)
+    : aguaInterna(agua_inicial),
+      nutrientesInternos(nutrientes_inicial),
+      simbolo(simbolo),
+      beleza(beleza) {}
 
-Planta::~Planta() {}
+// ========================================================
+// GETTERS
+// ========================================================
 
-int Planta::getAguaInterna() const { return aguaInterna; }
-int Planta::getNutrientesInternos() const { return nutrientesInternos; }
-const std::string &Planta::getBeleza() const { return beleza; }
+char Planta::getSimbolo() const {
+    return simbolo;
+}
 
-static int my_min(int a, int b) { return (a < b) ? a : b; }
+const std::string& Planta::getBeleza() const {
+    return beleza;
+}
 
-int Planta::obterAgua(Solo &solo, int quantidade) {
+int Planta::getAguaInterna() const {
+    return aguaInterna;
+}
+
+int Planta::getNutrientesInternos() const {
+    return nutrientesInternos;
+}
+
+// ========================================================
+// CICLO DE VIDA - Padrão de 4 Passos
+// ========================================================
+
+void Planta::processaInstante(Solo& s) {
+    // Executa o ciclo de vida em 4 passos bem definidos
+    removeRecursosSolo(s);       // 1. Consome do solo
+    adicionaRecursosPlanta(s);   // 2. Absorve para dentro
+    perdeRecursosInternos();     // 3. Metabolismo
+    forneceRecursosSolo(s);      // 4. Produz para o solo (simbiose)
+}
+
+// ========================================================
+// MÉTODOS UTILITÁRIOS PROTEGIDOS
+// ========================================================
+
+int Planta::obterAgua(Solo& solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int retirada = my_min(quantidade, solo.getAgua());
+
+    // Pega até a quantidade pedida, ou o que houver disponível
+    int retirada = std::min(quantidade, solo.getAgua());
     solo.removerAgua(retirada);
     adicionarAguaInterna(retirada);
+
     return retirada;
 }
 
-int Planta::obterNutrientes(Solo &solo, int quantidade) {
+int Planta::obterNutrientes(Solo& solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int retirada = my_min(quantidade, solo.getNutrientes());
+
+    int retirada = std::min(quantidade, solo.getNutrientes());
     solo.removerNutrientes(retirada);
     adicionarNutrientesInternos(retirada);
+
     return retirada;
 }
 
-int Planta::depositarAgua(Solo &solo, int quantidade) {
+int Planta::depositarAgua(Solo& solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int deposito = my_min(quantidade, getAguaInterna());
+
+    // Não pode depositar mais do que tem
+    int deposito = std::min(quantidade, getAguaInterna());
     removerAguaInterna(deposito);
     solo.adicionarAgua(deposito);
+
     return deposito;
 }
 
-int Planta::depositarNutrientes(Solo &solo, int quantidade) {
+int Planta::depositarNutrientes(Solo& solo, int quantidade) {
     if (quantidade <= 0) return 0;
-    int deposito = my_min(quantidade, getNutrientesInternos());
+
+    int deposito = std::min(quantidade, getNutrientesInternos());
     removerNutrientesInternos(deposito);
     solo.adicionarNutrientes(deposito);
+
     return deposito;
 }
 
-void Planta::atualizar(Solo &) {
-    // implementação por defeito: não faz nada. Espécies  concretaspodem sobrescrever.
-}
+// ========================================================
+// MANIPULAÇÃO DE RECURSOS INTERNOS
+// ========================================================
 
-// Métodos protegidos para manipulação controlada pelos derivados
 void Planta::setAguaInterna(int valor) {
-    aguaInterna = valor;
+    aguaInterna = (valor < 0) ? 0 : valor;
 }
 
 void Planta::setNutrientesInternos(int valor) {
-    nutrientesInternos = valor;
+    nutrientesInternos = (valor < 0) ? 0 : valor;
 }
 
 void Planta::adicionarAguaInterna(int quantidade) {
-    aguaInterna += quantidade;
+    if (quantidade > 0) {
+        aguaInterna += quantidade;
+    }
 }
 
 void Planta::adicionarNutrientesInternos(int quantidade) {
-    nutrientesInternos += quantidade;
+    if (quantidade > 0) {
+        nutrientesInternos += quantidade;
+    }
 }
 
 void Planta::removerAguaInterna(int quantidade) {
-    aguaInterna -= quantidade;
-    if (aguaInterna < 0) aguaInterna = 0;
+    if (quantidade > 0) {
+        aguaInterna -= quantidade;
+        if (aguaInterna < 0) aguaInterna = 0;
+    }
 }
 
 void Planta::removerNutrientesInternos(int quantidade) {
-    nutrientesInternos -= quantidade;
-    if (nutrientesInternos < 0) nutrientesInternos = 0;
+    if (quantidade > 0) {
+        nutrientesInternos -= quantidade;
+        if (nutrientesInternos < 0) nutrientesInternos = 0;
+    }
 }

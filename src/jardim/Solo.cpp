@@ -152,7 +152,7 @@ char Solo::getSimboloVisivel() const
 
     if (temPlanta())
     {
-        return planta->simbolo();
+        return planta->getSimbolo();
     }
 
     if (temFerramenta())
