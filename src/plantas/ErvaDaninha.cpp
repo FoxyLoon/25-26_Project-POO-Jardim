@@ -1,89 +1,119 @@
-// ========== ErvaDaninha.cpp ==========
 #include "ErvaDaninha.h"
-#include "../jardim/Solo.h"
-#include <sstream>
 
-ErvaDaninha::ErvaDaninha()
-    : Planta(Settings::ErvaDaninha::inicial_agua,
-             Settings::ErvaDaninha::inicial_nutrientes,
-             'e', "FEIA"),
-      idade(0),
-      instantesDesdeUltimaMultiplicacao(0) {}
+/*
+ERVA DANINHA
+Beleza: FEIA
+
+Comportamento:
+- Absorve recursos fixos do solo a cada instante.
+- Não tem perda metabólica (não morre por falta de recursos).
+- Morre apenas por idade (instantes de vida).
+- Multiplica-se por tempo e recursos.
+*/
+
+ErvaDaninha::ErvaDaninha() : Planta(Settings::ErvaDaninha::inicial_agua, Settings::ErvaDaninha::inicial_nutrientes, 'e', "FEIA"), idade(0), instantesDesdeUltimaMultiplicacao(0) {}
 
 // ========================================================
-// PADRÃO DE 4 PASSOS
+
+// Informação da Planta
+string ErvaDaninha::getInfo() const
+{
+    int agua = getAguaInterna();
+    int nutrientes = getNutrientesInternos();
+
+    ostringstream oss;
+    oss << "[Erva Daninha] " << "\n";
+    oss << "Água: " << agua << "\n";
+    oss << "Nutrientes: " << nutrientes << "\n";
+    oss << "Idade (Instantes): " << idade << "\n";
+    oss << "Instantes desde ultima multiplicacao: " << instantesDesdeUltimaMultiplicacao << "\n";
+
+    string informacao = oss.str();
+    return informacao;
+}
+
 // ========================================================
 
-void ErvaDaninha::removeRecursosSolo(Solo& s) {
-    // Incrementa contadores
+// Processamento de cada instante
+
+void ErvaDaninha::removeRecursosSolo(Solo &s)
+{
+    int qtdAguaParaRemover = Settings::ErvaDaninha::absorcao_agua;
+    int qtdNutrientesParaRemover = Settings::ErvaDaninha::absorcao_nutrientes;
+
+    obterAgua(s, qtdAguaParaRemover);
+    obterNutrientes(s, qtdNutrientesParaRemover);
+}
+
+void ErvaDaninha::adicionaRecursosPlanta(Solo &s)
+{
+    int qtdAguaParaAdicionar = Settings::ErvaDaninha::absorcao_agua;
+    int qtdNutrientesParaAdicionar = Settings::ErvaDaninha::absorcao_nutrientes;
+
+    adicionarAguaInterna(qtdAguaParaAdicionar);
+    adicionarNutrientesInternos(qtdNutrientesParaAdicionar);
+}
+
+void ErvaDaninha::envelhecimento()
+{
     idade++;
     instantesDesdeUltimaMultiplicacao++;
 }
 
-void ErvaDaninha::adicionaRecursosPlanta(Solo& s) {
-    // Absorve 1 água e 1 nutriente
-    obterAgua(s, Settings::ErvaDaninha::absorcao_agua);
-    obterNutrientes(s, Settings::ErvaDaninha::absorcao_nutrientes);
+void ErvaDaninha::removeRecursosPlanta()
+{
+    // A erva daninha não perde recursos
 }
 
-void ErvaDaninha::perdeRecursosInternos() {
-    // Ervas daninhas são muito resistentes - não perdem recursos
-}
-
-void ErvaDaninha::forneceRecursosSolo(Solo& s) {
-    // Não fornece recursos
+void ErvaDaninha::adicionaRecursosSolo(Solo &s)
+{
+    // A Erva Daninha não fornece recursos ao solo enquanto está viva
 }
 
 // ========================================================
-// CONDIÇÕES DE MORTE
-// ========================================================
 
-bool ErvaDaninha::verificaMorte(const Solo& s) const {
-    // Morre sozinha passados 60 instantes
-    return (idade >= Settings::ErvaDaninha::morre_instantes);
+// Condições de Multiplicação
+
+bool ErvaDaninha::podeMultiplicar() const
+{
+    // Condição: Houver nutrientes suficientes e passar o tempo necessário
+    int nutrientesAtual = getNutrientesInternos();
+    int limiteNutrientes = Settings::ErvaDaninha::multiplica_nutrientes_maior;
+    int tempoNecessario = Settings::ErvaDaninha::multiplica_instantes;
+
+    bool temNutrientes = (nutrientesAtual > limiteNutrientes);
+    bool passouTempo = (instantesDesdeUltimaMultiplicacao >= tempoNecessario);
+
+    bool resultado = (temNutrientes && passouTempo);
+    return resultado;
 }
 
-void ErvaDaninha::aoMorrer(Solo& s) {
-    // Não devolve recursos ao solo
-}
-
-// ========================================================
-// MULTIPLICAÇÃO
-// ========================================================
-
-bool ErvaDaninha::podeMultiplicar() const {
-    // Multiplica-se se:
-    // - Nutrientes > 30
-    // - Passaram 5 instantes desde a última multiplicação
-    return (getNutrientesInternos() > Settings::ErvaDaninha::multiplica_nutrientes_maior &&
-            instantesDesdeUltimaMultiplicacao >= Settings::ErvaDaninha::multiplica_instantes);
-}
-
-Planta* ErvaDaninha::gerarSemente() {
-    // Nova erva com valores iniciais
-    ErvaDaninha* filha = new ErvaDaninha();
-
-    // A MÃE NÃO PERDE RECURSOS (diferente das outras plantas)
-    // Apenas reseta o contador de multiplicação
-
-    return filha;
-}
-
-void ErvaDaninha::resetarMultiplicacao() {
+Planta *ErvaDaninha::gerarSemente()
+{
+    // Reinicia o contador do tempo de multiplicação
     instantesDesdeUltimaMultiplicacao = 0;
+
+    // Cria a nova planta
+    // Nota 1: Usa os valores iniciais do Settings.h no construtor padrão
+    // Nota 2: A planta original não perder nada
+    Planta *semente = new ErvaDaninha();
+    return semente;
 }
 
 // ========================================================
-// INFORMAÇÃO
-// ========================================================
 
-std::string ErvaDaninha::getInfo() const {
-    std::ostringstream oss;
-    oss << "[Erva Daninha] ";
-    oss << "Idade: " << idade << "/" << Settings::ErvaDaninha::morre_instantes << " | ";
-    oss << "Água: " << getAguaInterna() << " | ";
-    oss << "Nutrientes: " << getNutrientesInternos() << " | ";
-    oss << "Próxima Multiplicação: " << instantesDesdeUltimaMultiplicacao
-        << "/" << Settings::ErvaDaninha::multiplica_instantes;
-    return oss.str();
+// Condições de Morte
+
+bool ErvaDaninha::verificaMorte(const Solo &s)
+{
+    int limiteIdade = Settings::ErvaDaninha::morre_instantes;
+
+    // Verifica Condição
+    bool morreuPorVelhice = (idade >= limiteIdade);
+    return morreuPorVelhice;
+}
+
+void ErvaDaninha::aoMorrer(Solo &s)
+{
+    // A Erva Daninha não deposita recursos ao solo após morte
 }

@@ -1,47 +1,55 @@
-// ========== ErvaDaninha.h ==========
 #ifndef ERVADANINHA_H
 #define ERVADANINHA_H
 
 #include "Planta.h"
 
-/**
- * ERVA DANINHA
- * Beleza: FEIA
- *
- * Características:
- * - Inicialmente: 5 água, 5 nutrientes
- * - Absorve 1 água e 1 nutriente por instante
- * - Morre sozinha passados 60 instantes
- * - Multiplica-se a cada 5 instantes se nutrientes > 30
- * - Multiplicação: MATA a planta no destino
- * - Nova planta: 5 água, 5 nutrientes
- * - Original NÃO perde recursos na multiplicação
- */
-class ErvaDaninha : public Planta {
+/*
+ERVA DANINHA
+Beleza: FEIA
+
+Comportamento:
+- Absorve recursos fixos do solo a cada instante.
+- Não tem perda metabólica (não morre por falta de recursos).
+- Morre apenas por idade (instantes de vida).
+- Multiplica-se por tempo e recursos.
+*/
+
+class ErvaDaninha : public Planta
+{
 private:
+    // Idade da Planta
     int idade;
+
+    // Contador para condição de multiplicação
     int instantesDesdeUltimaMultiplicacao;
 
 public:
     ErvaDaninha();
     virtual ~ErvaDaninha() = default;
 
-    // Interface obrigatória
-    std::string getInfo() const override;
-    bool verificaMorte(const Solo& s) const override;
-    void aoMorrer(Solo& s) override;
+    // Informação da Planta
+    string getInfo() const override;
+
+    // ========================================================
+
+    // Processamento de cada instante
+    void removeRecursosSolo(Solo &s) override;
+    void adicionaRecursosPlanta(Solo &s) override;
+    void envelhecimento() override;
+    void removeRecursosPlanta() override;
+    void adicionaRecursosSolo(Solo &s) override;
+
+    // ========================================================
+
+    // Condições de Multiplicação
     bool podeMultiplicar() const override;
-    Planta* gerarSemente() override;
+    Planta *gerarSemente() override;
 
-    // Reseta contador após multiplicação
-    void resetarMultiplicacao();
+    // ========================================================
 
-protected:
-    // Padrão de 4 passos
-    void removeRecursosSolo(Solo& s) override;
-    void adicionaRecursosPlanta(Solo& s) override;
-    void perdeRecursosInternos() override;
-    void forneceRecursosSolo(Solo& s) override;
+    // Condições de Morte
+    bool verificaMorte(const Solo &s) override;
+    void aoMorrer(Solo &s) override;
 };
 
 #endif

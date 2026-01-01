@@ -1,6 +1,6 @@
 #include "Planta.h"
+#include "../jardim/Solo.h"
 
-// Construtor
 Planta::Planta(int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza)
     : aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), simbolo(simbolo), beleza(beleza) {}
 
@@ -8,11 +8,13 @@ Planta::Planta(int agua_inicial, int nutrientes_inicial, char simbolo, const str
 
 // Informações sobre a planta
 
+// Obtem o simbolo da planta
 const char Planta::getSimbolo() const
 {
     return simbolo;
 }
 
+// Obtem o tipo de beleza da planta
 const string Planta::getBeleza() const
 {
     return beleza;
@@ -20,128 +22,108 @@ const string Planta::getBeleza() const
 
 // ========================================================
 
-// ==== Planta ====
+// Interação com a planta
 
-// Obtem diretamente a água da planta
+// Devolve a quantidade de água interna na planta
 int Planta::getAguaInterna() const
 {
     return aguaInterna;
 }
 
-// Define diretamente a água da planta
+// Define diretamente a quantidade de água interna na planta
 void Planta::setAguaInterna(int valor)
 {
+    // Garante que o valor não é negativo
     aguaInterna = (valor < 0) ? 0 : valor;
 }
 
-// Obtem diretamente os nutrientes da planta
+// Devolve a quantidade de nutrientes internos na planta
 int Planta::getNutrientesInternos() const
 {
     return nutrientesInternos;
 }
 
-// Define diretamente os nutrientes da planta
+// Define diretamente a quantidade de nutrientes internos na planta
 void Planta::setNutrientesInternos(int valor)
 {
+    // Garante que o valor não é negativo
     nutrientesInternos = (valor < 0) ? 0 : valor;
 }
 
-// Adiciona água na planta
+// Adiciona uma quantidade de água interna na planta
 void Planta::adicionarAguaInterna(int quantidade)
 {
-    if (quantidade > 0)
-    {
-        aguaInterna += quantidade;
-    }
+    setAguaInterna(aguaInterna + quantidade);
 }
 
-// Adiciona nutrientes na planta
+// Adiciona uma quantidade de nutrientes internos da planta
 void Planta::adicionarNutrientesInternos(int quantidade)
 {
-    if (quantidade > 0)
-    {
-        nutrientesInternos += quantidade;
-    }
+    setNutrientesInternos(nutrientesInternos + quantidade);
 }
 
-// Remove água da planta
+// Remove uma quantidade de água interna na planta
 void Planta::removerAguaInterna(int quantidade)
 {
-    if (quantidade > 0)
-    {
-        aguaInterna -= quantidade;
-        if (aguaInterna < 0)
-            aguaInterna = 0;
-    }
+    setAguaInterna(aguaInterna - quantidade);
 }
 
-// Remove nutrientes da planta
+// Remove uma quantidade de nutrientes internos na planta
 void Planta::removerNutrientesInternos(int quantidade)
 {
-    if (quantidade > 0)
-    {
-        nutrientesInternos -= quantidade;
-        if (nutrientesInternos < 0)
-            nutrientesInternos = 0;
-    }
+    setNutrientesInternos(nutrientesInternos - quantidade);
 }
 
 // ========================================================
 
-// ==== Solo ====
+// Interação com o Solo
 
-// Obtem (remove) água do solo
+// Obtem (remove) uma quantidade de água do solo
 int Planta::obterAgua(Solo &solo, int quantidade)
 {
-    if (quantidade <= 0)
-        return 0;
-
-    // Pega até a quantidade pedida, ou o que houver disponível
-    int retirada = min(quantidade, solo.getAgua());
-    solo.removerAgua(retirada);
-    adicionarAguaInterna(retirada);
-
-    return retirada;
+    int aguaDisponivel = solo.getAgua();
+    int aguaRemovidaDoSolo;
+    if (aguaDisponivel < quantidade)
+    {
+        aguaRemovidaDoSolo = aguaDisponivel;
+    }
+    else
+    {
+        aguaRemovidaDoSolo = quantidade;
+    }
+    solo.setAgua(aguaDisponivel - aguaRemovidaDoSolo);
+    return aguaRemovidaDoSolo;
 }
 
-// Obtem (remove) nutrientes do solo
+// Obtem (remove) uma quantidade de nutrientes do solo
 int Planta::obterNutrientes(Solo &solo, int quantidade)
 {
-    if (quantidade <= 0)
-        return 0;
-
-    int retirada = min(quantidade, solo.getNutrientes());
-    solo.removerNutrientes(retirada);
-    adicionarNutrientesInternos(retirada);
-
-    return retirada;
+    int nutrientesDisponiveis = solo.getNutrientes();
+    int nutrientesRemovidosDoSolo;
+    if (nutrientesDisponiveis < quantidade)
+    {
+        nutrientesRemovidosDoSolo = nutrientesDisponiveis;
+    }
+    else
+    {
+        nutrientesRemovidosDoSolo = quantidade;
+    }
+    solo.setNutrientes(nutrientesDisponiveis - nutrientesRemovidosDoSolo);
+    return nutrientesRemovidosDoSolo;
 }
 
-// Deposita (adiciona) água no solo
+// Deposita (adiciona) uma quantidade de água no solo
 int Planta::depositarAgua(Solo &solo, int quantidade)
 {
-    if (quantidade <= 0)
-        return 0;
-
-    // Não pode depositar mais do que tem
-    int deposito = min(quantidade, getAguaInterna());
-    removerAguaInterna(deposito);
-    solo.adicionarAgua(deposito);
-
-    return deposito;
+    solo.setAgua(solo.getAgua() + quantidade);
+    return quantidade;
 }
 
-// Deposita (adiciona) nutrientes no solo
+// Deposita (adiciona) uma quantidade de nutrientes no solo
 int Planta::depositarNutrientes(Solo &solo, int quantidade)
 {
-    if (quantidade <= 0)
-        return 0;
-
-    int deposito = min(quantidade, getNutrientesInternos());
-    removerNutrientesInternos(deposito);
-    solo.adicionarNutrientes(deposito);
-
-    return deposito;
+    solo.setNutrientes(solo.getNutrientes() + quantidade);
+    return quantidade;
 }
 
 // ========================================================
@@ -150,9 +132,9 @@ int Planta::depositarNutrientes(Solo &solo, int quantidade)
 
 void Planta::processaInstante(Solo &s)
 {
-    // Executa o ciclo
-    removeRecursosSolo(s);     // 1. Consome do solo
-    adicionaRecursosPlanta(s); // 2. Absorve para dentro
-    removeRecursosPlanta();   // 3. Metabolismo
-    adicionaRecursosSolo(s);    // 4. Produz para o solo (simbiose)
+    removeRecursosSolo(s);
+    adicionaRecursosPlanta(s);
+    envelhecimento();
+    removeRecursosPlanta();
+    adicionaRecursosSolo(s);
 }

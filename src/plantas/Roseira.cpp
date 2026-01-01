@@ -1,112 +1,158 @@
-// ========== Roseira.cpp ==========
 #include "Roseira.h"
-#include "../jardim/Solo.h"
-#include <sstream>
 
-Roseira::Roseira()
-    : Planta(Settings::Roseira::inicial_agua,
-             Settings::Roseira::inicial_nutrientes,
-             'r', "BONITA"),
-      totalAguaAbsorvida(0),
-      totalNutrientesAbsorvidos(0) {}
+/*
+ROSEIRA
+Beleza: BONITA
+
+Comportamento:
+- Absorve valores fixos de água e nutrientes do solo
+- Tem perda metabólica constante (respiração/transpiração)
+- Morre se tiver pouca água, poucos nutrientes ou excesso de nutrientes
+- Ao morrer: devolve metade dos seus recursos ao solo
+- Multiplicação baseada em nutrientes
+*/
+
+Roseira::Roseira() : Planta(Settings::Roseira::inicial_agua, Settings::Roseira::inicial_nutrientes, 'r', "BONITA") {}
 
 // ========================================================
-// PADRÃO DE 4 PASSOS
-// ========================================================
 
-void Roseira::removeRecursosSolo(Solo& s) {
-    // Roseira apenas absorve, não precisa de lógica adicional aqui
-}
+// Informação da Planta
+string Roseira::getInfo() const
+{
+    int agua = getAguaInterna();
+    int nutrientes = getNutrientesInternos();
 
-void Roseira::adicionaRecursosPlanta(Solo& s) {
-    // Absorve 5 unidades de água
-    int aguaAbsorvida = obterAgua(s, Settings::Roseira::absorcao_agua);
-    totalAguaAbsorvida += aguaAbsorvida;
+    ostringstream oss;
+    oss << "[Roseira] " << "\n";
+    oss << "Água: " << agua << "\n";
+    oss << "Nutrientes: " << nutrientes << "\n";
+    oss << "Idade (Instantes): " << idade << "\n";
 
-    // Absorve 8 unidades de nutrientes
-    int nutrientesAbsorvidos = obterNutrientes(s, Settings::Roseira::absorcao_nutrientes);
-    totalNutrientesAbsorvidos += nutrientesAbsorvidos;
-}
-
-void Roseira::perdeRecursosInternos() {
-    // Metabolismo: perde 4 de água e 4 de nutrientes
-    removerAguaInterna(Settings::Roseira::perda_agua);
-    removerNutrientesInternos(Settings::Roseira::perda_nutrientes);
-}
-
-void Roseira::forneceRecursosSolo(Solo& s) {
-    // Roseira não fornece recursos ao solo enquanto viva
+    string informacao = oss.str();
+    return informacao;
 }
 
 // ========================================================
-// CONDIÇÕES DE MORTE
-// ========================================================
 
-bool Roseira::verificaMorte(const Solo& s) const {
-    // Regra 1: Água interna chegou a 0
-    if (getAguaInterna() < Settings::Roseira::morre_agua_menor) {
-        return true;
-    }
+// Processamento de cada instante
 
-    // Regra 2: Nutrientes internos chegaram a 0
-    if (getNutrientesInternos() < Settings::Roseira::morre_nutrientes_menor) {
-        return true;
-    }
+void Roseira::removeRecursosSolo(Solo &s)
+{
+    int qtdAguaParaRemover = Settings::Roseira::absorcao_agua;
+    int qtdNutrientesParaRemover = Settings::Roseira::absorcao_nutrientes;
 
-    // Regra 3: Nutrientes internos >= 200 (excesso)
-    if (getNutrientesInternos() > Settings::Roseira::morre_nutrientes_maior) {
-        return true;
-    }
-
-    // Regra 4: Cercada por vizinhos - será verificada pelo Jardim
-    // (a planta não tem acesso aos vizinhos)
-
-    return false;
+    obterAgua(s, qtdAguaParaRemover);
+    obterNutrientes(s, qtdNutrientesParaRemover);
 }
 
-void Roseira::aoMorrer(Solo& s) {
-    // Devolve metade dos recursos absorvidos durante a vida
-    s.adicionarAgua(totalAguaAbsorvida / 2);
-    s.adicionarNutrientes(totalNutrientesAbsorvidos / 2);
+void Roseira::adicionaRecursosPlanta(Solo &s)
+{
+    int qtdAguaParaAdicionar = Settings::Roseira::absorcao_agua;
+    int qtdNutrientesParaAdicionar = Settings::Roseira::absorcao_nutrientes;
+
+    adicionarAguaInterna(qtdAguaParaAdicionar);
+    adicionarNutrientesInternos(qtdNutrientesParaAdicionar);
 }
 
-// ========================================================
-// MULTIPLICAÇÃO
-// ========================================================
-
-bool Roseira::podeMultiplicar() const {
-    return (getNutrientesInternos() > Settings::Roseira::multiplica_nutrientes_maior);
+void Roseira::envelhecimento()
+{
+    idade++;
 }
 
-Planta* Roseira::gerarSemente() {
-    // Nova roseira
-    int aguaMae = getAguaInterna();
+void Roseira::removeRecursosPlanta()
+{
+    int qtdAguaParaRemover = Settings::Roseira::perda_agua;
+    int qtdNutrientesParaRemover = Settings::Roseira::perda_nutrientes;
 
-    // Água da nova planta: 50% da mãe
-    int aguaParaNova = (aguaMae * Settings::Roseira::nova_agua_percentagem) / 100;
+    removerAguaInterna(qtdAguaParaRemover);
+    removerNutrientesInternos(qtdNutrientesParaRemover);
+}
 
-    // Ajusta a mãe: fica com 100 nutrientes e 50% da água
-    setNutrientesInternos(Settings::Roseira::original_nutrientes);
-    setAguaInterna((aguaMae * Settings::Roseira::original_agua_percentagem) / 100);
-
-    // Cria filha com 25 nutrientes e a água calculada
-    Roseira* filha = new Roseira();
-    filha->setAguaInterna(aguaParaNova);
-    filha->setNutrientesInternos(Settings::Roseira::nova_nutrientes);
-
-    return filha;
+void Roseira::adicionaRecursosSolo(Solo &s)
+{
+    // A Roseira não fornece recursos ao solo enquanto está viva
 }
 
 // ========================================================
-// INFORMAÇÃO
+
+// Condições de Multiplicação
+
+bool Roseira::podeMultiplicar() const
+{
+    // Condição: Houver nutrientes suficientes
+    int nutrientesAtual = getNutrientesInternos();
+    int limiteNutrientes = Settings::Roseira::multiplica_nutrientes_maior;
+
+    bool resultado = (nutrientesAtual > limiteNutrientes);
+    return resultado;
+}
+
+Planta *Roseira::gerarSemente()
+{
+    int aguaPlantaOriginal = getAguaInterna();
+    int nutrientesPlantaOriginal = Settings::Roseira::original_nutrientes;
+
+    int percentagem_AguaSemente = Settings::Roseira::nova_agua_percentagem;
+    int nutrientesSemente = Settings::Roseira::nova_nutrientes;
+
+    // ================================================
+
+    // ==== Planta Original ====
+
+    // A Planta Original perde metade da água e reinicia os nutrientes
+    int novaAguaPlantaOriginal = aguaPlantaOriginal / 2;
+
+    // Atualiza a planta original
+    setAguaInterna(novaAguaPlantaOriginal);
+    setNutrientesInternos(nutrientesPlantaOriginal);
+
+    // ================================================
+
+    // ==== Nova Planta ====
+
+    // Cálculo da água para a nova planta
+    int aguaSemente = (aguaPlantaOriginal * percentagem_AguaSemente) / 100;
+
+    // ================================================
+
+    // Cria a nova planta
+    Planta *semente = new Roseira();
+
+    // Define os novos valores da nova planta após a criação
+    semente->setAguaInterna(aguaSemente);
+    semente->setNutrientesInternos(nutrientesSemente);
+
+    return semente;
+}
+
 // ========================================================
 
-std::string Roseira::getInfo() const {
-    std::ostringstream oss;
-    oss << "[Roseira] ";
-    oss << "Água: " << getAguaInterna() << " | ";
-    oss << "Nutrientes: " << getNutrientesInternos() << " | ";
-    oss << "Total Absorvido (A/N): " << totalAguaAbsorvida
-        << "/" << totalNutrientesAbsorvidos;
-    return oss.str();
+// Condições de Morte
+
+bool Roseira::verificaMorte(const Solo &s)
+{
+    int aguaInterna = getAguaInterna();
+    int nutrientesInternos = getNutrientesInternos();
+
+    int minAgua = Settings::Roseira::morre_agua_menor;
+    int minNutrientes = Settings::Roseira::morre_nutrientes_menor;
+    int maxNutrientes = Settings::Roseira::morre_nutrientes_maior;
+
+    // Verifica Condições
+    bool faltaAgua = (aguaInterna <= minAgua);
+    bool faltaNutrientes = (nutrientesInternos <= minNutrientes);
+    bool excessoNutrientes = (nutrientesInternos >= maxNutrientes);
+
+    // Basta uma condição para morrer
+    bool resultadoMorte = (faltaAgua || faltaNutrientes || excessoNutrientes);
+    return resultadoMorte;
+}
+
+void Roseira::aoMorrer(Solo &s)
+{
+    int aguaParaDevolver = getAguaInterna() / 2;
+    int nutrientesParaDevolver = getNutrientesInternos() / 2;
+
+    depositarAgua(s, aguaParaDevolver);
+    depositarNutrientes(s, nutrientesParaDevolver);
 }

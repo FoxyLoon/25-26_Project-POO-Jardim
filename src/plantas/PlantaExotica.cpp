@@ -1,127 +1,193 @@
-// ========== PlantaExotica.cpp ==========
 #include "PlantaExotica.h"
-#include "../jardim/Solo.h"
-#include <sstream>
 
-PlantaExotica::PlantaExotica()
-    : Planta(30, 30, 'x', "BONITA"),
-      idade(0) {}
+/*
+PLANTA EXÓTICA (x) - BAMBU LUNAR
+Beleza: BONITA
+
+Comportamento por Fases:
+- Jovem (0-20): Absorve 3 água e 2 nutrientes.
+- Adulta (21-40): Dormência (não absorve nem produz).
+- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente internos.
+
+Morte:
+- Água interna < 5 ou Nutrientes internos < 3.
+- Idade >= 80 instantes.
+- Ao morrer: Devolve 75% dos recursos ao solo.
+*/
+
+PlantaExotica::PlantaExotica() : Planta(Settings::PlantaExotica::inicial_agua, Settings::PlantaExotica::inicial_nutrientes, 'x', "BONITA"), idade(0) {}
 
 // ========================================================
-// PADRÃO DE 4 PASSOS - Com Fases
+
+// Informação da Planta
+string PlantaExotica::getInfo() const
+{
+    int agua = getAguaInterna();
+    int nutri = getNutrientesInternos();
+
+    ostringstream oss;
+    oss << "[Planta Exótica] " << "\n";
+    oss << "Água: " << agua << "\n";
+    oss << "Nutrientes: " << nutri << "\n";
+    oss << "Idade (Instantes): " << idade << "\n";
+
+    // Identificação da fase atual de acordo com a idade
+    if (idade <= Settings::PlantaExotica::fim_jovem)
+        oss << "Fase: JOVEM" << "\n";
+    else if (idade <= Settings::PlantaExotica::fim_adulta)
+        oss << "Fase: ADULTA" << "\n";
+    else
+        oss << "Fase: MADURA" << "\n";
+
+    string informacao = oss.str();
+    return informacao;
+}
+
 // ========================================================
 
-void PlantaExotica::removeRecursosSolo(Solo& s) {
+// Processamento de cada instante
+
+void PlantaExotica::removeRecursosSolo(Solo &s)
+{
+    // Apenas ganha recursos na Fase JOVEM
+    if (idade <= Settings::PlantaExotica::fim_jovem)
+    {
+        int qtdAguaParaRemover = Settings::PlantaExotica::jovem_abs_agua;
+        int qtdNutrientesParaRemover = Settings::PlantaExotica::jovem_abs_nutrientes;
+
+        obterAgua(s, qtdAguaParaRemover);
+        obterNutrientes(s, qtdNutrientesParaRemover);
+    }
+}
+
+void PlantaExotica::adicionaRecursosPlanta(Solo &s)
+{
+    // Apenas ganha recursos na Fase JOVEM
+    if (idade <= Settings::PlantaExotica::fim_jovem)
+    {
+        int qtdAguaParaAdicionar = Settings::PlantaExotica::jovem_abs_agua;
+        int qtdNutrientesParaAdicionar = Settings::PlantaExotica::jovem_abs_nutrientes;
+
+        adicionarAguaInterna(qtdAguaParaAdicionar);
+        adicionarNutrientesInternos(qtdNutrientesParaAdicionar);
+    }
+}
+
+void PlantaExotica::envelhecimento()
+{
     idade++;
 }
 
-void PlantaExotica::adicionaRecursosPlanta(Solo& s) {
-    Fase fase = getFase();
+void PlantaExotica::removeRecursosPlanta()
+{
 
-    // Apenas JOVEM e MADURA absorvem recursos
-    if (fase == JOVEM || fase == MADURA) {
-        obterAgua(s, 3);
-        obterNutrientes(s, 2);
-    }
-    // ADULTA: dormência - não absorve
-}
+    // Apenas perde recursos na Fase MADURA
+    if (idade > Settings::PlantaExotica::fim_adulta)
+    {
+        int qtdAguaParaRemover = Settings::PlantaExotica::madura_perda_agua;
+        int qtdNutrientesParaRemover = Settings::PlantaExotica::madura_perda_nutrientes;
 
-void PlantaExotica::perdeRecursosInternos() {
-    // Todas as fases perdem recursos (metabolismo)
-    removerAguaInterna(2);
-    removerNutrientesInternos(1);
-}
-
-void PlantaExotica::forneceRecursosSolo(Solo& s) {
-    // Apenas fase MADURA produz nutrientes (simbiose)
-    if (getFase() == MADURA) {
-        s.adicionarNutrientes(2);
+        removerAguaInterna(qtdAguaParaRemover);
+        removerNutrientesInternos(qtdNutrientesParaRemover);
     }
 }
 
-// ========================================================
-// FASES
-// ========================================================
-
-PlantaExotica::Fase PlantaExotica::getFase() const {
-    if (idade <= 20) {
-        return JOVEM;
-    } else if (idade <= 40) {
-        return ADULTA;
-    } else {
-        return MADURA;
+void PlantaExotica::adicionaRecursosSolo(Solo &s)
+{
+    // Apenas produz para o solo na Fase Madura
+    if (idade > Settings::PlantaExotica::fim_adulta)
+    {
+        int nutrientesProduzidos = Settings::PlantaExotica::madura_prod_nutrientes_solo;
+        depositarNutrientes(s, nutrientesProduzidos);
     }
 }
 
 // ========================================================
-// CONDIÇÕES DE MORTE
-// ========================================================
 
-bool PlantaExotica::verificaMorte(const Solo& s) const {
-    // Regra 1: Água interna < 5
-    if (getAguaInterna() < 5) {
-        return true;
-    }
+// Condições de Multiplicação
 
-    // Regra 2: Nutrientes internos < 3
-    if (getNutrientesInternos() < 3) {
-        return true;
-    }
+bool PlantaExotica::podeMultiplicar() const
+{
+    // Condição: Houver nutrientes e agua suficientes
+    int aguaAtual = getAguaInterna();
+    int nutrientesAtual = getNutrientesInternos();
 
-    // Regra 3: Idade >= 80
-    if (idade >= 80) {
-        return true;
-    }
+    int limiteAgua = Settings::PlantaExotica::multiplica_agua_maior;
+    int limiteNutrientes = Settings::PlantaExotica::multiplica_nutrientes_maior;
 
-    return false;
+    // Importante: A verificação das posições diagonais livres será verificada no Jardim
+    bool temRecursos = (aguaAtual > limiteAgua && nutrientesAtual > limiteNutrientes);
+    return temRecursos;
 }
 
-void PlantaExotica::aoMorrer(Solo& s) {
-    // Devolve 75% dos recursos internos
-    s.adicionarAgua((getAguaInterna() * 75) / 100);
-    s.adicionarNutrientes((getNutrientesInternos() * 75) / 100);
+Planta *PlantaExotica::gerarSemente()
+{
+    int aguaPlantaOriginal = getAguaInterna();
+    int nutrientesPlantaOriginal = getNutrientesInternos();
+
+    // ================================================
+
+    // ==== Planta Original ====
+
+    // Planta Original fica com metade da agua e nutrientes
+    int novaAguaPlantaOriginal = aguaPlantaOriginal / 2;
+    int novosNutrientesPlantaOriginal = nutrientesPlantaOriginal / 2;
+
+    setAguaInterna(novaAguaPlantaOriginal);
+    setNutrientesInternos(novosNutrientesPlantaOriginal);
+
+    // ================================================
+
+    // ==== Nova Planta ====
+
+    int aguaSemente = Settings::PlantaExotica::nova_agua;
+    int nutrientesSemente = Settings::PlantaExotica::nova_nutrientes;
+
+    // ================================================
+
+    // Cria a nova planta
+    Planta *semente = new PlantaExotica();
+
+    // Define os novos valores da nova planta após a criação
+    semente->setAguaInterna(aguaSemente);
+    semente->setNutrientesInternos(nutrientesSemente);
+
+    return semente;
 }
 
 // ========================================================
-// MULTIPLICAÇÃO
-// ========================================================
 
-bool PlantaExotica::podeMultiplicar() const {
-    return (getNutrientesInternos() > 70 && getAguaInterna() > 60);
+// Condições de Morte
+
+bool PlantaExotica::verificaMorte(const Solo &s)
+{
+    int aguaInterna = getAguaInterna();
+    int nutrientesInternos = getNutrientesInternos();
+
+    int minAgua = Settings::PlantaExotica::morre_agua_menor;
+    int minNutrientes = Settings::PlantaExotica::morre_nutrientes_menor;
+    int tempoVidaMax = Settings::PlantaExotica::tempo_vida_max;
+
+    // Verifica Condições
+    bool faltaAgua = (aguaInterna < minAgua);
+    bool faltaNutrientes = (nutrientesInternos < minNutrientes);
+    bool morreuVelhice = (idade >= tempoVidaMax);
+
+    // Basta uma condição para morrer
+    bool resultado = (faltaAgua || faltaNutrientes || morreuVelhice);
+    return resultado;
 }
 
-Planta* PlantaExotica::gerarSemente() {
-    // Cria nova planta
-    PlantaExotica* filha = new PlantaExotica();
+void PlantaExotica::aoMorrer(Solo &s)
+{
+    int aguaInterna = getAguaInterna();
+    int nutrientesInternos = getNutrientesInternos();
+    int percentagem = Settings::PlantaExotica::percentagem_recursos_pos_morte;
 
-    // Original mantém 50% dos recursos
-    setAguaInterna(getAguaInterna() / 2);
-    setNutrientesInternos(getNutrientesInternos() / 2);
+    // Cálculo a depositar de acordo com a percentagem
+    int aguaParaDevolver = (aguaInterna * percentagem) / 100;
+    int nutrientesParaDevolver = (nutrientesInternos * percentagem) / 100;
 
-    // Nova planta começa com 30 água e 30 nutrientes
-    filha->setAguaInterna(30);
-    filha->setNutrientesInternos(30);
-
-    return filha;
-}
-
-// ========================================================
-// INFORMAÇÃO
-// ========================================================
-
-std::string PlantaExotica::getInfo() const {
-    std::ostringstream oss;
-    oss << "[Bambu Lunar] ";
-
-    // Fase
-    Fase fase = getFase();
-    if (fase == JOVEM) oss << "JOVEM";
-    else if (fase == ADULTA) oss << "ADULTA";
-    else oss << "MADURA";
-
-    oss << " | Idade: " << idade << "/80 | ";
-    oss << "Água: " << getAguaInterna() << " | ";
-    oss << "Nutrientes: " << getNutrientesInternos();
-
-    return oss.str();
+    depositarAgua(s, aguaParaDevolver);
+    depositarNutrientes(s, nutrientesParaDevolver);
 }
