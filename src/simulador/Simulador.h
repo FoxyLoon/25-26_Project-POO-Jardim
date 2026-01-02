@@ -52,8 +52,8 @@ private:
     bool comandoAvanca(stringstream &ss);   // Não Implementado
     static bool comandoFim();               // OK
     bool comandoJardim(stringstream &ss);   // OK
-    bool comandoGrava(stringstream &ss);    // Não Implementado
-    bool comandoRecupera(stringstream &ss); // Não Implementado
+    bool comandoGrava(stringstream &ss);    // OK (Implementado)
+    bool comandoRecupera(stringstream &ss); // OK (Implementado)
     bool comandoApaga(stringstream &ss);    // Não Implementado
     bool comandoExecuta(stringstream &ss);  // Não Implementado
 
@@ -90,7 +90,7 @@ private:
     bool comandoB();    // OK
     bool comandoEntra(stringstream &ss);    // OK
     bool comandoSai();  // OK
-    
+
     // ========================================================
     // ========================================================
     // ========================================================
@@ -99,15 +99,34 @@ private:
 
     // Valida posições no jardim
     static bool isPosicaoValida(const string &p);
-    
+
     // Verifica se existe um Jardim
     static bool isJardimCriado(const bool &jm_c);
 
     // Verifica se existe um Jardineiro
     static bool isJardineiroCriado(const bool &jo_c);
 
-    // Verifica se está fora dos limites
-    /* static bool isForaDosLimites(const ); */
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
+    // Funções para Serialização/Deserialização
+
+    bool salvarJardimEmFicheiro(const string &nome);
+    bool carregarJardimDeFicheiro(const string &nome);
+
+    // Funções auxiliares para criar pastas
+    void criarPastaSeNaoExistir(const string &caminho);
+
+    // Serialização de componentes
+    string serializarSolo(const Solo &s);
+    bool deserializarSolo(Solo &s, const string &dados);
+
+    string serializarPlanta(const Planta *p);
+    Planta* deserializarPlanta(const string &dados);
+
+    string serializarFerramenta(const Ferramenta *f);
+    Ferramenta* deserializarFerramenta(const string &dados);
 };
 
 #endif
