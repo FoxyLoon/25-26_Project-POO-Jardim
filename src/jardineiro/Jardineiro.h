@@ -35,7 +35,7 @@ public:
     bool podeColher();
 
     // Ações de Movimento e Jardim
-    void usaMovimento(int novaL, int novaC, int maxL, int maxC, string direcao);
+    void usaMovimento(int novaL, int novaC, string direcao);
     void usaEntrar(int l, int c);
     void usaSair();
     void usaPlantar(Solo &s, Planta *novaPlanta);
