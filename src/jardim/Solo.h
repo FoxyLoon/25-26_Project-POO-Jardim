@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include "../Settings.h"
 #include "../plantas/Planta.h"
 #include "../ferramentas/Ferramenta.h"
 
@@ -41,13 +42,13 @@ public:
     bool temPlanta() const;
     void setPlanta(Planta *p);
     Planta *getPlanta() const;
-    void removerPlanta();
+    Planta *removerPlanta();
 
     // Gestão da Ferramenta
     bool temFerramenta() const;
     void setFerramenta(Ferramenta *f);
     Ferramenta *getFerramenta() const;
-    void removerFerramenta();
+    Ferramenta *removerFerramenta();
 
     // Gestão do Jardineiro (entrada/saída/movimento)
     bool possuiJardineiro() const;

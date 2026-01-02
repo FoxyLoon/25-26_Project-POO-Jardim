@@ -1,6 +1,6 @@
 #include "Solo.h"
-#include "../Settings.h"
 #include <cstdlib>
+
 
 Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
 {
@@ -90,9 +90,23 @@ Planta *Solo::getPlanta() const
     return planta;
 }
 
-void Solo::removerPlanta()
+Planta *Solo::removerPlanta()
 {
+    if (planta == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Guardar o ponteiro numa variável temporária
+    Planta *temp = planta;
+
+    // Retirar a referência do solo (ponteiro a null)
+    // Importante: NÃO FAZER 'delete planta', senão o jardineiro
+    // recebe um ponteiro para memória apagada!
     planta = nullptr;
+
+    // Devolve o ponteiro para o Simulador/Jardineiro
+    return temp;
 }
 
 // ========================================================
@@ -117,9 +131,23 @@ Ferramenta *Solo::getFerramenta() const
     return ferramenta;
 }
 
-void Solo::removerFerramenta()
+Ferramenta *Solo::removerFerramenta()
 {
+    if (ferramenta == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Guardar o ponteiro numa variável temporária
+    Ferramenta *temp = ferramenta;
+
+    // Retirar a referência do solo (ponteiro a null)
+    // Importante: NÃO FAZER 'delete ferramenta', senão o jardineiro
+    // recebe um ponteiro para memória apagada!
     ferramenta = nullptr;
+
+    // Devolver o ponteiro para o Simulador/Jardineiro
+    return temp;
 }
 
 // ========================================================

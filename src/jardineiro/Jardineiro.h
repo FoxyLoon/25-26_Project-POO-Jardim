@@ -7,13 +7,14 @@
 #include "../ferramentas/Ferramenta.h"
 #include "../Settings.h"
 
-class Jardineiro {
+class Jardineiro
+{
 private:
     int linha, coluna;
     bool estaNoJardim;
-    
-    std::vector<Ferramenta*> inventario;
-    Ferramenta* ferramentaNaMao;
+
+    std::vector<Ferramenta *> inventario;
+    Ferramenta *ferramentaNaMao;
 
     int movimentosRestantes;
     int entradasSaidasRestantes;
@@ -34,21 +35,22 @@ public:
     bool podeColher();
 
     // Ações de Movimento e Jardim
-    void usaMovimento(int novaL, int novaC, int maxL, int maxC, std::string direcao);
-    void usaEntrarSair(int l, int c, int maxL, int maxC);
-    void usaPlantar(Solo& s, Planta* novaPlanta);
-    void usaColher(Solo& s);
+    void usaMovimento(int novaL, int novaC, int maxL, int maxC, string direcao);
+    void usaEntrar(int l, int c);
+    void usaSair();
+    void usaPlantar(Solo &s, Planta *novaPlanta);
+    void usaColher(Solo &s);
 
     // Gestão de Inventário
-    void adicionarFerramenta(Ferramenta* f);
+    void adicionarFerramenta(Ferramenta *f);
     void removerFerramenta(int indice);
     void selecionarFerramenta(int indice);
     void largarFerramenta();
     void listarFerramentas() const;
-    Ferramenta* getFerramentaNaMao() const;
+    Ferramenta *getFerramentaNaMao() const;
 
-    void processaFerramentaAutomatica(Solo& s);
-    
+    void processaFerramentaAutomatica(Solo &s);
+
     // Getters
     bool getEstaNoJardim() const;
     int getLinha() const;

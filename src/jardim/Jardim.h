@@ -34,9 +34,9 @@ public:
     void mostraJardim() const;
 
     // Getters
-    int getLinhas() const { return linhas; }
-    int getColunas() const { return colunas; }
-    Solo &getSolo(int l, int c) { return area[l][c]; }
+    int getLinhas() const;
+    int getColunas() const;
+    Solo &getSolo(int l, int c);
 };
 
 #endif

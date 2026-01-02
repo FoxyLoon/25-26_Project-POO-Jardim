@@ -262,3 +262,18 @@ void Jardim::mostraJardim() const
         cout << "_";
     cout << "_\n";
 }
+
+int Jardim::getLinhas() const
+{
+    return linhas;
+}
+
+int Jardim::getColunas() const
+{
+    return colunas;
+}
+
+Solo &Jardim::getSolo(int l, int c)
+{
+    return area[l][c];
+}

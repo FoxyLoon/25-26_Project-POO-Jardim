@@ -87,35 +87,26 @@ void Jardineiro::usaMovimento(int novaL, int novaC, int maxL, int maxC, string d
     }
 }
 
-void Jardineiro::usaEntrarSair(int l, int c, int maxL, int maxC)
+void Jardineiro::usaEntrar(int l, int c)
 {
     if (!podeEntrarSair())
         return;
+    linha = l;
+    coluna = c;
+    estaNoJardim = true;
+    entradasSaidasRestantes--;
+    cout << "[ACAO] >> O Jardineiro ENTROU no jardim em (" << l << "," << c << ")." << endl;
+}
 
-    if (estaNoJardim)
-    {
-        estaNoJardim = false;
-        linha = -1;
-        coluna = -1;
-        cout << "[ACAO] >> O Jardineiro SAIU do jardim." << endl;
-        entradasSaidasRestantes--;
-    }
-    else
-    {
-        // Para entrar, validamos se a posição alvo existe
-        if (l >= 0 && l < maxL && c >= 0 && c < maxC)
-        {
-            linha = l;
-            coluna = c;
-            estaNoJardim = true;
-            cout << "[ACAO] >> O Jardineiro ENTROU no jardim em (" << l << "," << c << ")." << endl;
-            entradasSaidasRestantes--;
-        }
-        else
-        {
-            cout << "[ERRO] >> Coordenadas de entrada invalidas!" << endl;
-        }
-    }
+void Jardineiro::usaSair()
+{
+    if (!podeEntrarSair())
+        return;
+    linha = -1;
+    coluna = -1;
+    estaNoJardim = false;
+    entradasSaidasRestantes--;
+    cout << "[ACAO] >> O Jardineiro SAIU do jardim." << endl;
 }
 
 void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
@@ -200,7 +191,8 @@ void Jardineiro::largarFerramenta()
     }
 }
 
-Ferramenta* Jardineiro::getFerramentaNaMao() const {
+Ferramenta *Jardineiro::getFerramentaNaMao() const
+{
     return ferramentaNaMao;
 }
 
