@@ -76,7 +76,7 @@ bool Jardineiro::podeColher()
 // ========================================================
 // Ações
 
-void Jardineiro::usaMovimento(int novaL, int novaC, int maxL, int maxC, string direcao)
+void Jardineiro::usaMovimento(int novaL, int novaC, string direcao)
 {
     if (podeMovimentar())
     {

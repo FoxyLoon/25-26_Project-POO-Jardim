@@ -101,13 +101,13 @@ private:
     static bool isPosicaoValida(const string &p);
     
     // Verifica se existe um Jardim
-    static bool isJardimCriado(const bool &jm_c);
+    bool isJardimCriado();
 
     // Verifica se existe um Jardineiro
-    static bool isJardineiroCriado(const bool &jo_c);
+    bool isJardineiroCriado();
 
     // Verifica se está fora dos limites
-    /* static bool isForaDosLimites(const ); */
+    bool isForaDosLimites(int linha, int coluna);
 };
 
 #endif
