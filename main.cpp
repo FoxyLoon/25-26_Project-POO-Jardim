@@ -2,12 +2,12 @@
 #include <iostream>
 
 // Para windows
-/* #ifndef NOMINMAX
+#ifndef NOMINMAX
 #define NOMINMAX
 #endif
 #define byte win_byte_override
 #include <windows.h>
-#undef byte */
+#undef byte
 
 using namespace std;
 
@@ -16,7 +16,7 @@ using namespace std;
 int main()
 {
   // Para windows
-  // SetConsoleOutputCP(CP_UTF8);
+  SetConsoleOutputCP(CP_UTF8);
 
   Simulador cmd;
   string linha;

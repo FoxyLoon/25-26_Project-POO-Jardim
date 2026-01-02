@@ -1,46 +1,53 @@
-// ========== Roseira.h ==========
 #ifndef ROSEIRA_H
 #define ROSEIRA_H
 
 #include "Planta.h"
 
-/**
- * ROSEIRA
- * Beleza: BONITA
- *
- * Características:
- * - Inicialmente: 25 água, 25 nutrientes
- * - Perde 4 água e 4 nutrientes por instante (metabolismo alto)
- * - Absorve 5 água e 8 nutrientes do solo
- * - Morre se água/nutrientes internos = 0
- * - Morre se nutrientes internos >= 200 (excesso)
- * - Morre se TODAS as posições vizinhas tiverem plantas
- * - Ao morrer: devolve metade dos recursos absorvidos durante a vida
- * - Multiplica-se se nutrientes > 100
- */
-class Roseira : public Planta {
+/*
+ROSEIRA
+Beleza: BONITA
+
+Comportamento:
+- Absorve valores fixos de água e nutrientes do solo
+- Tem perda metabólica constante (respiração/transpiração)
+- Morre se tiver pouca água, poucos nutrientes ou excesso de nutrientes
+- Ao morrer: devolve metade dos seus recursos ao solo
+- Multiplicação baseada em nutrientes
+*/
+
+class Roseira : public Planta
+{
 private:
-    // Contabilização de recursos absorvidos durante a vida
-    int totalAguaAbsorvida;
-    int totalNutrientesAbsorvidos;
+    // Idade da Planta
+    int idade;
 
 public:
     Roseira();
     virtual ~Roseira() = default;
 
-    // Interface obrigatória
-    std::string getInfo() const override;
-    bool verificaMorte(const Solo& s) const override;
-    void aoMorrer(Solo& s) override;
-    bool podeMultiplicar() const override;
-    Planta* gerarSemente() override;
+    // Informação da Planta
+    string getInfo() const override;
 
-protected:
-    // Padrão de 4 passos
-    void removeRecursosSolo(Solo& s) override;
-    void adicionaRecursosPlanta(Solo& s) override;
-    void perdeRecursosInternos() override;
-    void forneceRecursosSolo(Solo& s) override;
+    // ========================================================
+
+    // Processamento de cada instante
+    void removeRecursosSolo(Solo &s) override;
+    void adicionaRecursosPlanta(Solo &s) override;
+    void envelhecimento() override;
+    void removeRecursosPlanta() override;
+    void adicionaRecursosSolo(Solo &s) override;
+
+    // ========================================================
+
+    // Condições de Multiplicação
+    bool podeMultiplicar() const override;
+    Planta *gerarSemente() override;
+
+    // ========================================================
+
+    // Condições de Morte
+    bool verificaMorte(const Solo &s) override;
+    void aoMorrer(Solo &s) override;
 };
 
 #endif

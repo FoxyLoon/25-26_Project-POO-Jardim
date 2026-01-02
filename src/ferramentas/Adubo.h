@@ -2,30 +2,27 @@
 #define ADUBO_H
 
 #include "Ferramenta.h"
-#include "../Settings.h"
 
 /*
  * PACOTE DE ADUBO
+ * - Capacidade: 100 unidades
+ * - Dose Por Uso: 10 unidades
  * - Aumenta nutrientes do solo em 10 unidades
- * - Capacidade inicial: 100 unidades
  * - Quando acaba, é levado pelo vento
  * - Símbolo: 'a'
  */
-class Adubo : public Ferramenta {
-private:
-    int quantidadeDisponivel;
+
+class Adubo : public Ferramenta
+{
+    int nutrientesDisponiveis;
 
 public:
     Adubo();
-    virtual ~Adubo();
+    virtual ~Adubo() = default;
 
-    virtual char simbolo() const override;
-    virtual std::string nome() const override;
-    virtual bool aplicar(Solo &solo) override;
-    virtual bool estaUtilizavel() const override;
-    virtual std::string getInfo() const override;
-
-    int getQuantidadeDisponivel() const { return quantidadeDisponivel; }
+    void usar() override;
+    void aplicarNoSolo(Solo& s) override;
+    bool estaGasta() const override;
+    string getInfo() const override;
 };
-
 #endif

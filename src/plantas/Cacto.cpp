@@ -1,123 +1,178 @@
 #include "Cacto.h"
-#include "../jardim/Solo.h"
-#include <sstream>
-#include <algorithm>
 
-Cacto::Cacto()
-    : Planta(20, 20, 'c', "NEUTRA"),
-      instantesAguaExcessiva(0),
-      instantesSemNutrientes(0),
-      totalNutrientesAbsorvidos(0) {}
+/*
+CACTO
+Beleza: NEUTRA
+
+Comportamento:
+- Absorve 25% da água do solo a cada instante
+- Absorve até 5 unidades de nutrientes
+- Morre se água do solo > 100 por 3 instantes seguidos
+- Morre se nutrientes do solo = 0 por mais de 3 instantes seguidos
+- Ao morrer: devolve TODOS os nutrientes absorvidos durante a vida
+- Multiplica-se se nutrientes > 100 e água > 50
+*/
+
+Cacto::Cacto() : Planta(20, 20, 'c', "NEUTRA"), instantesAguaExcessiva(0), instantesSemNutrientes(0), idade(0) {}
 
 // ========================================================
-// PADRÃO DE 4 PASSOS - Implementação Simplificada
+
+// Informação da Planta
+string Cacto::getInfo() const
+{
+    int agua = getAguaInterna();
+    int nutrientes = getNutrientesInternos();
+    char simbolo = getSimbolo();
+    string beleza = getBeleza();
+
+    ostringstream oss;
+    oss << "[Cacto] " << "\n";
+    oss << "Simbolo: " << simbolo << "\n";
+    oss << "Beleza: " << beleza << "\n";
+    oss << "Água: " << agua << "\n";
+    oss << "Nutrientes: " << nutrientes << "\n";
+    oss << "Idade (Instantes): " << idade << "\n";
+    oss << "Instantes Água Excessiva: " << instantesAguaExcessiva << "\n";
+    oss << "Instantes Sem Nutrientes: " << instantesSemNutrientes << "\n";
+
+    string informacao = oss.str();
+    return informacao;
+}
+
 // ========================================================
 
-void Cacto::removeRecursosSolo(Solo& s) {
-    // Atualiza contadores ANTES de modificar o solo
-    int aguaAntes = s.getAgua();
-    int nutrientesAntes = s.getNutrientes();
+// Processamento de cada instante
 
-    // Contadores para condições de morte
-    if (aguaAntes > Settings::Cacto::morre_agua_solo_maior) {
+void Cacto::removeRecursosSolo(Solo &s)
+{
+    // Obtem o valor de água do solo para calcular a percentagem a remover
+    int aguaNoSolo = s.getAgua();
+    int percentagem = Settings::Cacto::absorcao_agua_percentagem;
+
+    int qtdAguaParaRemover = (aguaNoSolo * percentagem) / 100;
+    int qtdNutrientesParaRemover = Settings::Cacto::absorcao_nutrientes;
+
+    obterAgua(s, qtdAguaParaRemover);
+    obterNutrientes(s, qtdNutrientesParaRemover);
+}
+
+void Cacto::adicionaRecursosPlanta(Solo &s)
+{
+    // Obtem o valor de água do solo para calcular a percentagem a adicionar
+    int aguaNoSolo = s.getAgua();
+    int percentagem = Settings::Cacto::absorcao_agua_percentagem;
+
+    // Cálculo realizado antes
+    int qtdAguaParaAdicionar = (aguaNoSolo * percentagem) / 100;
+    int qtdNutrientesParaAdicionar = Settings::Cacto::absorcao_nutrientes;
+
+    adicionarAguaInterna(qtdAguaParaAdicionar);
+    adicionarNutrientesInternos(qtdNutrientesParaAdicionar);
+}
+
+void Cacto::envelhecimento()
+{
+    idade++;
+}
+
+void Cacto::removeRecursosPlanta()
+{
+    // O Cacto não perde recursos
+}
+
+void Cacto::adicionaRecursosSolo(Solo &s)
+{
+    // O Cacto não fornece recursos ao solo enquanto está vivo
+}
+
+// ========================================================
+
+// Condições de Multiplicação
+
+bool Cacto::podeMultiplicar() const
+{
+    // Condição: Houver nutrientes e água suficientes
+    int nutrientesAtual = getNutrientesInternos();
+    int aguaAtual = getAguaInterna();
+
+    int limiteNutrientes = Settings::Cacto::multiplica_nutrientes_maior;
+    int limiteAgua = Settings::Cacto::multiplica_agua_maior;
+
+    bool temNutrientes = (nutrientesAtual > limiteNutrientes);
+    bool temAgua = (aguaAtual > limiteAgua);
+
+    bool resultado = (temNutrientes && temAgua);
+    return resultado;
+}
+
+Planta *Cacto::gerarSemente()
+{
+    int aguaPlantaOriginal = getAguaInterna();
+    int nutrientesPlantaOriginal = getNutrientesInternos();
+
+    // Cálculo dos valores para a nova planta
+    int aguaSemente = aguaPlantaOriginal / 2;
+    int nutrientesSemente = nutrientesPlantaOriginal / 2;
+
+    // Atualiza a planta original
+    setAguaInterna(aguaSemente);
+    setNutrientesInternos(nutrientesSemente);
+
+    // Cria a nova planta
+    // Nota: Como a Planta Original e Semente terâo os mesmos valores,
+    // a água e nutrientes vão ser uma copia da Planta original após o calculo
+    Planta *semente = new Cacto();
+    return semente;
+}
+
+// ========================================================
+
+// Condições de Morte
+
+bool Cacto::verificaMorte(const Solo &s)
+{
+    int aguaSolo = s.getAgua();
+    int nutriSolo = s.getNutrientes();
+
+    int limiteAguaSolo = Settings::Cacto::morre_agua_solo_maior;
+    int limiteNutriSolo = Settings::Cacto::morre_nutrientes_solo_menor;
+
+    int maxInstantesAgua = Settings::Cacto::morre_agua_solo_instantes;
+    int maxInstantesNutri = Settings::Cacto::morre_nutrientes_solo_instantes;
+
+    // Verifica se tem Água em Excesso
+    if (aguaSolo > limiteAguaSolo)
+    {
         instantesAguaExcessiva++;
-    } else {
+    }
+    else
+    {
         instantesAguaExcessiva = 0;
     }
 
-    if (nutrientesAntes < Settings::Cacto::morre_nutrientes_solo_menor) {
+    // Verifica se faltam Nutrientes
+    if (nutriSolo <= limiteNutriSolo)
+    {
         instantesSemNutrientes++;
-    } else {
+    }
+    else
+    {
         instantesSemNutrientes = 0;
     }
+
+    bool morreuPorAgua = (instantesAguaExcessiva >= maxInstantesAgua);
+    bool morreuPorNutri = (instantesSemNutrientes > maxInstantesNutri);
+    bool morreuPorSede = (getAguaInterna() <= 0);
+
+    // Basta uma condição para morrer
+    bool resultadoMorte = (morreuPorAgua || morreuPorNutri || morreuPorSede);
+    return resultadoMorte;
 }
 
-void Cacto::adicionaRecursosPlanta(Solo& s) {
-    // Absorve 25% da água do solo
-    int aguaDisponivel = s.getAgua();
-    int aguaAbsorver = (aguaDisponivel * Settings::Cacto::absorcao_agua_percentagem) / 100;
-    int aguaAbsorvida = obterAgua(s, aguaAbsorver);
+void Cacto::aoMorrer(Solo &s)
+{
+    int nutrientesParaDevolver = getNutrientesInternos();
 
-    // Absorve até 5 unidades de nutrientes
-    int nutrientesAbsorvidos = obterNutrientes(s, Settings::Cacto::absorcao_nutrientes);
-    totalNutrientesAbsorvidos += nutrientesAbsorvidos;
-}
-
-void Cacto::perdeRecursosInternos() {
-    // Metabolismo mínimo: perde 1 de água
-    removerAguaInterna(1);
-}
-
-void Cacto::forneceRecursosSolo(Solo& s) {
-    // Cacto não fornece recursos ao solo enquanto vivo
-}
-
-// ========================================================
-// CONDIÇÕES DE MORTE
-// ========================================================
-
-bool Cacto::verificaMorte(const Solo& s) const {
-    // Regra 1: Água no solo demasiado alta por 3 instantes
-    if (instantesAguaExcessiva >= Settings::Cacto::morre_agua_solo_instantes) {
-        return true;
-    }
-
-    // Regra 2: Nutrientes no solo demasiado baixos por mais de 3 instantes
-    if (instantesSemNutrientes > Settings::Cacto::morre_nutrientes_solo_instantes) {
-        return true;
-    }
-
-    // Regra 3: Água interna a zero
-    if (getAguaInterna() <= 0) {
-        return true;
-    }
-
-    return false;
-}
-
-void Cacto::aoMorrer(Solo& s) {
-    // Devolve TODOS os nutrientes absorvidos durante a vida
-    s.adicionarNutrientes(totalNutrientesAbsorvidos);
-    // Água não é devolvida
-}
-
-// ========================================================
-// MULTIPLICAÇÃO
-// ========================================================
-
-bool Cacto::podeMultiplicar() const {
-    return (getNutrientesInternos() > Settings::Cacto::multiplica_nutrientes_maior &&
-            getAguaInterna() > Settings::Cacto::multiplica_agua_maior);
-}
-
-Planta* Cacto::gerarSemente() {
-    // Cria novo cacto
-    Cacto* filha = new Cacto();
-
-    // Divide recursos em partes iguais
-    int aguaMae = getAguaInterna();
-    int nutrientesMae = getNutrientesInternos();
-
-    setAguaInterna(aguaMae / 2);
-    setNutrientesInternos(nutrientesMae / 2);
-
-    filha->setAguaInterna(aguaMae / 2);
-    filha->setNutrientesInternos(nutrientesMae / 2);
-
-    return filha;
-}
-
-// ========================================================
-// INFORMAÇÃO
-// ========================================================
-
-std::string Cacto::getInfo() const {
-    std::ostringstream oss;
-    oss << "[Cacto] ";
-    oss << "Água: " << getAguaInterna() << " | ";
-    oss << "Nutrientes: " << getNutrientesInternos() << " | ";
-    oss << "Total Absorvido: " << totalNutrientesAbsorvidos << " | ";
-    oss << "Instantes Água Alta: " << instantesAguaExcessiva << " | ";
-    oss << "Instantes Sem Nutrientes: " << instantesSemNutrientes;
-    return oss.str();
+    // Devolve os nutrientes acumulados ao solo
+    depositarNutrientes(s, nutrientesParaDevolver);
 }

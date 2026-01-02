@@ -9,16 +9,16 @@
  * - Nunca se desgasta (aço cromado)
  * - Símbolo: 't'
  */
+
 class Tesoura : public Ferramenta {
 public:
     Tesoura();
-    virtual ~Tesoura();
+    virtual ~Tesoura() = default;
 
-    virtual char simbolo() const override;
-    virtual std::string nome() const override;
-    virtual bool aplicar(Solo &solo) override;
-    virtual bool estaUtilizavel() const override;
-    virtual std::string getInfo() const override;
+    void usar() override;                   // Não faz nada
+    void aplicarNoSolo(Solo& s) override;
+    bool estaGasta() const override;        // Sempre Falso
+    string getInfo() const override;
 };
 
 #endif

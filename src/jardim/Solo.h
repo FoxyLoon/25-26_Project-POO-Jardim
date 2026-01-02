@@ -1,12 +1,17 @@
 #ifndef SOLO_H
 #define SOLO_H
 
-// Forward declarations
+#include <string>
+#include <sstream>
+#include "../Settings.h"
+#include "../plantas/Planta.h"
+#include "../ferramentas/Ferramenta.h"
+
+using namespace std;
+
 class Planta;
 class Ferramenta;
 
-// Classe Solo - representa um pedaço de solo do jardim
-// Cada posição pode conter propriedades (água, nutrientes) e entidades (planta, ferramenta)
 class Solo
 {
 private:
@@ -14,66 +19,45 @@ private:
     int nutrientes;
     Planta *planta;
     Ferramenta *ferramenta;
+    bool temJardineiro;
 
 public:
-    // Construtores
+    // Construtor e Destrutor
     Solo();
-    Solo(int agua_inicial, int nutrientes_iniciais);
+    ~Solo() = default;
 
-    // Destrutor - NÃO liberta planta/ferramenta (geridas pelo Jardim)
-    ~Solo();
-
-    //===================================================================
-    //===================================================================
-    //===================================================================
-
-    // Gestão da Água
+    // Getters e Setters de recursos
     int getAgua() const;
     void setAgua(int valor);
-    void adicionarAgua(int quantidade);
-    void removerAgua(int quantidade);
-
-    //===================================================================
-    //===================================================================
-    //===================================================================
-
-    // Gestão dos Nutrientes
     int getNutrientes() const;
     void setNutrientes(int valor);
+
+    // Gestão de recursos (adição/remoção)
+    void adicionarAgua(int quantidade);
+    void removerAgua(int quantidade);
     void adicionarNutrientes(int quantidade);
     void removerNutrientes(int quantidade);
 
-    //===================================================================
-    //===================================================================
-    //===================================================================
-
-    // Gestão de Planta
-    Planta *getPlanta() const;
-    void setPlanta(Planta *p);
+    // Gestão da Planta
     bool temPlanta() const;
-    Planta *removerPlanta(); // Remove e retorna a planta (sem delete)
+    void setPlanta(Planta *p);
+    Planta *getPlanta() const;
+    Planta *removerPlanta();
 
-    //===================================================================
-    //===================================================================
-    //===================================================================
-
-    // Gestão de Ferramenta
-    Ferramenta *getFerramenta() const;
-    void setFerramenta(Ferramenta *f);
+    // Gestão da Ferramenta
     bool temFerramenta() const;
-    Ferramenta *removerFerramenta(); // Remove e retorna a ferramenta (sem delete)
+    void setFerramenta(Ferramenta *f);
+    Ferramenta *getFerramenta() const;
+    Ferramenta *removerFerramenta();
 
-    //===================================================================
-    //===================================================================
-    //===================================================================
+    // Gestão do Jardineiro (entrada/saída/movimento)
+    bool possuiJardineiro() const;
+    void setJardineiro(bool estado);
 
-    // Verifica se está vazio
+    // Verificações de estado e símbolos
     bool estaVazio() const;
-
-    // Retorna o símbolo a ser exibido (considerando prioridades)
-    // Prioridade: Jardineiro > Planta > Ferramenta > vazio
-    // Nota: Jardineiro é tratado externamente na visualização
-    char getSimboloVisivel() const;
+    char getSimboloPrioritario() const;
+    string getInfoSolo() const;
 };
 
 #endif
