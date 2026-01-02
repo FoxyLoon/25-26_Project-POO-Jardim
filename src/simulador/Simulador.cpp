@@ -65,8 +65,8 @@ bool Simulador::processaComando(const string &linha)
     // ========================================================
 
      // Comandos Gerais
-    // if (cmd == "fim")
-    //     return comandoFim();
+    if (cmd == "fim")
+        return comandoFim();
     if (cmd == "jardim")
         return comandoJardim(ss);
     // if (cmd == "grava")
@@ -193,12 +193,12 @@ bool Simulador::processaComando(const string &linha)
 //     return true;
 // }
 
-// bool Simulador::comandoFim()
-// {
-//     cout << "A encerrar o simulador...\n";
-//     exit(0);
-//     return true; // nunca alcançado, mas satisfaz o tipo
-// }
+bool Simulador::comandoFim()
+{
+    cout << "A encerrar o simulador...\n";
+    exit(0);
+    return true; // nunca alcançado, mas satisfaz o tipo
+}
 
 bool Simulador::comandoJardim(stringstream &ss)
 {
