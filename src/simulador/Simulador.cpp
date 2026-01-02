@@ -67,21 +67,21 @@ bool Simulador::processaComando(const string &linha)
 
     // // Comandos para ações
     // if (cmd == "colhe")
-    //     return comandoColhe(ss);
-    // if (cmd == "planta")
-    //     return comandoPlanta(ss);
-    // if (cmd == "larga")
-    //     return comandoLarga();
-    // if (cmd == "pega")
-    //     return comandoPega(ss);
-    // if (cmd == "compra")
-    //     return comandoCompra(ss);
+    return comandoColhe(ss);
+    if (cmd == "planta")
+        //     return comandoPlanta(ss);
+        // if (cmd == "larga")
+        //     return comandoLarga();
+        // if (cmd == "pega")
+        //     return comandoPega(ss);
+        // if (cmd == "compra")
+        //     return comandoCompra(ss);
 
-    // // ========================================================
+        // // ========================================================
 
-    // Comandos para controlar o jardineiro
-    if (cmd == "e")
-        return comandoE();
+        // Comandos para controlar o jardineiro
+        if (cmd == "e")
+            return comandoE();
     if (cmd == "d")
         return comandoD();
     if (cmd == "c")
@@ -378,53 +378,53 @@ bool Simulador::comandoJardim(stringstream &ss)
 
 // // Comandos para ações
 
-// bool Simulador::comandoColhe(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoColhe(stringstream &ss)
+{
+    // Validações
 
-//     // VERIFICAR LIMITE
-//     if (!jardineiro.podeColher())
-//     {
-//         cout << "[ERRO] >> Limite de colheitas atingido! ("
-//              << Settings::Jardineiro::max_colheitas << " por turno)\n";
-//         return false;
-//     }
+    // Verifica se o jardim foi criado
+    if (!isJardimCriado())
+    {
+        cout << "[ERRO] >> É necessário criar um jardim primeiro!" << endl;
+        return false;
+    }
 
-//     string pos;
-//     if (!(ss >> pos) || !isPosicaoValida(pos))
-//     {
-//         cout << "[ERRO] Posicao invalida.\n";
-//         return false;
-//     }
+    // Verifica se o comando tem o formato correto
+    string posicao;
+    if (!(ss >> posicao) || !isPosicaoValida(posicao))
+    {
+        cout << "[ERRO] >> O comando colhe requer uma posição (ex: colhe aa)." << endl;
+        return false;
+    }
 
-//     int l = pos[0] - 'a';
-//     int c = pos[1] - 'a';
-//     Solo *s = jardim->getSolo(l, c);
+    int linhaParaColher = posicao[0] - 'a';
+    int colunaParaColher = posicao[1] - 'a';
+    if (isForaDosLimites(linhaParaColher, colunaParaColher))
+    {
+        cout << "[ERRO] >> A posição " << posicao << " está fora dos limites do jardim!" << endl;
+        return false;
+    }
 
-//     if (!s)
-//     {
-//         cout << "[ERRO] Posicao fora do jardim.\n";
-//         return false;
-//     }
-//     if (!s->temPlanta())
-//     {
-//         cout << "[ERRO] Nao existe planta nesta posicao.\n";
-//         return false;
-//     }
+    // Verifica se o jardineiro pode colher
+    if (!jardineiro.podeColher())
+    {
+        cout << "[ERRO] >> Limite de colheitas atingido! ("
+             << Settings::Jardineiro::max_colheitas << " por turno)\n";
+        return false;
+    }
 
-//     Planta *p = s->removerPlanta();
-//     delete p;
+    Solo &solo = jardim->getSolo(linhaParaColher, colunaParaColher);
+    if (!solo.temPlanta())
+    {
+        cout << "[ERRO] >> Não existe nenhuma planta na posição " << posicao << "!" << endl;
+        return false;
+    }
 
-//     // GASTAR AÇÃO
-//     jardineiro.usarColheita();
+    jardineiro.usaColher(solo);
 
-//     cout << "[INFO] >> Planta colhida em " << pos
-//          << ". Colheitas restantes: " << jardineiro.getColheitasRestantes() << "\n";
-
-//     jardim->mostraJardim();
-//     return true;
-// }
+    jardim->mostraJardim();
+    return true;
+}
 
 // // ========================================================
 
