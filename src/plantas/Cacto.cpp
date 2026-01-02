@@ -13,7 +13,7 @@ Comportamento:
 - Multiplica-se se nutrientes > 100 e água > 50
 */
 
-Cacto::Cacto() : Planta(20, 20, 'c', "NEUTRA"), instantesAguaExcessiva(0), instantesSemNutrientes(0) {}
+Cacto::Cacto() : Planta(20, 20, 'c', "NEUTRA"), instantesAguaExcessiva(0), instantesSemNutrientes(0), idade(0) {}
 
 // ========================================================
 
@@ -22,9 +22,13 @@ string Cacto::getInfo() const
 {
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
+    char simbolo = getSimbolo();
+    string beleza = getBeleza();
 
     ostringstream oss;
     oss << "[Cacto] " << "\n";
+    oss << "Simbolo: " << simbolo << "\n";
+    oss << "Beleza: " << beleza << "\n";
     oss << "Água: " << agua << "\n";
     oss << "Nutrientes: " << nutrientes << "\n";
     oss << "Idade (Instantes): " << idade << "\n";

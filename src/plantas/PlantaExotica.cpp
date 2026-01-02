@@ -24,9 +24,13 @@ string PlantaExotica::getInfo() const
 {
     int agua = getAguaInterna();
     int nutri = getNutrientesInternos();
+    char simbolo = getSimbolo();
+    string beleza = getBeleza();
 
     ostringstream oss;
     oss << "[Planta Exótica] " << "\n";
+    oss << "Simbolo: " << simbolo << "\n";
+    oss << "Beleza: " << beleza << "\n";
     oss << "Água: " << agua << "\n";
     oss << "Nutrientes: " << nutri << "\n";
     oss << "Idade (Instantes): " << idade << "\n";

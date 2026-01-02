@@ -2,30 +2,27 @@
 #define REGADOR_H
 
 #include "Ferramenta.h"
-#include "../Settings.h"
 
 /*
  * REGADOR
- * - Aumenta água do solo em 10 unidades
  * - Capacidade: 200 unidades
+ * - Dose Por Uso: 10 unidades
+ * - Aumenta a água do Solo em 10 Unidades
  * - Quando acaba, é descartado
  * - Símbolo: 'g'
  */
-class Regador : public Ferramenta {
-private:
+
+class Regador : public Ferramenta
+{
     int aguaDisponivel;
 
 public:
     Regador();
-    virtual ~Regador();
+    virtual ~Regador() = default;
 
-    virtual char simbolo() const override;
-    virtual std::string nome() const override;
-    virtual bool aplicar(Solo &solo) override;
-    virtual bool estaUtilizavel() const override;
-    virtual std::string getInfo() const override;
-
-    int getAguaDisponivel() const { return aguaDisponivel; }
+    void usar() override;
+    void aplicarNoSolo(Solo &s) override;
+    bool estaGasta() const override;
+    string getInfo() const override;
 };
-
 #endif

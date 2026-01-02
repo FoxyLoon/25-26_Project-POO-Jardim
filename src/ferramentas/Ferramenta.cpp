@@ -1,24 +1,23 @@
 #include "Ferramenta.h"
-#include "Regador.h"
-#include "Adubo.h"
-#include "Tesoura.h"
-#include "FerramentaZ.h"
 
-// Inicialização do contador estático
-int Ferramenta::proximoNumeroSerie = 1;
+int Ferramenta::proximo_ID = 1;
 
-Ferramenta::Ferramenta() {
-    numeroSerie = proximoNumeroSerie++;
+Ferramenta::Ferramenta(string nome, char simbolo) : nomeFerramenta(nome), simboloFerramenta(simbolo)
+{
+    numeroSerieFerramenta_ID = proximo_ID++;
 }
 
-Ferramenta::~Ferramenta() {}
+int Ferramenta::getNumeroSerie() const
+{
+    return numeroSerieFerramenta_ID;
+}
 
-Ferramenta* Ferramenta::criar(char tipo) {
-    switch(tipo) {
-    case 'g': return new Regador();
-    case 'a': return new Adubo();
-    case 't': return new Tesoura();
-    case 'z': return new FerramentaZ();
-    default: return nullptr;
-    }
+string Ferramenta::getNome() const
+{
+    return nomeFerramenta;
+}
+
+char Ferramenta::getSimbolo() const
+{
+    return simboloFerramenta;
 }

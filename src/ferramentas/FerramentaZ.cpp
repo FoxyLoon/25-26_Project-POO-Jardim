@@ -1,69 +1,68 @@
 #include "FerramentaZ.h"
-#include <sstream>
+#include <cmath> // Para usar abs() se necessário
 
-FerramentaZ::FerramentaZ() : Ferramenta(), cargasBateria(CAPACIDADE_BATERIA) {}
-
-FerramentaZ::~FerramentaZ() {}
-
-char FerramentaZ::simbolo() const {
-    return 'z';
+FerramentaZ::FerramentaZ() : Ferramenta("FerramentaZ", 'z')
+{
+    bateria = Settings::FerramentaZ::capacidade;
 }
 
-std::string FerramentaZ::nome() const {
-    return "Harmonizador de Solo";
+void FerramentaZ::usar()
+{
+    if (bateria > 0)
+        bateria--;
 }
 
-bool FerramentaZ::aplicar(Solo &solo) {
-    if (!estaUtilizavel()) {
-        return false;
+void FerramentaZ::aplicarNoSolo(Solo &s)
+{
+    if (estaGasta())
+        return;
+
+    // Lógica da Água
+    int aguaAtual = s.getAgua();
+    int alvoAgua = Settings::FerramentaZ::otimo_agua;
+    int ajusteMaxAgua = Settings::FerramentaZ::max_ajuste_agua;
+
+    if (aguaAtual < alvoAgua)
+    {
+        int dif = alvoAgua - aguaAtual;
+        s.setAgua(aguaAtual + (dif > ajusteMaxAgua ? ajusteMaxAgua : dif));
     }
-    
-    // Ajusta água para o valor ótimo
-    int aguaAtual = solo.getAgua();  // ✅ CORRIGIDO: usar getter
-    int diferencaAgua = AGUA_OTIMA - aguaAtual;
-
-    if (diferencaAgua > 0) {
-        // Precisa adicionar água (até 15 unidades)
-        int adicionar = (diferencaAgua > 15) ? 15 : diferencaAgua;
-        solo.adicionarAgua(adicionar);  // ✅ CORRIGIDO: usar método
-    } else if (diferencaAgua < 0) {
-        // Precisa remover água (até 15 unidades)
-        int remover = (-diferencaAgua > 15) ? 15 : -diferencaAgua;
-        solo.removerAgua(remover);  // ✅ CORRIGIDO: usar método
-    }
-
-    // Ajusta nutrientes para o valor ótimo
-    int nutrientesAtuais = solo.getNutrientes();  // ✅ CORRIGIDO: usar getter
-    int diferencaNutrientes = NUTRIENTES_OTIMOS - nutrientesAtuais;
-
-    if (diferencaNutrientes > 0) {
-        // Precisa adicionar nutrientes (até 10 unidades)
-        int adicionar = (diferencaNutrientes > 10) ? 10 : diferencaNutrientes;
-        solo.adicionarNutrientes(adicionar);  // ✅ CORRIGIDO: usar método
-    } else if (diferencaNutrientes < 0) {
-        // Precisa remover nutrientes (até 10 unidades)
-        int remover = (-diferencaNutrientes > 10) ? 10 : -diferencaNutrientes;
-        solo.removerNutrientes(remover);  // ✅ CORRIGIDO: usar método
+    else if (aguaAtual > alvoAgua)
+    {
+        int dif = aguaAtual - alvoAgua;
+        s.setAgua(aguaAtual - (dif > ajusteMaxAgua ? ajusteMaxAgua : dif));
     }
 
-    // Consome uma carga
-    cargasBateria--;
+    // Lógica dos Nutrientes
+    int nutriAtual = s.getNutrientes();
+    int alvoNutri = Settings::FerramentaZ::otimo_nutrientes;
+    int ajusteMaxNutri = Settings::FerramentaZ::max_ajuste_nutrientes;
 
-    if (cargasBateria <= 0) {
-        return false;
+    if (nutriAtual < alvoNutri)
+    {
+        int dif = alvoNutri - nutriAtual;
+        s.setNutrientes(nutriAtual + (dif > ajusteMaxNutri ? ajusteMaxNutri : dif));
     }
-    
-    return true;
+    else if (nutriAtual > alvoNutri)
+    {
+        int dif = nutriAtual - alvoNutri;
+        s.setNutrientes(nutriAtual - (dif > ajusteMaxNutri ? ajusteMaxNutri : dif));
+    }
+
+    usar(); // Consome 1 carga de bateria
 }
 
-bool FerramentaZ::estaUtilizavel() const {
-    return cargasBateria > 0;
+bool FerramentaZ::estaGasta() const
+{
+    return bateria <= 0;
 }
 
-std::string FerramentaZ::getInfo() const {
-    std::ostringstream oss;
-    oss << "Harmonizador de Solo #" << getNumeroSerie() 
-        << " - Bateria: " << cargasBateria 
-        << "/" << CAPACIDADE_BATERIA << " cargas";
+string FerramentaZ::getInfo() const
+{
+    ostringstream oss;
+    oss << "[Ferramenta: " << getNome() << "]\n"
+        << " - ID: " << getNumeroSerie() << "\n"
+        << " - Bateria: " << bateria << "/" << Settings::FerramentaZ::capacidade << "\n"
+        << " - Função: Equilibrar Solo (Alvo: 90A/45N)\n";
     return oss.str();
 }

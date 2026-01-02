@@ -3,12 +3,14 @@ project(Project_POO_Jardim_25-26 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
 
 add_executable(Project_POO_Jardim_25-26 main.cpp
         src/ferramentas/Adubo.cpp
         src/ferramentas/Ferramenta.cpp
         src/ferramentas/Regador.cpp
         src/ferramentas/Tesoura.cpp
+        src/ferramentas/FerramentaZ.cpp
         src/jardim/Jardim.cpp
         src/jardim/Solo.cpp
         src/jardineiro/Jardineiro.cpp
@@ -18,7 +20,4 @@ add_executable(Project_POO_Jardim_25-26 main.cpp
         src/plantas/Planta.cpp
         src/plantas/Roseira.cpp
         src/plantas/PlantaExotica.cpp
-        src/plantas/PlantaExotica.h
-        src/ferramentas/FerramentaZ.cpp
-        src/ferramentas/FerramentaZ.h
 )

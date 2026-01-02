@@ -20,9 +20,13 @@ string ErvaDaninha::getInfo() const
 {
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
+    char simbolo = getSimbolo();
+    string beleza = getBeleza();
 
     ostringstream oss;
     oss << "[Erva Daninha] " << "\n";
+    oss << "Simbolo: " << simbolo << "\n";
+    oss << "Beleza: " << beleza << "\n";
     oss << "Água: " << agua << "\n";
     oss << "Nutrientes: " << nutrientes << "\n";
     oss << "Idade (Instantes): " << idade << "\n";

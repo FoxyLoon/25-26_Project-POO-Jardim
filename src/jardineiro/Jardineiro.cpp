@@ -3,135 +3,199 @@
 
 using namespace std;
 
-Jardineiro::Jardineiro()
-    : noJardim(false),
-      linha(-1),
-      coluna(-1),
-      ferramentaNaMao(nullptr),
-      movimentosRestantes(Settings::Jardineiro::max_movimentos),
-      entradasSaidasRestantes(Settings::Jardineiro::max_entradas_saidas),
-      plantacoesRestantes(Settings::Jardineiro::max_plantacoes),
-      colheitasRestantes(Settings::Jardineiro::max_colheitas)
-{}
+Jardineiro::Jardineiro() : linha(-1), coluna(-1), estaNoJardim(false), ferramentaNaMao(nullptr)
+{
+    reiniciarTurno();
+}
 
-Jardineiro::~Jardineiro() {
-    // Libertar todas as ferramentas do inventário
-    for (Ferramenta* f : inventario) {
+Jardineiro::~Jardineiro()
+{
+    for (auto f : inventario)
         delete f;
-    }
-    inventario.clear();
+    if (ferramentaNaMao)
+        delete ferramentaNaMao;
+}
 
-    // A ferramentaNaMao está no inventário, já foi libertada acima
-    ferramentaNaMao = nullptr;
+void Jardineiro::reiniciarTurno()
+{
+    movimentosRestantes = Settings::Jardineiro::max_movimentos;
+    entradasSaidasRestantes = Settings::Jardineiro::max_entradas_saidas;
+    plantacoesRestantes = Settings::Jardineiro::max_plantacoes;
+    colheitasRestantes = Settings::Jardineiro::max_colheitas;
 }
 
 // ========================================================
-// Movimento e Posição
-// ========================================================
+// Verificadores
 
-void Jardineiro::entraNoJardim(int l, int c) {
-    noJardim = true;
-    moveNoJardim(l, c);
+bool Jardineiro::verificarPresenca() const
+{
+    if (estaNoJardim)
+        return true;
+    cout << "[AVISO] >> O jardineiro nao esta no jardim para realizar esta acao!" << endl;
+    return false;
 }
 
-void Jardineiro::moveNoJardim(int l, int c) {
-    linha = l;
-    coluna = c;
-}
-
-void Jardineiro::saiDoJardim() {
-    noJardim = false;
-    linha = coluna = -1;
-}
-
-bool Jardineiro::isNoJardim() const {
-    return noJardim;
-}
-
-int Jardineiro::getLinha() const {
-    return linha;
-}
-
-int Jardineiro::getColuna() const {
-    return coluna;
-}
-
-// ========================================================
-// Sistema de Inventário
-// ========================================================
-
-void Jardineiro::adicionarFerramenta(Ferramenta* f) {
-    if (f != nullptr) {
-        inventario.push_back(f);
-        cout << "[INFO] >> Ferramenta adicionada: " << f->getInfo() << "\n";
-    }
-}
-
-bool Jardineiro::removerFerramenta(int numeroSerie) {
-    int index = encontrarFerramentaNoInventario(numeroSerie);
-    if (index == -1) {
-        return false;  // Não encontrada
-    }
-
-    Ferramenta* f = inventario[index];
-
-    // Se estava na mão, tirar da mão
-    if (ferramentaNaMao == f) {
-        ferramentaNaMao = nullptr;
-    }
-
-    // Remover do inventário
-    inventario.erase(inventario.begin() + index);
-    delete f;
-
-    return true;
-}
-
-bool Jardineiro::pegarFerramenta(int numeroSerie) {
-    int index = encontrarFerramentaNoInventario(numeroSerie);
-    if (index == -1) {
-        cout << "[ERRO] >> Ferramenta #" << numeroSerie << " nao encontrada no inventario.\n";
+bool Jardineiro::podeMovimentar()
+{
+    if (!verificarPresenca())
         return false;
-    }
-
-    // Se já tinha algo na mão, larga primeiro
-    if (ferramentaNaMao != nullptr) {
-        cout << "[INFO] >> Largando " << ferramentaNaMao->nome() << " #"
-             << ferramentaNaMao->getNumeroSerie() << "\n";
-    }
-
-    ferramentaNaMao = inventario[index];
-    cout << "[INFO] >> Pegou " << ferramentaNaMao->nome() << " #"
-         << ferramentaNaMao->getNumeroSerie() << "\n";
-
-    return true;
+    if (movimentosRestantes > 0)
+        return true;
+    cout << "[AVISO] >> Movimentos esgotados este turno!" << endl;
+    return false;
 }
 
-void Jardineiro::largarFerramenta() {
-    if (ferramentaNaMao == nullptr) {
-        cout << "[INFO] >> Nao tem nenhuma ferramenta na mao.\n";
+bool Jardineiro::podeEntrarSair()
+{
+    if (entradasSaidasRestantes > 0)
+        return true;
+    cout << "[AVISO] >> Limite de entradas/saidas atingido!" << endl;
+    return false;
+}
+
+bool Jardineiro::podePlantar()
+{
+    if (!verificarPresenca())
+        return false;
+    if (plantacoesRestantes > 0)
+        return true;
+    cout << "[AVISO] >> Limite de plantacoes atingido!" << endl;
+    return false;
+}
+
+bool Jardineiro::podeColher()
+{
+    if (!verificarPresenca())
+        return false;
+    if (colheitasRestantes > 0)
+        return true;
+    cout << "[AVISO] >> Limite de colheitas atingido!" << endl;
+    return false;
+}
+
+// ========================================================
+// Ações
+
+void Jardineiro::usaMovimento(int novaL, int novaC, int maxL, int maxC, string direcao)
+{
+    if (podeMovimentar())
+    {
+        linha = novaL;
+        coluna = novaC;
+        movimentosRestantes--;
+        cout << "[ACAO] >> Moveu-se para " << direcao << ". (Restam: " << movimentosRestantes << ")" << endl;
+    }
+}
+
+void Jardineiro::usaEntrarSair(int l, int c, int maxL, int maxC)
+{
+    if (!podeEntrarSair())
         return;
-    }
 
-    cout << "[INFO] >> Largou " << ferramentaNaMao->nome() << " #"
-         << ferramentaNaMao->getNumeroSerie() << "\n";
-    ferramentaNaMao = nullptr;
+    if (estaNoJardim)
+    {
+        estaNoJardim = false;
+        linha = -1;
+        coluna = -1;
+        cout << "[ACAO] >> O Jardineiro SAIU do jardim." << endl;
+        entradasSaidasRestantes--;
+    }
+    else
+    {
+        // Para entrar, validamos se a posição alvo existe
+        if (l >= 0 && l < maxL && c >= 0 && c < maxC)
+        {
+            linha = l;
+            coluna = c;
+            estaNoJardim = true;
+            cout << "[ACAO] >> O Jardineiro ENTROU no jardim em (" << l << "," << c << ")." << endl;
+            entradasSaidasRestantes--;
+        }
+        else
+        {
+            cout << "[ERRO] >> Coordenadas de entrada invalidas!" << endl;
+        }
+    }
 }
 
-void Jardineiro::aplicarFerramentaSeNaMao(Solo &solo) {
-    if (ferramentaNaMao == nullptr) {
-        return;  // Não tem ferramenta na mão
+void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
+{
+    if (podePlantar())
+    {
+        if (!s.temPlanta())
+        {
+            s.setPlanta(novaPlanta);
+            plantacoesRestantes--;
+            cout << "[ACAO] >> Plantou " << novaPlanta->getSimbolo() << ". (Restam: " << plantacoesRestantes << ")" << endl;
+        }
+        else
+        {
+            cout << "[ERRO] >> Posicao ja ocupada!" << endl;
+        }
     }
+}
 
-    // Aplicar ferramenta
-    bool aindaUtilizavel = ferramentaNaMao->aplicar(solo);
+void Jardineiro::usaColher(Solo &s)
+{
+    if (podeColher())
+    {
+        if (s.temPlanta())
+        {
+            cout << "[ACAO] >> Colheu planta: " << s.getPlanta()->getSimbolo() << endl;
+            delete s.getPlanta();
+            s.removerPlanta();
+            colheitasRestantes--;
+        }
+        else
+        {
+            cout << "[AVISO] >> Nao ha nada para colher aqui." << endl;
+        }
+    }
+}
 
-    // Se a ferramenta ficou inútil, descartá-la
-    if (!aindaUtilizavel) {
-        cout << "[INFO] >> " << ferramentaNaMao->nome() << " #"
-             << ferramentaNaMao->getNumeroSerie() << " esgotou-se e foi descartado!\n";
+// ========================================================
+// Gestão de Inventário e Getters
 
-        removerFerramenta(ferramentaNaMao->getNumeroSerie());
+void Jardineiro::listarFerramentas() const
+{
+    cout << "\n--- INVENTARIO ---" << endl;
+    if (ferramentaNaMao)
+        cout << "[MAO] >> " << ferramentaNaMao->getNome() << " (Ativa)" << endl;
+
+    if (inventario.empty())
+    {
+        cout << "[MOCHILA] >> Vazia" << endl;
+    }
+    else
+    {
+        for (size_t i = 0; i < inventario.size(); ++i)
+        {
+            cout << i << ". " << inventario[i]->getNome() << endl;
+        }
+    }
+}
+
+void Jardineiro::adicionarFerramenta(Ferramenta *f)
+{
+    if (f)
+        inventario.push_back(f);
+}
+
+void Jardineiro::selecionarFerramenta(int indice)
+{
+    if (indice >= 0 && indice < (int)inventario.size())
+    {
+        largarFerramenta();
+        ferramentaNaMao = inventario[indice];
+        inventario.erase(inventario.begin() + indice);
+    }
+}
+
+void Jardineiro::largarFerramenta()
+{
+    if (ferramentaNaMao)
+    {
+        inventario.push_back(ferramentaNaMao);
         ferramentaNaMao = nullptr;
     }
 }
@@ -140,92 +204,30 @@ Ferramenta* Jardineiro::getFerramentaNaMao() const {
     return ferramentaNaMao;
 }
 
-const std::vector<Ferramenta*>& Jardineiro::getInventario() const {
-    return inventario;
-}
-
-void Jardineiro::listarFerramentas() const {
-    if (inventario.empty()) {
-        cout << "[INFO] >> Inventario vazio.\n";
-        return;
-    }
-
-    cout << "\n========== INVENTARIO ==========\n";
-
-    for (const Ferramenta* f : inventario) {
-        cout << "  " << f->getInfo();
-
-        // Marcar se está na mão
-        if (f == ferramentaNaMao) {
-            cout << " [NA MAO]";
-        }
-
-        cout << "\n";
-    }
-
-    cout << "================================\n\n";
-}
-
-// ========================================================
-// Contadores de Ações
-// ========================================================
-
-void Jardineiro::resetarContadores() {
-    movimentosRestantes = Settings::Jardineiro::max_movimentos;
-    entradasSaidasRestantes = Settings::Jardineiro::max_entradas_saidas;
-    plantacoesRestantes = Settings::Jardineiro::max_plantacoes;
-    colheitasRestantes = Settings::Jardineiro::max_colheitas;
-}
-
-bool Jardineiro::podeMovimentar() const {
-    return movimentosRestantes > 0;
-}
-
-bool Jardineiro::podeEntrarSair() const {
-    return entradasSaidasRestantes > 0;
-}
-
-bool Jardineiro::podePlantar() const {
-    return plantacoesRestantes > 0;
-}
-
-bool Jardineiro::podeColher() const {
-    return colheitasRestantes > 0;
-}
-
-void Jardineiro::usarMovimento() {
-    if (movimentosRestantes > 0) {
-        movimentosRestantes--;
-    }
-}
-
-void Jardineiro::usarEntradaSaida() {
-    if (entradasSaidasRestantes > 0) {
-        entradasSaidasRestantes--;
-    }
-}
-
-void Jardineiro::usarPlantacao() {
-    if (plantacoesRestantes > 0) {
-        plantacoesRestantes--;
-    }
-}
-
-void Jardineiro::usarColheita() {
-    if (colheitasRestantes > 0) {
-        colheitasRestantes--;
-    }
-}
-
-// ========================================================
-// Métodos Privados Auxiliares
-// ========================================================
-
-int Jardineiro::encontrarFerramentaNoInventario(int numeroSerie) {
-    for (size_t i = 0; i < inventario.size(); ++i) {
-        if (inventario[i]->getNumeroSerie() == numeroSerie) {
-            return static_cast<int>(i);
+void Jardineiro::processaFerramentaAutomatica(Solo &s)
+{
+    if (estaNoJardim && ferramentaNaMao)
+    {
+        ferramentaNaMao->aplicarNoSolo(s);
+        if (ferramentaNaMao->estaGasta())
+        {
+            delete ferramentaNaMao;
+            ferramentaNaMao = nullptr;
         }
     }
-    return -1;  // Não encontrada
+}
+
+bool Jardineiro::getEstaNoJardim() const
+{
+    return estaNoJardim;
+}
+
+int Jardineiro::getLinha() const
+{
+    return linha;
+}
+
+int Jardineiro::getColuna() const
+{
+    return coluna;
 }

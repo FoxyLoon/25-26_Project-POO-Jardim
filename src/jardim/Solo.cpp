@@ -1,24 +1,24 @@
 #include "Solo.h"
-#include "../plantas/Planta.h"
-#include "../ferramentas/Ferramenta.h"
+#include "../Settings.h"
+#include <cstdlib>
 
-// Construtores
-Solo::Solo() : agua(0), nutrientes(0), planta(nullptr), ferramenta(nullptr) {}
-
-Solo::Solo(int agua_inicial, int nutrientes_iniciais)
-    : agua(agua_inicial), nutrientes(nutrientes_iniciais), planta(nullptr), ferramenta(nullptr) {}
-
-// Destrutor - NÃO liberta planta/ferramenta (responsabilidade do Jardim)
-Solo::~Solo()
+Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
 {
-    // Não fazemos delete aqui - o Jardim é responsável pela gestão de memória
+    int aguaMinima = Settings::Jardim::agua_min;
+    int aguaMaxima = Settings::Jardim::agua_max;
+    int nutrientesMinimo = Settings::Jardim::nutrientes_min;
+    int nutrientesMaximo = Settings::Jardim::nutrientes_max;
+
+    int aguaAleatoria = aguaMinima + (rand() % (aguaMaxima - aguaMinima + 1));
+    int nutriAleatorio = nutrientesMinimo + (rand() % (nutrientesMaximo - nutrientesMinimo + 1));
+
+    agua = aguaAleatoria;
+    nutrientes = nutriAleatorio;
 }
 
-//===================================================================
-//===================================================================
-//===================================================================
+// ========================================================
 
-// Gestão da Água
+// Getters e Setters de recursos
 int Solo::getAgua() const
 {
     return agua;
@@ -26,32 +26,10 @@ int Solo::getAgua() const
 
 void Solo::setAgua(int valor)
 {
-    agua = (valor < 0) ? 0 : valor;
+    int valorFinal = (valor < 0) ? 0 : valor;
+    agua = valorFinal;
 }
 
-void Solo::adicionarAgua(int quantidade)
-{
-    if (quantidade > 0)
-    {
-        agua += quantidade;
-    }
-}
-
-void Solo::removerAgua(int quantidade)
-{
-    if (quantidade > 0)
-    {
-        agua -= quantidade;
-        if (agua < 0)
-            agua = 0;
-    }
-}
-
-//===================================================================
-//===================================================================
-//===================================================================
-
-// Gestão dos Nutrientes
 int Solo::getNutrientes() const
 {
     return nutrientes;
@@ -59,107 +37,168 @@ int Solo::getNutrientes() const
 
 void Solo::setNutrientes(int valor)
 {
-    nutrientes = (valor < 0) ? 0 : valor;
+    int valorFinal = (valor < 0) ? 0 : valor;
+    nutrientes = valorFinal;
+}
+
+// ========================================================
+
+// Gestão de recursos (adição/remoção)
+void Solo::adicionarAgua(int quantidade)
+{
+    int novoValor = agua + quantidade;
+    setAgua(novoValor);
+}
+
+void Solo::removerAgua(int quantidade)
+{
+    int novoValor = agua - quantidade;
+    setAgua(novoValor);
 }
 
 void Solo::adicionarNutrientes(int quantidade)
 {
-    if (quantidade > 0)
-    {
-        nutrientes += quantidade;
-    }
+    int novoValor = nutrientes + quantidade;
+    setNutrientes(novoValor);
 }
 
 void Solo::removerNutrientes(int quantidade)
 {
-    if (quantidade > 0)
+    int novoValor = nutrientes - quantidade;
+    setNutrientes(novoValor);
+}
+
+// ========================================================
+
+// Gestão da Planta
+bool Solo::temPlanta() const
+{
+    bool existe = (planta != nullptr);
+    return existe;
+}
+
+void Solo::setPlanta(Planta *p)
+{
+    if (!temPlanta())
     {
-        nutrientes -= quantidade;
-        if (nutrientes < 0)
-            nutrientes = 0;
+        planta = p;
     }
 }
 
-//===================================================================
-//===================================================================
-//===================================================================
-
-// Gestão de Planta
 Planta *Solo::getPlanta() const
 {
     return planta;
 }
 
-void Solo::setPlanta(Planta *p)
+void Solo::removerPlanta()
 {
-    planta = p;
-}
-
-bool Solo::temPlanta() const
-{
-    return planta != nullptr;
-}
-
-Planta *Solo::removerPlanta()
-{
-    Planta *temp = planta;
     planta = nullptr;
-    return temp; // Retorna o ponteiro para o caller gerir a memória
 }
 
-//===================================================================
-//===================================================================
-//===================================================================
+// ========================================================
 
-// Gestão de Ferramenta
+// Gestão da Ferramenta
+bool Solo::temFerramenta() const
+{
+    bool existe = (ferramenta != nullptr);
+    return existe;
+}
+
+void Solo::setFerramenta(Ferramenta *f)
+{
+    if (!temFerramenta())
+    {
+        ferramenta = f;
+    }
+}
+
 Ferramenta *Solo::getFerramenta() const
 {
     return ferramenta;
 }
 
-void Solo::setFerramenta(Ferramenta *f)
+void Solo::removerFerramenta()
 {
-    ferramenta = f;
-}
-
-bool Solo::temFerramenta() const
-{
-    return ferramenta != nullptr;
-}
-
-Ferramenta *Solo::removerFerramenta()
-{
-    Ferramenta *temp = ferramenta;
     ferramenta = nullptr;
-    return temp; // Retorna o ponteiro para o caller gerir a memória
 }
 
-//===================================================================
-//===================================================================
-//===================================================================
+// ========================================================
 
-// Verifica se está vazio
+// Gestão do Jardineiro (entrada/saída/movimento)
+bool Solo::possuiJardineiro() const
+{
+    return temJardineiro;
+}
+
+void Solo::setJardineiro(bool estado)
+{
+    temJardineiro = estado;
+}
+
+// ========================================================
+
+// Verificações de estado e símbolos
 bool Solo::estaVazio() const
 {
-    return !temPlanta() && !temFerramenta();
+    bool semPlanta = (planta == nullptr);
+    bool semFerramenta = (ferramenta == nullptr);
+    bool resultado = (semPlanta && semFerramenta);
+    return resultado;
 }
 
-// Símbolo visível
-char Solo::getSimboloVisivel() const
+char Solo::getSimboloPrioritario() const
 {
-    // Prioridade de visualização: Planta > Ferramenta > vazio
-    // (Jardineiro é tratado externamente na função mostrarComJardineiro)
+    if (temJardineiro)
+        return '*';
 
     if (temPlanta())
     {
-        return planta->getSimbolo();
+        char simbPlanta = planta->getSimbolo();
+        return simbPlanta;
     }
 
     if (temFerramenta())
     {
-        return ferramenta->simbolo();
+        char simbFerramenta = ferramenta->getSimbolo();
+        return simbFerramenta;
     }
 
-    // Posição vazia
-    return ' ';
+    char simbVazio = ' ';
+    return simbVazio;
+}
+
+string Solo::getInfoSolo() const
+{
+    int valAgua = getAgua();
+    int valNutri = getNutrientes();
+
+    ostringstream oss;
+    oss << "Água: " << valAgua << " | Nutrientes: " << valNutri;
+
+    if (temPlanta())
+    {
+        string infoP = planta->getInfo();
+        oss << " | Planta: " << infoP;
+    }
+    else
+    {
+        oss << " | Planta: Vazio";
+    }
+
+    if (temFerramenta())
+    {
+        oss << " | Ferramenta: Presente";
+    }
+    else
+    {
+        oss << " | Ferramenta: Vazio";
+    }
+
+    if (temJardineiro)
+    {
+        oss << " | [Jardineiro no Local]";
+    }
+
+    string infoFinal = oss.str();
+    return infoFinal;
 }

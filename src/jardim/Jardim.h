@@ -1,51 +1,42 @@
-// ========== Jardim.h ==========
 #ifndef JARDIM_H
 #define JARDIM_H
 
+#include <vector>
 #include "Solo.h"
-#include "../plantas/Planta.h"
-#include "../ferramentas/Ferramenta.h"
-#include "../jardineiro/Jardineiro.h"
+#include "../ferramentas/Regador.h"
+#include "../ferramentas/Adubo.h"
+#include "../ferramentas/Tesoura.h"
+#include "../ferramentas/FerramentaZ.h"
 
-/**
- * Classe Jardim - Grelha retangular de Solo
- *
- * IMPORTANTE: NÃO USA COLEÇÕES STANDARD para armazenamento do solo
- * Usa array dinâmico puro (Solo**)
- */
-class Jardim {
+using namespace std;
+
+class Jardim
+{
+private:
+    int linhas;
+    int colunas;
+    Solo **area;
+
+    // Funções auxiliares
+    void processaRecursosPlantas();
+    void processaMortes();
+    void processaMultiplicacao();
+    void processaFerramentasAleatorias();
+
+    // Geração de ferramentas
+    Ferramenta *gerarFerramentaAleatoria();
+
 public:
-    Jardim(int l, int c);
+    explicit Jardim(int l, int c);
     ~Jardim();
 
-    // Desabilitar cópia (por agora)
-    Jardim(const Jardim&) = delete;
-    Jardim& operator=(const Jardim&) = delete;
-
-    // Acesso e visualização
-    Solo* getSolo(int l, int c);
-    void mostraJardim(const Jardineiro& j) const;
-
-    // Simulação
-    void avancarInstante();
+    void avancaInstante();
+    void mostraJardim() const;
 
     // Getters
     int getLinhas() const { return linhas; }
     int getColunas() const { return colunas; }
-
-    void criarFerramentaAleatoria();  // ✅ Nova funcionalidade
-
-
-private:
-    int linhas, colunas;
-    Solo** area;  // ✅ Array dinâmico puro - SEM VECTOR!
-
-    // Métodos auxiliares
-    void processarPlantas();
-    void processarMortes();
-    void processarMultiplicacoes();
-    void multiplicarPlanta(int l, int c, Planta* mae);
-    bool estaCercada(int l, int c) const;
+    Solo &getSolo(int l, int c) { return area[l][c]; }
 };
 
 #endif

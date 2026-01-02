@@ -1,46 +1,53 @@
 #include "Regador.h"
-#include <sstream>
 
-Regador::Regador() : Ferramenta(), aguaDisponivel(Settings::Regador::capacidade) {}
-
-Regador::~Regador() {}
-
-char Regador::simbolo() const {
-    return 'g';
+Regador::Regador() : Ferramenta("Regador", 'g')
+{
+    aguaDisponivel = Settings::Regador::capacidade;
 }
 
-std::string Regador::nome() const {
-    return "Regador";
-}
-
-bool Regador::aplicar(Solo &solo) {
-    if (!estaUtilizavel()) {
-        return false;
+// Usa a ferramenta
+void Regador::usar()
+{
+    if (aguaDisponivel >= Settings::Regador::dose)
+    {
+        aguaDisponivel -= Settings::Regador::dose;
     }
-
-    // Adiciona água ao solo
-    solo.adicionarAgua(Settings::Regador::dose);  // ✅ CORRIGIDO: usar método
-
-    // Subtrai do regador
-    aguaDisponivel -= Settings::Regador::dose;
-
-    // Se ficou sem água, torna-se inútil
-    if (aguaDisponivel <= 0) {
+    else
+    {
         aguaDisponivel = 0;
-        return false;
     }
-
-    return true;
 }
 
-bool Regador::estaUtilizavel() const {
-    return aguaDisponivel > 0;
+void Regador::aplicarNoSolo(Solo &s)
+{
+    if (!estaGasta())
+    {
+        int dose = Settings::Regador::dose;
+
+        // 1. Adiciona água ao solo
+        s.setAgua(s.getAgua() + dose);
+
+        // 2. Consome água do regador
+        usar();
+    }
 }
 
-std::string Regador::getInfo() const {
-    std::ostringstream oss;
-    oss << "Regador #" << getNumeroSerie()
-        << " - Agua disponivel: " << aguaDisponivel
-        << "/" << Settings::Regador::capacidade;
+// Retorna true se a ferramenta estiver gastada
+bool Regador::estaGasta() const
+{
+    return aguaDisponivel <= 0;
+}
+
+// Retorna informacoes da ferramenta
+string Regador::getInfo() const
+{
+    ostringstream oss;
+    oss << "[Ferramenta: " << getNome() << "]\n"
+        << " - ID: " << getNumeroSerie() << "\n"
+        << " - Simbolo: " << getSimbolo() << "\n"
+        << " - Capacidade Maxima: " << Settings::Regador::capacidade << " unidades\n"
+        << " - Dose por uso: " << Settings::Regador::dose << " unidades\n"
+        << " - Quantidade Atual: " << aguaDisponivel << " unidades\n"
+        << " - Funcao: Aumentar a agua do solo\n";
     return oss.str();
 }

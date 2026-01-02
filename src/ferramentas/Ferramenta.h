@@ -2,38 +2,38 @@
 #define FERRAMENTA_H
 
 #include <string>
+#include <sstream>
 #include "../jardim/Solo.h"
+using namespace std;
 
-// Classe abstrata para ferramentas
-class Ferramenta {
+class Solo;
+
+class Ferramenta
+{
 private:
-    int numeroSerie;  // número único da ferramenta
-    static int proximoNumeroSerie;  // contador estático para gerar números únicos
+    static int proximo_ID;
+    int numeroSerieFerramenta_ID;
+    string nomeFerramenta;
+    char simboloFerramenta;
 
 public:
-    Ferramenta();
-    virtual ~Ferramenta();
+    Ferramenta(string nome, char simbolo);
+    virtual ~Ferramenta() = default;
 
-    // Símbolo visual da ferramenta
-    virtual char simbolo() const = 0;
+    // Getters
+    int getNumeroSerie() const;
+    string getNome() const;
+    char getSimbolo() const;
+    virtual string getInfo() const = 0;
 
-    // Nome da ferramenta (para listagens)
-    virtual std::string nome() const = 0;
+    // Aplica a ferramenta no solo
+    virtual void aplicarNoSolo(Solo& s) = 0;
 
-    // Ação da ferramenta (retorna true se ainda é utilizável, false se deve ser descartada)
-    virtual bool aplicar(Solo &solo) = 0;
+    // Usa a ferramenta
+    virtual void usar() = 0;
 
-    // Verifica se a ferramenta ainda é utilizável
-    virtual bool estaUtilizavel() const = 0;
-
-    // Retorna informação detalhada sobre a ferramenta
-    virtual std::string getInfo() const = 0;
-
-    // Getter do número de série
-    int getNumeroSerie() const { return numeroSerie; }
-
-    // Factory method para criar ferramentas a partir de um tipo
-    static Ferramenta* criar(char tipo);
+    // Verifica se a ferramenta está gastada (Adubo, Regador))
+    virtual bool estaGasta() const = 0;
 };
 
 #endif

@@ -1,40 +1,39 @@
 #include "Tesoura.h"
-#include "../plantas/Planta.h"
-#include <sstream>
 
-Tesoura::Tesoura() : Ferramenta() {}
+// Construtor: Símbolo 'T', nome "Tesoura"
+Tesoura::Tesoura() : Ferramenta("Tesoura", 't') {}
 
-Tesoura::~Tesoura() {}
-
-char Tesoura::simbolo() const {
-    return 't';
+// Usa a ferramenta
+void Tesoura::usar()
+{
+    // A tesoura não tem desgaste
 }
 
-std::string Tesoura::nome() const {
-    return "Tesoura de Poda";
-}
-
-bool Tesoura::aplicar(Solo &solo) {
-    // Elimina plantas FEIAS
-    if (solo.temPlanta()) {  // ✅ CORRIGIDO: usar método
-        Planta* p = solo.getPlanta();  // ✅ CORRIGIDO: usar getter
-        if (p->getBeleza() == "FEIA") {
-            // Remove a planta feia
-            solo.setPlanta(nullptr);  // ✅ CORRIGIDO: usar setter
-            delete p;
+void Tesoura::aplicarNoSolo(Solo& s) {
+    // A tesoura só age se houver uma planta e se ela for "FEIA"
+    if (s.temPlanta()) {
+        if (s.getPlanta()->getBeleza() == "FEIA") {
+            // Remove a planta do solo e liberta a memória
+            s.removerPlanta();
         }
     }
-
-    return true;  // tesoura nunca se desgasta
 }
 
-bool Tesoura::estaUtilizavel() const {
-    return true;
+// Retorna true se a ferramenta estiver gastada
+bool Tesoura::estaGasta() const
+{
+    // A tesoura não tem desgaste
+    return false;
 }
 
-std::string Tesoura::getInfo() const {
-    std::ostringstream oss;
-    oss << "Tesoura de Poda #" << getNumeroSerie()
-        << " - Durabilidade: infinita (aco cromado)";
+// Retorna informacoes da ferramenta
+string Tesoura::getInfo() const
+{
+    ostringstream oss;
+    oss << "[Ferramenta: " << getNome() << "]\n"
+        << " - ID: " << getNumeroSerie() << "\n"
+        << " - Simbolo: " << getSimbolo() << "\n"
+        << " - Durabilidade: Infinita (Aço Cromado)\n"
+        << " - Função: Eliminar plantas consideradas de beleza 'FEIA'\n";
     return oss.str();
 }

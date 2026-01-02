@@ -7,6 +7,7 @@
 
 #include "../jardim/Jardim.h"
 #include "../jardineiro/Jardineiro.h"
+#include "../ferramentas/FerramentaZ.h"
 
 #include "../plantas/Planta.h"
 #include "../plantas/Cacto.h"
