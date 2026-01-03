@@ -47,7 +47,6 @@ void Jardim::avancaInstante()
     processaMortes();
     processaMultiplicacao();
     processaFerramentasAleatorias();
-    mostraJardim();
 }
 
 void Jardim::processaRecursosPlantas()
@@ -104,7 +103,7 @@ void Jardim::processaMortes()
                 cout << "[MORTE] >> A planta " << p->getSimboloPlanta() << " morreu na posição (" << i << "," << j << ")\n";
                 p->aoMorrer(s);
                 delete p;
-                s.removerPlanta(); // Define nullptr internamente no Solo
+                s.removerPlanta();
             }
         }
     }
@@ -112,59 +111,66 @@ void Jardim::processaMortes()
 
 void Jardim::processaMultiplicacao()
 {
-    for (int i = 0; i < linhas; ++i)
+    // Criamos um vetor temporário para armazenar onde as novas plantas devem nascer
+    // Isso evita processar uma planta que acabou de nascer no mesmo turno
+    struct NovaPlanta
     {
-        for (int j = 0; j < colunas; ++j)
+        int l, c;
+        Planta *semente;
+    };
+    vector<NovaPlanta> sementesParaPlantar;
+
+    for (int l = 0; l < linhas; ++l)
+    {
+        for (int c = 0; c < colunas; ++c)
         {
-            if (!area[i][j].temPlanta())
-                continue;
+            Solo &soloAtual = area[l][c];
 
-            Planta *p = area[i][j].getPlanta();
-            if (p->podeMultiplicar())
+            // 1. Verificar se existe planta e se ela pode multiplicar
+            if (soloAtual.temPlanta() && soloAtual.getPlanta()->podeMultiplicar())
             {
-                char simb = p->getSimboloPlanta();
 
-                // Caso Especial: Erva Daninha ('e')
-                if (simb == 'e')
+                // 2. Procurar uma célula vizinha livre (Cima, Baixo, Esquerda, Direita)
+                int vizinhosL[] = {l - 1, l + 1, l, l};
+                int vizinhosC[] = {c, c, c - 1, c + 1};
+
+                for (int i = 0; i < 4; ++i)
                 {
-                    int ni = i + (rand() % 3 - 1);
-                    int nj = j + (rand() % 3 - 1);
-                    if (ni >= 0 && ni < linhas && nj >= 0 && nj < colunas && !(ni == i && nj == j))
+                    int nl = vizinhosL[i];
+                    int nc = vizinhosC[i];
+
+                    // Verificar limites do jardim e se o solo está vazio
+                    if (nl >= 0 && nl < linhas && nc >= 0 && nc < colunas)
                     {
-                        if (area[ni][nj].temPlanta())
-                            delete area[ni][nj].getPlanta();
-                        area[ni][nj].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] >> Uma Erva Daninha apareceu na posição (" << ni << "," << nj << ")\n";
-                    }
-                }
-                else
-                {
-                    // Outras plantas: busca posição vazia aleatória
-                    bool exotica = (simb == 'x');
-                    vector<pair<int, int>> livres;
-                    for (int vi = -1; vi <= 1; ++vi)
-                    {
-                        for (int vj = -1; vj <= 1; ++vj)
+                        if (area[nl][nc].estaVazio())
                         {
-                            if (vi == 0 && vj == 0)
-                                continue;
-                            if (exotica && (vi == 0 || vj == 0))
-                                continue; // diagonais
-                            int ni = i + vi, nj = j + vj;
-                            if (ni >= 0 && ni < linhas && nj >= 0 && nj < colunas && area[ni][nj].estaVazio())
+                            // Gera a semente (usa o método virtual da tua classe Planta)
+                            Planta *novaSemente = soloAtual.getPlanta()->gerarSemente();
+
+                            if (novaSemente != nullptr)
                             {
-                                livres.push_back({ni, nj});
+                                sementesParaPlantar.push_back({nl, nc, novaSemente});
                             }
+                            // Para a Roseira/Cacto, talvez queiras apenas 1 semente por turno
+                            break;
                         }
-                    }
-                    if (!livres.empty())
-                    {
-                        auto pos = livres[rand() % livres.size()];
-                        area[pos.first][pos.second].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] >> Uma planta " << simb << " nasceu na posicao (" << pos.first << "," << pos.second << ")\n";
                     }
                 }
             }
+        }
+    }
+
+    // 3. Efetivar a plantação das sementes recolhidas
+    for (auto &n : sementesParaPlantar)
+    {
+        // Verificação dupla para evitar que duas plantas vizinhas "nasçam" no mesmo lugar
+        if (area[n.l][n.c].estaVazio())
+        {
+            area[n.l][n.c].setPlanta(n.semente);
+        }
+        else
+        {
+            delete n.semente; // Limpeza de memória se o lugar foi ocupado entretanto
         }
     }
 }

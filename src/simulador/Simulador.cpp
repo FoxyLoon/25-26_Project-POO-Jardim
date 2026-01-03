@@ -30,8 +30,8 @@ bool Simulador::processaComando(const string &linha)
     // ========================================================
 
     // Comando para avançar o tempo/instantes
-    // if (cmd == "avanca")
-    //     return comandoAvanca(ss);
+    if (cmd == "avanca")
+        return comandoAvanca(ss);
 
     // ========================================================
 
@@ -104,71 +104,73 @@ bool Simulador::processaComando(const string &linha)
 
 // Comandos Gerais
 
-// bool Simulador::comandoAvanca(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoAvanca(stringstream &ss)
+{
+    if (!isJardimCriado())
+        return false;
 
-//     int n = 1;
-//     if (!(ss >> n))
-//     {
-//         n = 1;
-//         cout << "[INFO] Numero de instantes nao especificado. Avancando 1 instante por defeito.\n";
-//     }
-//     if (n <= 0)
-//     {
-//         cout << "[ERRO] O numero de instantes deve ser positivo.\n";
-//         return false;
-//     }
+    // Verifica se o utilizador quer avançar mais de um instante
+    int totalInstantesParaAvancar = 1;
+    if (ss >> totalInstantesParaAvancar)
+    {
+        if (totalInstantesParaAvancar <= 0)
+        {
+            cout << string(111, '=') << "\n[ERRO] >> O numero de instantes deve ser um valor positivo." << endl;
+            return false;
+        }
+    }
 
-//     // Avançar N instantes
-//     for (int i = 0; i < n; ++i)
-//     {
-//         cout << "\n"
-//              << string(60, '=') << "\n"
-//              << "[INSTANTE " << (i + 1) << "/" << n << "]\n"
-//              << string(60, '=') << "\n";
+    // Feedback: Instantes
+    for (int instante_atual = 0; instante_atual < totalInstantesParaAvancar; ++instante_atual)
+    {
+        cout << "\n"
+             << string(60, '=') << "\n"
+             << "[ INSTANTE " << (instante_atual + 1) << " / " << totalInstantesParaAvancar << " ]\n"
+             << string(60, '=') << endl;
 
-//         // 1. Reiniciar contadores do jardineiro
-//         jardineiro.reiniciarTurno();
-//         cout << "[INFO] >> Contadores do jardineiro reiniciados...\n";
+        // Atualiza as trocas de recursos do jardim
+        jardim->avancaInstante();
 
-//         // 2. APLICAR AÇÃO DA FERRAMENTA (se no jardim e com ferramenta na mão)
-//         if (jardineiro.getEstaNoJardim())
-//         {
-//             Ferramenta *ferramenta = jardineiro.getFerramentaNaMao();
-//             if (ferramenta != nullptr)
-//             {
-//                 Solo &s = jardim->getSolo(jardineiro.getLinha(), jardineiro.getColuna());
-//                 ferramenta->aplicarNoSolo(s);
+        // Verifica se o jardineiro esta no jardim
+        if (jardineiro.verificarPresenca())
+        {
+            Ferramenta *ferramentaNaMao = jardineiro.getFerramentaNaMao();
 
-//                 // Remover ferramenta se ficar gasta (ex: adubo/regador vazios)
-//                 if (ferramenta->estaGasta())
-//                 {
-//                     jardineiro.removerFerramenta(ferramenta->getNumeroSerie());
-//                 }
-//             }
-//         }
+            if (ferramentaNaMao != nullptr)
+            {
+                // Obtém o solo onde o jardineiro está parado
+                Solo &soloAtual = jardim->getSolo(jardineiro.getLinha(), jardineiro.getColuna());
 
-//         // 3. Avança instante Jardim
-//         jardim->avancaInstante();
-//     }
+                // Aplica o efeito da ferramenta (Regar, Adubar, etc.)
+                ferramentaNaMao->aplicarNoSolo(soloAtual);
 
-//     cout << "\n"
-//          << string(60, '=') << "\n"
-//          << "[RESULTADO FINAL]\n"
-//          << string(60, '=') << "\n";
+                // Elimina a ferramenta da mão do jardineiro se ela estiver gasta
+                if (ferramentaNaMao->estaGasta())
+                {
+                    int ID_FerramentaGasta = ferramentaNaMao->getNumeroSerieFerramenta();
+                    jardineiro.removerFerramentaDoInventario(ID_FerramentaGasta);
+                }
+            }
+            else
+            {
+                cout << "[AVISO] >> Mao vazia: nenhuma ferramenta usada neste instante." << endl;
+            }
+        }
 
-//     jardim->mostraJardim();
+        // Reinicia limites de ações do Jardineiro
+        jardineiro.reiniciarTurno();
 
-//     return true;
-// }
+        // F. Mostra o jardim atualizado após este instante
+        jardim->mostraJardim();
+    }
+
+    return true;
+}
 
 bool Simulador::comandoFim()
 {
     cout << "A encerrar o simulador...\n";
     exit(0);
-    return true; // nunca alcançado, mas satisfaz o tipo
 }
 
 bool Simulador::comandoJardim(stringstream &ss)
@@ -265,9 +267,7 @@ bool Simulador::comandoJardim(stringstream &ss)
 bool Simulador::comandoLplantas()
 {
     if (!isJardimCriado())
-    {
         return false;
-    }
 
     bool encontrouPlantas = false;
     int contadorPlantas = 0;
