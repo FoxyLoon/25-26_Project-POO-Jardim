@@ -80,7 +80,7 @@ void Jardim::processaMortes()
             bool deveMorrer = p->verificaMorte(s);
 
             // Condição Roseira ('r'): morre se rodeada por 8 plantas
-            if (p->getSimbolo() == 'r')
+            if (p->getSimboloPlanta() == 'r')
             {
                 int vizinhos = 0;
                 for (int vi = -1; vi <= 1; ++vi)
@@ -103,7 +103,7 @@ void Jardim::processaMortes()
 
             if (deveMorrer)
             {
-                cout << "[MORTE] Planta " << p->getSimbolo() << " em (" << i << "," << j << ")\n";
+                cout << "[MORTE] Planta " << p->getSimboloPlanta() << " em (" << i << "," << j << ")\n";
                 p->aoMorrer(s);
                 delete p;
                 s.removerPlanta(); // Define nullptr internamente no Solo
@@ -124,7 +124,7 @@ void Jardim::processaMultiplicacao()
             Planta *p = area[i][j].getPlanta();
             if (p->podeMultiplicar())
             {
-                char simb = p->getSimbolo();
+                char simb = p->getSimboloPlanta();
 
                 // Caso Especial: Erva Daninha ('e')
                 if (simb == 'e')
@@ -183,7 +183,7 @@ void Jardim::processaFerramentasAleatorias()
             {
                 if (area[i][j].possuiJardineiro())
                 {
-                    cout << "[INFO] Jardineiro recolheu " << area[i][j].getFerramenta()->getNome() << "\n";
+                    cout << "[INFO] Jardineiro recolheu " << area[i][j].getFerramenta()->getNomeFerramenta() << "\n";
                     // Aqui passar o ponteiro para o inventário do jardineiro antes de anular no solo
                     area[i][j].removerFerramenta();
                 }

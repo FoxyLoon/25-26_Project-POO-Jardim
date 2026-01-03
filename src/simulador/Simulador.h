@@ -84,12 +84,12 @@ private:
     // ========================================================
 
     // Comandos para controlar o jardineiro
-    bool comandoE();    // OK
-    bool comandoD();    // OK
-    bool comandoC();    // OK
-    bool comandoB();    // OK
-    bool comandoEntra(stringstream &ss);    // OK
-    bool comandoSai();  // OK
+    bool comandoE();                     // OK
+    bool comandoD();                     // OK
+    bool comandoC();                     // OK
+    bool comandoB();                     // OK
+    bool comandoEntra(stringstream &ss); // OK
+    bool comandoSai();                   // OK
 
     // ========================================================
     // ========================================================
@@ -98,14 +98,16 @@ private:
     // Funções auxiliares
 
     // Valida posições no jardim
-    static bool isPosicaoValida(const string &p);
+    static bool isLetraPequena(const string &p);
 
     // Verifica se existe um Jardim
-    static bool isJardimCriado(const bool &jm_c);
+    bool isJardimCriado();
 
     // Verifica se existe um Jardineiro
-    static bool isJardineiroCriado(const bool &jo_c);
+    bool isJardineiroCriado();
 
+    // Verifica se está fora dos limites
+    bool isForaDosLimites(int linha, int coluna);
     // ========================================================
     // ========================================================
     // ========================================================

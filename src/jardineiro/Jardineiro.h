@@ -3,9 +3,12 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "../jardim/Solo.h"
 #include "../ferramentas/Ferramenta.h"
 #include "../Settings.h"
+
+using namespace std;
 
 class Jardineiro
 {
@@ -13,7 +16,7 @@ private:
     int linha, coluna;
     bool estaNoJardim;
 
-    std::vector<Ferramenta *> inventario;
+    vector<Ferramenta *> inventario;
     Ferramenta *ferramentaNaMao;
 
     int movimentosRestantes;
@@ -25,36 +28,60 @@ public:
     Jardineiro();
     virtual ~Jardineiro();
 
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
     void reiniciarTurno();
 
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
     // Verificadores de Estado e Recursos
+
     bool verificarPresenca() const;
     bool podeMovimentar();
     bool podeEntrarSair();
     bool podePlantar();
     bool podeColher();
 
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
     // Ações de Movimento e Jardim
-    void usaMovimento(int novaL, int novaC, int maxL, int maxC, string direcao);
+
+    void usaMovimento(int novaL, int novaC, string direcao);
     void usaEntrar(int l, int c);
     void usaSair();
     void usaPlantar(Solo &s, Planta *novaPlanta);
     void usaColher(Solo &s);
 
+    // ========================================================
+    // ========================================================
+    // ========================================================
+
     // Gestão de Inventário
+
     void adicionarFerramenta(Ferramenta *f);
-    void removerFerramenta(int indice);
     void selecionarFerramenta(int indice);
     void largarFerramenta();
+    Ferramenta *removerFerramenta(int indice);
+
+    // Consultas de Inventário
     void listarFerramentas() const;
     Ferramenta *getFerramentaNaMao() const;
+    void mostrarEstado() const;
 
-    void processaFerramentaAutomatica(Solo &s);
+    // ========================================================
+    // ========================================================
+    // ========================================================
 
-    // Getters
-    bool getEstaNoJardim() const;
+    // Getters de Posição
     int getLinha() const;
     int getColuna() const;
+    bool getEstaNoJardim() const;
 };
 
 #endif

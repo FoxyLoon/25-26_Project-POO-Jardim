@@ -11,26 +11,21 @@ Comportamento:
 - Multiplica-se por tempo e recursos.
 */
 
-ErvaDaninha::ErvaDaninha() : Planta(Settings::ErvaDaninha::inicial_agua, Settings::ErvaDaninha::inicial_nutrientes, 'e', "FEIA"), idade(0), instantesDesdeUltimaMultiplicacao(0) {}
+ErvaDaninha::ErvaDaninha() : Planta("Erva Daninha", Settings::ErvaDaninha::inicial_agua, Settings::ErvaDaninha::inicial_nutrientes, 'e', "FEIA"), idade(0), instantesDesdeUltimaMultiplicacao(0) {}
 
 // ========================================================
 
 // Informação da Planta
-string ErvaDaninha::getInfo() const
+string ErvaDaninha::getInfoPlanta() const
 {
-    int agua = getAguaInterna();
-    int nutrientes = getNutrientesInternos();
-    char simbolo = getSimbolo();
-    string beleza = getBeleza();
-
     ostringstream oss;
-    oss << "[Erva Daninha] " << "\n";
-    oss << "Simbolo: " << simbolo << "\n";
-    oss << "Beleza: " << beleza << "\n";
-    oss << "Água: " << agua << "\n";
-    oss << "Nutrientes: " << nutrientes << "\n";
-    oss << "Idade (Instantes): " << idade << "\n";
-    oss << "Instantes desde ultima multiplicacao: " << instantesDesdeUltimaMultiplicacao << "\n";
+    oss << "\t[" << getNomePlanta() << "]"
+        << " | Simbolo: " << getSimboloPlanta()
+        << " | Beleza: " << getBelezaPlanta()
+        << " | Água: " << getAguaInterna()
+        << " | Nutrientes: " << getNutrientesInternos()
+        << " | Idade (Instantes): " << idade << "\n"
+        << "\t\tInstantes desde ultima multiplicacao: " << instantesDesdeUltimaMultiplicacao << endl;
 
     string informacao = oss.str();
     return informacao;

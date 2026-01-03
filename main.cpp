@@ -25,7 +25,7 @@ int main()
        << "\t\tSimulador de Jardim\t\t\n"
        << string(51, '=') << '\n';
 
-  while (cout << "> ", getline(cin, linha))
+  while (cout << "\n> ", getline(cin, linha))
   {
     if (linha.empty())
     {
@@ -33,7 +33,7 @@ int main()
       cout << "[INFO] >> Por favor, digite um comando!\n\n";
       continue;
     }
-    cout << string(51, '=') << '\n';
+    cout << string(51, '=') << endl;
 
     if (!cmd.processaComando(linha))
       cout << '\n';
