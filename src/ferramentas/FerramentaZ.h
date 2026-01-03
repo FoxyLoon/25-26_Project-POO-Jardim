@@ -30,13 +30,13 @@ class FerramentaZ : public Ferramenta
 
 public:
     FerramentaZ();
-    virtual ~FerramentaZ() = default;
+    ~FerramentaZ() override = default;
 
     void usar() override;
     void aplicarNoSolo(Solo &s) override;
-    bool estaGasta() const override;
-    string getInfoFerramenta() const override;
-    string getInfoExtraFerramenta() const override;
+    [[nodiscard]] bool estaGasta() const override;
+    [[nodiscard]] string getInfoFerramenta() const override;
+    [[nodiscard]] string getInfoExtraFerramenta() const override;
 };
 
 #endif

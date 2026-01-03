@@ -1,5 +1,4 @@
 #include "FerramentaZ.h"
-#include <cmath> // Para usar abs() se necessário
 
 FerramentaZ::FerramentaZ() : Ferramenta("Harmonizador de Solo", 'z')
 {

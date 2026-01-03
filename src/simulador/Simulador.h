@@ -59,11 +59,11 @@ private:
     // ========================================================
 
     // Comandos para listar informação
-    bool comandoLplantas() const;                // OK
+    [[nodiscard]] bool comandoLplantas() const;                // OK
     bool comandoLplanta(stringstream &ss) const; // OK
-    bool comandoLarea() const;                   // OK
+    [[nodiscard]] bool comandoLarea() const;                   // OK
     bool comandoLsolo(stringstream &ss) const;   // OK
-    bool comandoLferr() const;                   // OK
+    [[nodiscard]] bool comandoLferr() const;                   // OK
 
     // ========================================================
     // ========================================================
@@ -98,20 +98,20 @@ private:
     static bool isLetraPequena(const string &p);
 
     // Verifica se existe um Jardim
-    bool isJardimCriado() const;
+    [[nodiscard]] bool isJardimCriado() const;
 
     // Verifica se existe um Jardineiro
-    bool isJardineiroNoJardim() const;
+    [[nodiscard]] bool isJardineiroNoJardim() const;
 
     // Verifica se está fora dos limites
-    bool isForaDosLimites(int linha, int coluna) const;
+    [[nodiscard]] bool isForaDosLimites(int linha, int coluna) const;
 
     // ========================================================
     // ========================================================
 
     // Funções para Serialização/Deserialização
 
-    bool salvarJardimEmFicheiro(const string &nome) const;
+    [[nodiscard]] bool salvarJardimEmFicheiro(const string &nome) const;
     bool carregarJardimDeFicheiro(const string &nome);
     static bool apagarFicheiro(const string &nome);
 

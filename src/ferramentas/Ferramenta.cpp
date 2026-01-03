@@ -1,8 +1,10 @@
 #include "Ferramenta.h"
 
+#include <utility>
+
 int Ferramenta::proximo_ID = 1;
 
-Ferramenta::Ferramenta(string nome, char simbolo) : nomeFerramenta(nome), simboloFerramenta(simbolo)
+Ferramenta::Ferramenta(string nome, char simbolo) : nomeFerramenta(std::move(nome)), simboloFerramenta(simbolo)
 {
     numeroSerieFerramenta_ID = proximo_ID++;
 }

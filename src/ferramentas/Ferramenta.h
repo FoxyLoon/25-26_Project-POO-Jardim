@@ -2,7 +2,6 @@
 #define FERRAMENTA_H
 
 #include <string>
-#include <sstream>
 #include "../jardim/Solo.h"
 using namespace std;
 
@@ -21,12 +20,12 @@ public:
     virtual ~Ferramenta() = default;
 
     // Getters
-    int getNumeroSerieFerramenta() const;
+    [[nodiscard]] int getNumeroSerieFerramenta() const;
     void setNumeroSerie(int novoNumero);
-    string getNomeFerramenta() const;
-    char getSimboloFerramenta() const;
-    virtual string getInfoFerramenta() const = 0;
-    virtual string getInfoExtraFerramenta() const = 0;
+    [[nodiscard]] string getNomeFerramenta() const;
+    [[nodiscard]] char getSimboloFerramenta() const;
+    [[nodiscard]] virtual string getInfoFerramenta() const = 0;
+    [[nodiscard]] virtual string getInfoExtraFerramenta() const = 0;
 
 
     // Aplica a ferramenta no solo
@@ -36,7 +35,7 @@ public:
     virtual void usar() = 0;
 
     // Verifica se a ferramenta está gastada (Adubo, Regador))
-    virtual bool estaGasta() const = 0;
+    [[nodiscard]] virtual bool estaGasta() const = 0;
 };
 
 #endif
