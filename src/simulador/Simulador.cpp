@@ -252,11 +252,10 @@ bool Simulador::comandoGrava(stringstream &ss)
         jardim->mostraJardim();
         return true;
     }
-    else
-    {
-        cout << "[ERRO] >> Erro ao guardar o jardim.\n";
-        return false;
-    }
+
+    cout << "[ERRO] >> Erro ao guardar o jardim.\n";
+    return false;
+
 }
 
 // ========================================================
@@ -277,20 +276,33 @@ bool Simulador::comandoRecupera(stringstream &ss)
         jardim->mostraJardim();
         return true;
     }
-    else
-    {
-        cout << "[ERRO] >> Erro ao recuperar o jardim.\n";
-        return false;
-    }
+
+    cout << "[ERRO] >> Erro ao recuperar o jardim.\n";
+    return false;
+
 }
 
 // ========================================================
 
-// bool Simulador::comandoApaga(stringstream &ss)
-// {
-//     cout << "[INFO] Apagar copia nao implementado (sem persistencia nesta fase).\n";
-//     return true;
-// }
+bool Simulador::comandoApaga(stringstream &ss)
+{
+    string nome;
+    if (!(ss >> nome))
+    {
+        cout << "[ERRO] >> É necessário fornecer um nome para a cópia a apagar.\n";
+        return false;
+    }
+
+    if (apagarFicheiro(nome))
+    {
+        cout << "[INFO] >> Cópia '" << nome << "' apagada com sucesso.\n";
+        return true;
+    }
+
+    cout << "[ERRO] >> Erro ao apagar a cópia.\n";
+    return false;
+
+}
 
 // // ========================================================
 
@@ -399,6 +411,21 @@ void Simulador::criarPastaSeNaoExistir(const string &caminho)
     #else
         mkdir(caminho.c_str(), 0755);
     #endif
+}
+
+bool Simulador::apagarFicheiro(const string &nome)
+{
+    // Construir caminho do ficheiro
+    string caminhoFicheiro = "saves/" + nome + ".garden";
+
+    // Tentar apagar o ficheiro
+    if (remove(caminhoFicheiro.c_str()) != 0) // c_str() converte a string (C++) para um const char* (C) para poder ser rercebido em remove()
+    {
+        cout << "[ERRO] >> Ficheiro '" << caminhoFicheiro << "' não encontrado ou não foi possível apagar.\n";
+        return false;
+    }
+
+    return true;
 }
 
 string Simulador::serializarPlanta(const Planta *p)

@@ -54,7 +54,7 @@ private:
     bool comandoJardim(stringstream &ss);   // OK
     bool comandoGrava(stringstream &ss);    // OK (Implementado)
     bool comandoRecupera(stringstream &ss); // OK (Implementado)
-    bool comandoApaga(stringstream &ss);    // Não Implementado
+    bool comandoApaga(stringstream &ss);    // OK (Implementado)
     bool comandoExecuta(stringstream &ss);  // Não Implementado
 
     // ========================================================
@@ -114,6 +114,8 @@ private:
 
     bool salvarJardimEmFicheiro(const string &nome);
     bool carregarJardimDeFicheiro(const string &nome);
+    bool apagarFicheiro(const string &nome);
+
 
     // Funções auxiliares para criar pastas
     void criarPastaSeNaoExistir(const string &caminho);
