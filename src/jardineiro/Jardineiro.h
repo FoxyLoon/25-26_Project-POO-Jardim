@@ -64,10 +64,10 @@ public:
 
     // Gestão de Inventário
 
-    void adicionarFerramenta(Ferramenta *f);
-    void selecionarFerramenta(int indice);
-    void largarFerramenta();
-    Ferramenta *removerFerramenta(int indice);
+    void adicionarFerramentaAoInventario(Ferramenta *f);
+    void selecionarFerramentaDoInventario(int ID_Ferramenta);
+    void depositarFerramentaDaMaoParaInventario();
+    void removerFerramentaDoInventario(int ID_Ferramenta);
 
     // Consultas de Inventário
     void listarFerramentas() const;

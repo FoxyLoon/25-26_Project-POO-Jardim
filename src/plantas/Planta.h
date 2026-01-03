@@ -32,6 +32,7 @@ public:
     const char getSimboloPlanta() const;
     const string getBelezaPlanta() const;
     virtual string getInfoPlanta() const = 0;
+    virtual string getInfoExtraPlanta() const = 0;
 
     // ========================================================
 

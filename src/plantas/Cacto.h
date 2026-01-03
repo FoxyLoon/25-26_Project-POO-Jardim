@@ -31,6 +31,7 @@ public:
 
     // Informação da Planta
     string getInfoPlanta() const override;
+    string getInfoExtraPlanta() const override;
     
     // ========================================================
 

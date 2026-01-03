@@ -101,7 +101,7 @@ void Jardim::processaMortes()
 
             if (deveMorrer)
             {
-                cout << "[MORTE] Planta " << p->getSimboloPlanta() << " em (" << i << "," << j << ")\n";
+                cout << "[MORTE] >> A planta " << p->getSimboloPlanta() << " morreu na posição (" << i << "," << j << ")\n";
                 p->aoMorrer(s);
                 delete p;
                 s.removerPlanta(); // Define nullptr internamente no Solo
@@ -134,7 +134,7 @@ void Jardim::processaMultiplicacao()
                         if (area[ni][nj].temPlanta())
                             delete area[ni][nj].getPlanta();
                         area[ni][nj].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] Erva Daninha em (" << ni << "," << nj << ")\n";
+                        cout << "[NASCIMENTO] >> Uma Erva Daninha apareceu na posição (" << ni << "," << nj << ")\n";
                     }
                 }
                 else
@@ -161,7 +161,7 @@ void Jardim::processaMultiplicacao()
                     {
                         auto pos = livres[rand() % livres.size()];
                         area[pos.first][pos.second].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] " << simb << " em (" << pos.first << "," << pos.second << ")\n";
+                        cout << "[NASCIMENTO] >> Uma planta " << simb << " nasceu na posicao (" << pos.first << "," << pos.second << ")\n";
                     }
                 }
             }
@@ -172,33 +172,23 @@ void Jardim::processaMultiplicacao()
 void Jardim::processaFerramentasAleatorias()
 {
     int total = 0;
-    // 1. Verificar se o jardineiro apanhou alguma e contar as existentes
     for (int i = 0; i < linhas; ++i)
     {
         for (int j = 0; j < colunas; ++j)
         {
             if (area[i][j].temFerramenta())
             {
-                if (area[i][j].possuiJardineiro())
-                {
-                    cout << "[INFO] Jardineiro recolheu " << area[i][j].getFerramenta()->getNomeFerramenta() << "\n";
-                    // Aqui passar o ponteiro para o inventário do jardineiro antes de anular no solo
-                    area[i][j].removerFerramenta();
-                }
-                else
-                {
-                    total++;
-                }
+                total++;
             }
         }
     }
 
-    // 2. Repor ferramentas até ter 3 no chão
+    // Mantém sempre 3 ferramentas no chão
     while (total < 3)
     {
         int rl = rand() % linhas;
         int rc = rand() % colunas;
-        if (!area[rl][rc].temFerramenta() && !area[rl][rc].possuiJardineiro())
+        if (area[rl][rc].estaVazio() && !area[rl][rc].possuiJardineiro())
         {
             area[rl][rc].setFerramenta(gerarFerramentaAleatoria());
             total++;

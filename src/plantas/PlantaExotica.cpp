@@ -23,23 +23,30 @@ PlantaExotica::PlantaExotica() : Planta("Bambu Lunar", Settings::PlantaExotica::
 string PlantaExotica::getInfoPlanta() const
 {
     ostringstream oss;
-    oss << "\t[" << getNomePlanta() << "]"
+    oss << "[" << getNomePlanta() << "]"
         << " | Simbolo: " << getSimboloPlanta()
         << " | Beleza: " << getBelezaPlanta()
         << " | Água: " << getAguaInterna()
         << " | Nutrientes: " << getNutrientesInternos()
         << " | Idade (Instantes): " << idade << endl;
 
-    // Identificação da fase atual de acordo com a idade
-    if (idade <= Settings::PlantaExotica::fim_jovem)
-        oss << "\t\tFase: JOVEM" << endl;
-    else if (idade <= Settings::PlantaExotica::fim_adulta)
-        oss << "\t\tFase: ADULTA" << endl;
-    else
-        oss << "\t\tFase: MADURA" << endl;
-
     string informacao = oss.str();
     return informacao;
+}
+
+string PlantaExotica::getInfoExtraPlanta() const
+{
+    ostringstream oss;
+    // Identificação da fase atual de acordo com a idade
+    if (idade <= Settings::PlantaExotica::fim_jovem)
+        oss << "Fase: JOVEM" << endl;
+    else if (idade <= Settings::PlantaExotica::fim_adulta)
+        oss << "Fase: ADULTA" << endl;
+    else
+        oss << "Fase: MADURA" << endl;
+
+    string informacaoExtra = oss.str();
+    return informacaoExtra;
 }
 
 // ========================================================

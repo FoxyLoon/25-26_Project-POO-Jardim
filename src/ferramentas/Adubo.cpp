@@ -42,13 +42,21 @@ bool Adubo::estaGasta() const
 string Adubo::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "\t[" << getNomeFerramenta() << "]"
+    oss << "[" << getNomeFerramenta() << "]"
         << " (ID " << getNumeroSerieFerramenta() << ")"
         << " | Simbolo: " << getSimboloFerramenta()
         << " | Quantidade Atual/Capacidade Maxima: " << nutrientesDisponiveis << "/" << Settings::Adubo::capacidade
-        << " | Dose por uso: " << Settings::Adubo::dose << "\n"
-        << "\t\tFunção: Aumentar os nutrientes do solo" << endl;
+        << " | Dose por uso: " << Settings::Adubo::dose << endl;
 
     string informacao = oss.str();
     return informacao;
+}
+
+string Adubo::getInfoExtraFerramenta() const
+{
+    ostringstream oss;
+    oss << "Função: Aumentar os nutrientes do solo" << endl;
+
+    string informacaoExtra = oss.str();
+    return informacaoExtra;
 }

@@ -37,7 +37,7 @@ bool Jardineiro::verificarPresenca() const
 {
     if (estaNoJardim)
         return true;
-    cout << "[AVISO] >> O jardineiro nao esta no jardim!" << endl;
+    cout << string(111, '=') << "\n[ERRO] >> O jardineiro nao esta no jardim!" << endl;
     return false;
 }
 
@@ -45,7 +45,7 @@ bool Jardineiro::podeMovimentar()
 {
     if (movimentosRestantes > 0)
         return true;
-    cout << "[AVISO] >> O jardineiro esgotou os movimentos! (" << Settings::Jardineiro::max_movimentos << " por turno)" << endl;
+    cout << string(111, '=') << "\n[ERRO] >> Limite de movimentos esgotado! (" << Settings::Jardineiro::max_movimentos << " por turno)" << endl;
     return false;
 }
 
@@ -53,7 +53,7 @@ bool Jardineiro::podeEntrarSair()
 {
     if (entradasSaidasRestantes > 0)
         return true;
-    cout << "[AVISO] >> Limite de entradas/saidas esgotado! (" << Settings::Jardineiro::max_entradas_saidas << " por turno)" << endl;
+    cout << string(111, '=') << "\n[ERRO] >> Limite de entradas/saidas esgotado! (" << Settings::Jardineiro::max_entradas_saidas << " por turno)" << endl;
     return false;
 }
 
@@ -61,7 +61,7 @@ bool Jardineiro::podePlantar()
 {
     if (plantacoesRestantes > 0)
         return true;
-    cout << "[AVISO] >> Limite de plantacoes esgotado! (" << Settings::Jardineiro::max_plantacoes << " por turno)" << endl;
+    cout << string(111, '=') << "\n[ERRO] >> Limite de plantacoes esgotado! (" << Settings::Jardineiro::max_plantacoes << " por turno)" << endl;
     return false;
 }
 
@@ -69,7 +69,7 @@ bool Jardineiro::podeColher()
 {
     if (colheitasRestantes > 0)
         return true;
-    cout << "[AVISO] >> Limite de colheitas esgotado! (" << Settings::Jardineiro::max_colheitas << " por turno)" << endl;
+    cout << string(111, '=') << "\n[ERRO] >> Limite de colheitas esgotado! (" << Settings::Jardineiro::max_colheitas << " por turno)" << endl;
     return false;
 }
 
@@ -84,7 +84,7 @@ void Jardineiro::usaMovimento(int novaL, int novaC, string direcao)
     linha = novaL;
     coluna = novaC;
     movimentosRestantes--;
-    cout << "[ACAO] >> O jardineiro moveu-se para " << direcao << ". (Restam: " << movimentosRestantes << " movimentos)" << endl;
+    cout << string(111, '=') << "\n[AÇÃO] >> O jardineiro moveu-se para " << direcao << ". (Restam: " << movimentosRestantes << " movimentos)" << endl;
 }
 
 void Jardineiro::usaEntrar(int l, int c)
@@ -93,7 +93,7 @@ void Jardineiro::usaEntrar(int l, int c)
     coluna = c;
     estaNoJardim = true;
     entradasSaidasRestantes--;
-    cout << "[ACAO] >> O jardineiro entrou no jardim. (Restam: " << entradasSaidasRestantes << " entradas/saidas)" << endl;
+    cout << string(111, '=') << "\n[AÇÃO] >> O jardineiro entrou no jardim. (Restam: " << entradasSaidasRestantes << " entradas/saidas)" << endl;
 }
 
 void Jardineiro::usaSair()
@@ -102,7 +102,7 @@ void Jardineiro::usaSair()
     coluna = -1;
     estaNoJardim = false;
     entradasSaidasRestantes--;
-    cout << "[ACAO] >> O jardineiro saiu do jardim. (Restam: " << entradasSaidasRestantes << " entradas/saidas)" << endl;
+    cout << string(111, '=') << "\n[AÇÃO] >> O jardineiro saiu do jardim. (Restam: " << entradasSaidasRestantes << " entradas/saidas)" << endl;
 }
 
 void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
@@ -112,7 +112,7 @@ void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
         string nome = novaPlanta->getNomePlanta();
         s.setPlanta(novaPlanta);
         plantacoesRestantes--;
-        cout << "[ACAO] >> O jardineiro plantou uma " << nome << ". (Restam: " << plantacoesRestantes << " plantacoes)" << endl;
+        cout << string(111, '=') << "\n[AÇÃO] >> O jardineiro plantou uma " << nome << ". (Restam: " << plantacoesRestantes << " plantacoes)" << endl;
     }
 }
 
@@ -124,7 +124,7 @@ void Jardineiro::usaColher(Solo &s)
         string nome = p->getNomePlanta();
         delete p;
         colheitasRestantes--;
-        cout << "[ACAO] >> O jardineiro colheu uma " << nome << ". (Restam: " << colheitasRestantes << " colheitas)" << endl;
+        cout << string(111, '=') << "\n[AÇÃO] >> O jardineiro colheu uma " << nome << ". (Restam: " << colheitasRestantes << " colheitas)" << endl;
     }
 }
 
@@ -134,85 +134,116 @@ void Jardineiro::usaColher(Solo &s)
 
 // Gestão de Inventário
 
-void Jardineiro::adicionarFerramenta(Ferramenta *f)
+// Adiciona uma ferramenta ao inventário
+void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
 {
     if (f)
     {
         inventario.push_back(f);
-        cout << "[INFO] >> Adicionada ferramenta: " << f->getNomeFerramenta() << ". (Mochila: " << inventario.size() << " itens)" << endl;
+        cout << string(111, '=') << "\n"
+             << "[INFO] >> Ferramenta adicionada: " << f->getNomeFerramenta() << ". (Iventário: " << inventario.size() << " itens)" << endl;
     }
 }
 
-void Jardineiro::selecionarFerramenta(int indice)
+// Seleciona uma ferramenta do inventário
+void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
 {
-    if (indice >= 0 && indice < (int)inventario.size())
+    // Procura a ferramenta no inventário pelo seu ID
+    int posicaoNoVetor = -1;
+    for (size_t i = 0; i < inventario.size(); ++i)
     {
-        largarFerramenta();
-        ferramentaNaMao = inventario[indice];
-        inventario.erase(inventario.begin() + indice);
-        cout << "[INFO] >> O jardineiro equipou: " << ferramentaNaMao->getNomeFerramenta() << endl;
+        if (inventario[i]->getNumeroSerieFerramenta() == ID_Ferramenta)
+        {
+            posicaoNoVetor = i;
+            break;
+        }
+    }
+
+    if (posicaoNoVetor == -1)
+    {
+        cout << string(111, '=') << "\n[ERRO] >> O jardineiro nao transporta nenhuma ferramenta com o ID " << ID_Ferramenta << endl;
     }
     else
     {
-        cout << "[ERRO] >> Indice de inventario invalido!" << endl;
+
+        // Se existir, larga a ferramenta na mao
+        depositarFerramentaDaMaoParaInventario();
+
+        // 4. Move a ferramenta selecionada do inventário para a mão
+        ferramentaNaMao = inventario[posicaoNoVetor];
+        inventario.erase(inventario.begin() + posicaoNoVetor);
+
+        cout << string(111, '=') << "\n[INFO] >> O Jardineiro equipou a ferramenta: " << ferramentaNaMao->getNomeFerramenta()
+             << " (ID " << ID_Ferramenta << ")" << endl;
     }
 }
 
-void Jardineiro::largarFerramenta()
+// Larga a ferramenta na mao e deixa a mão vazia
+void Jardineiro::depositarFerramentaDaMaoParaInventario()
 {
-    if (ferramentaNaMao)
+    if (ferramentaNaMao != nullptr)
     {
         string nome = ferramentaNaMao->getNomeFerramenta();
+        int id = ferramentaNaMao->getNumeroSerieFerramenta();
+
         inventario.push_back(ferramentaNaMao);
         ferramentaNaMao = nullptr;
-        cout << "[INFO] >> O jardineiro desequipou a ferramenta: " << nome << endl;
+
+        cout << string(111, '=') << "\n[INFO] >> O jardineiro desequipou a ferramenta: "
+             << nome << " (ID " << id << ")" << endl;
     }
 }
 
-Ferramenta *Jardineiro::removerFerramenta(int indice)
+// Remove uma ferramenta do inventário pelo ID quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
+void Jardineiro::removerFerramentaDoInventario(int ID_Ferramenta)
 {
-    if (indice >= 0 && indice < (int)inventario.size())
+    // Verifica se existe uma ferramenta na mão e se o ID coincide
+    if (ferramentaNaMao != nullptr && ferramentaNaMao->getNumeroSerieFerramenta() == ID_Ferramenta)
     {
-        Ferramenta *f = inventario[indice];
-        string nome = f->getNomeFerramenta();
-        inventario.erase(inventario.begin() + indice);
-        cout << "[INFO] >> A ferramenta " << nome << " esgotou-se e saiu do inventario." << endl;
-        return f;
+        string nome = ferramentaNaMao->getNomeFerramenta();
+
+        // Remove a ferramenta da mao
+        delete ferramentaNaMao;
+        ferramentaNaMao = nullptr;
+
+        cout << string(111, '=') << endl;
+        cout << "[INFO] >> A ferramenta " << nome << " (ID: " << ID_Ferramenta << ") esgotou-se e foi removida da mao." << endl;
     }
-    return nullptr;
 }
 
+// Listagem de ferramentas do inventário
 void Jardineiro::listarFerramentas() const
 {
-    cout << "=== Inventario do Jardineiro ===" << endl;
+    cout << string(41, '=') << "[ INVENTARIO DO JARDINEIRO ]" << string(42, '=') << endl;
     if (inventario.empty())
     {
-        cout << "[!] Mochila vazia." << endl;
+        cout << "[INFO] >> O inventário do jardineiro esta vazio." << endl;
     }
     else
     {
         for (size_t i = 0; i < inventario.size(); ++i)
         {
-            cout << i << ". " << inventario[i]->getNomeFerramenta() << " [" << inventario[i]->getSimboloFerramenta() << "]" << endl;
+            cout << "[" << i + 1 << ".] " << inventario[i]->getInfoFerramenta() << endl;
         }
     }
 }
 
+// Retorna a ferramenta equipada
 Ferramenta *Jardineiro::getFerramentaNaMao() const { return ferramentaNaMao; }
+
+// ========================================================
 
 void Jardineiro::mostrarEstado() const
 {
-    cout << "--- Estado do Jardineiro ---" << endl;
     if (ferramentaNaMao)
     {
-        cout << "Equipado: " << ferramentaNaMao->getNomeFerramenta() << endl;
-        cout << "Detalhes: " << ferramentaNaMao->getInfoFerramenta() << endl;
+        cout << "\n- Equipado: " << ferramentaNaMao->getNomeFerramenta() << endl;
+        cout << "- " << ferramentaNaMao->getInfoExtraFerramenta() << endl;
     }
     else
     {
-        cout << "Equipado: Nada (Mao vazia)" << endl;
+        cout << "\n- Equipado: Nada (Mao vazia)" << endl;
     }
-    cout << "Recursos Turno: Movimentos(" << movimentosRestantes << ") | Colheitas(" << colheitasRestantes << ")" << endl;
 }
 
 // ========================================================

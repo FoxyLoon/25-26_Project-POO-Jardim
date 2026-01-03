@@ -21,19 +21,19 @@ int main()
   Simulador cmd;
   string linha;
   cout << "\n\n"
-       << string(51, '=') << '\n'
-       << "\t\tSimulador de Jardim\t\t\n"
-       << string(51, '=') << '\n';
+       << string(111, '=') << '\n'
+       << string(46, ' ') << "SIMULADOR DE JARDIM" << string(46, ' ') << "\n"
+       << string(111, '=') << '\n';
 
   while (cout << "\n> ", getline(cin, linha))
   {
     if (linha.empty())
     {
-      cout << string(51, '=') << '\n';
+      cout << string(111, '=') << '\n';
       cout << "[INFO] >> Por favor, digite um comando!\n\n";
       continue;
     }
-    cout << string(51, '=') << endl;
+    // cout << string(51, '=') << endl;
 
     if (!cmd.processaComando(linha))
       cout << '\n';

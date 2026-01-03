@@ -40,7 +40,7 @@ private:
 
     // Flags indicando se o jardim e o jardineiro foram criados
     bool jardimCriado;
-    bool jardineiroCriado;
+    bool jardineiroNoJardim;
 
     /* bool comandoEstado() const; */ // Não existe no enunciado
 
@@ -66,7 +66,7 @@ private:
     bool comandoLplanta(stringstream &ss); // OK
     bool comandoLarea();                   // OK
     bool comandoLsolo(stringstream &ss);   // OK
-    bool comandoLferr();                   // Não Implementado
+    bool comandoLferr();                   // OK
 
     // ========================================================
     // ========================================================
@@ -75,8 +75,8 @@ private:
     // Comandos para ações
     bool comandoColhe(stringstream &ss);  // OK
     bool comandoPlanta(stringstream &ss); // OK
-    bool comandoLarga();                  // Não Implementado
-    bool comandoPega(stringstream &ss);   // Não Implementado
+    bool comandoLarga();                  // OK
+    bool comandoPega(stringstream &ss);   // OK
     bool comandoCompra(stringstream &ss); // Não Implementado
 
     // ========================================================
@@ -104,7 +104,7 @@ private:
     bool isJardimCriado();
 
     // Verifica se existe um Jardineiro
-    bool isJardineiroCriado();
+    bool isJardineiroNoJardim();
 
     // Verifica se está fora dos limites
     bool isForaDosLimites(int linha, int coluna);

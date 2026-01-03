@@ -224,7 +224,7 @@ string Solo::getInfoSolo() const
     int valNutri = getNutrientes();
 
     ostringstream oss;
-    oss << "\t\tÁgua: " << valAgua << " | Nutrientes: " << valNutri;
+    oss << "Água: " << valAgua << " | Nutrientes: " << valNutri;
 
     if (temPlanta())
     {

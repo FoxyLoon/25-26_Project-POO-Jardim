@@ -42,13 +42,21 @@ bool Regador::estaGasta() const
 string Regador::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "\t[" << getNomeFerramenta() << "]"
+    oss << "[" << getNomeFerramenta() << "]"
         << " (ID " << getNumeroSerieFerramenta() << ")"
         << " | Simbolo: " << getSimboloFerramenta()
         << " | Quantidade Atual/Capacidade Maxima: " << aguaDisponivel << "/" << Settings::Regador::capacidade
-        << " | Dose por uso: " << Settings::Regador::dose << "\n"
-        << "\t\tFunção: Aumentar a agua do solo" << endl;
+        << " | Dose por uso: " << Settings::Regador::dose << endl;
 
     string informacao = oss.str();
     return informacao;
+}
+
+string Regador::getInfoExtraFerramenta() const
+{
+    ostringstream oss;
+    oss << "Função: Aumentar a agua do solo" << endl;
+
+    string informacaoExtra = oss.str();
+    return informacaoExtra;
 }

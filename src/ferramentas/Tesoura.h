@@ -19,6 +19,7 @@ public:
     void aplicarNoSolo(Solo& s) override;
     bool estaGasta() const override;        // Sempre Falso
     string getInfoFerramenta() const override;
+    string getInfoExtraFerramenta() const override;
 };
 
 #endif
