@@ -37,12 +37,12 @@ private:
 
     // Jardineiro do simulador
     Jardineiro jardineiro;
-    
+
     // Flags indicando se o jardim e o jardineiro foram criados
     bool jardimCriado;
     bool jardineiroCriado;
 
-    /* bool comandoEstado() const; */       // Não existe no enunciado
+    /* bool comandoEstado() const; */ // Não existe no enunciado
 
     // ========================================================
     // ========================================================
@@ -62,35 +62,35 @@ private:
     // ========================================================
 
     // Comandos para listar informação
-    bool comandoLplantas();                 // Não Implementado
-    bool comandoLplanta(stringstream &ss);  // Não Implementado
-    bool comandoLarea();                    // Não Implementado
-    bool comandoLsolo(stringstream &ss);    // Não Implementado
-    bool comandoLferr();                    // Não Implementado
+    bool comandoLplantas();                // Não Implementado
+    bool comandoLplanta(stringstream &ss); // Não Implementado
+    bool comandoLarea();                   // Não Implementado
+    bool comandoLsolo(stringstream &ss);   // Não Implementado
+    bool comandoLferr();                   // Não Implementado
 
     // ========================================================
     // ========================================================
     // ========================================================
 
     // Comandos para ações
-    bool comandoColhe(stringstream &ss);    // OK
-    bool comandoPlanta(stringstream &ss);   // OK
-    bool comandoLarga();                    // Não Implementado
-    bool comandoPega(stringstream &ss);     // Não Implementado
-    bool comandoCompra(stringstream &ss);   // Não Implementado
+    bool comandoColhe(stringstream &ss);  // OK
+    bool comandoPlanta(stringstream &ss); // OK
+    bool comandoLarga();                  // Não Implementado
+    bool comandoPega(stringstream &ss);   // Não Implementado
+    bool comandoCompra(stringstream &ss); // Não Implementado
 
     // ========================================================
     // ========================================================
     // ========================================================
 
     // Comandos para controlar o jardineiro
-    bool comandoE();    // OK
-    bool comandoD();    // OK
-    bool comandoC();    // OK
-    bool comandoB();    // OK
-    bool comandoEntra(stringstream &ss);    // OK
-    bool comandoSai();  // OK
-    
+    bool comandoE();                     // OK
+    bool comandoD();                     // OK
+    bool comandoC();                     // OK
+    bool comandoB();                     // OK
+    bool comandoEntra(stringstream &ss); // OK
+    bool comandoSai();                   // OK
+
     // ========================================================
     // ========================================================
     // ========================================================
@@ -99,7 +99,7 @@ private:
 
     // Valida posições no jardim
     static bool isLetraPequena(const string &p);
-    
+
     // Verifica se existe um Jardim
     bool isJardimCriado();
 
