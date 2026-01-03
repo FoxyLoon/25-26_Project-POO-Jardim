@@ -141,7 +141,7 @@ void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
     {
         inventario.push_back(f);
         cout << string(111, '=') << "\n"
-             << "[INFO] >> Ferramenta adicionada: " << f->getNomeFerramenta() << ". (Iventário: " << inventario.size() << " itens)" << endl;
+             << "[INFO] >> Ferramenta adicionada ao inventário: " << f->getNomeFerramenta() << ". (Inventário: " << inventario.size() << " iten(s))" << endl;
     }
 }
 

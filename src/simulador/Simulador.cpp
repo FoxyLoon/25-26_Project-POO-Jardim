@@ -74,10 +74,10 @@ bool Simulador::processaComando(const string &linha)
         return comandoLarga();
     if (cmd == "pega")
         return comandoPega(ss);
-    // if (cmd == "compra")
-    //     return comandoCompra(ss);
+    if (cmd == "compra")
+        return comandoCompra(ss);
 
-    // // ========================================================
+    // ========================================================
 
     // Comandos para controlar o jardineiro
     if (cmd == "e")
@@ -532,7 +532,7 @@ bool Simulador::comandoLferr()
 
     jardineiro.listarFerramentas();
 
-    cout << string(51, '-') << endl;
+    cout << string(111, '-') << endl;
 
     Ferramenta *ferramentaEquipada = jardineiro.getFerramentaNaMao();
     if (ferramentaEquipada != nullptr)
@@ -610,16 +610,14 @@ bool Simulador::comandoPlanta(stringstream &ss)
 
     // Verifica se o jardim foi criado
     if (!isJardimCriado())
-    {
         return false;
-    }
 
     // Verifica se o comando tem o formato correto
     string posicao;
     char tipoPlanta;
     if (!(ss >> posicao >> tipoPlanta) || !isLetraPequena(posicao))
     {
-        cout << string(111, '=') << "\n[ERRO] >> O comando planta requer posicao e tipo (ex: planta aa C)." << endl;
+        cout << string(111, '=') << "\n[ERRO] >> O comando planta requer posicao e tipo (ex: planta aa c)." << endl;
         return false;
     }
 
@@ -647,24 +645,24 @@ bool Simulador::comandoPlanta(stringstream &ss)
 
     // Criação da planta de acordo com o tipo fornecido
     Planta *novaPlanta = nullptr;
-    tipoPlanta = toupper(tipoPlanta);
+    tipoPlanta = tolower(tipoPlanta);
 
     switch (tipoPlanta)
     {
-    case 'C': // Cacto
+    case 'c': // Cacto
         novaPlanta = new Cacto();
         break;
-    case 'R': // Roseira
+    case 'r': // Roseira
         novaPlanta = new Roseira();
         break;
-    case 'E': // Erva-Daninha
+    case 'e': // Erva-Daninha
         novaPlanta = new ErvaDaninha();
         break;
-    case 'X': // Planta Exotica
+    case 'x': // Planta Exotica
         novaPlanta = new PlantaExotica();
         break;
     default:
-        cout << string(111, '=') << "\n[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << endl;
+        cout << string(111, '=') << "\n[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << "(use c, r, e ou x)" << endl;
         return false;
     }
 
@@ -724,38 +722,66 @@ bool Simulador::comandoPega(stringstream &ss)
     return true;
 }
 
-// // ========================================================
+// ========================================================
 
-// bool Simulador::comandoCompra(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoCompra(stringstream &ss)
+{
+    // Validações
 
-//     char tipo;
-//     if (!(ss >> tipo))
-//     {
-//         cout << "[ERRO] Uso: compra <tipo>. Tipos: g a t z.\n";
-//         return false;
-//     }
+    // Verifica se o jardim foi criado
+    if (!isJardimCriado())
+        return false;
 
-//     // Criar ferramenta usando factory method
-//     Ferramenta *f = Ferramenta::criar(tipo);
+    // Verifica se o comando tem o formato correto
+    char tipoFerramenta;
+    if (!(ss >> tipoFerramenta))
+    {
+        cout << string(111, '=') << "\n[ERRO] >> O comando compra requer o tipo: g (regador), a (adubo), t (tesoura) ou z (FerramentaZ)." << endl;
+        return false;
+    }
 
-//     if (!f)
-//     {
-//         cout << "[ERRO] >> Tipo de ferramenta invalido. Use g, a, t ou z.\n";
-//         return false;
-//     }
+    // ========================================================
 
-//     // Adicionar ao inventário do jardineiro
-//     jardineiro.adicionarFerramentaAoInventario(f);
+    // Criação da ferramenta de acordo com o tipo fornecido
+    Ferramenta *novaFerramenta = nullptr;
+    tipoFerramenta = tolower(tipoFerramenta);
 
-//     return true;
-// }
+    switch (tipoFerramenta)
+    {
+    case 'g':
+        novaFerramenta = new Regador();
+        break;
+    case 'a':
+        novaFerramenta = new Adubo();
+        break;
+    case 't':
+        novaFerramenta = new Tesoura();
+        break;
+    case 'z':
+        novaFerramenta = new FerramentaZ();
+        break;
+    default:
+        cout << "[ERRO] >> Tipo de ferramenta desconhecido: '" << tipoFerramenta << "'. Use g, a, t ou z." << endl;
+        return false;
+    }
 
-// // ========================================================
-// // ========================================================
-// // ========================================================
+    // 3. Entrega a ferramenta ao jardineiro
+    if (novaFerramenta != nullptr)
+    {
+        // O método adicionarFerramenta já coloca no vector e dá o feedback visual
+        jardineiro.adicionarFerramentaAoInventario(novaFerramenta);
+        cout << "[INFO] >> " << novaFerramenta->getNomeFerramenta() << " (ID "
+             << novaFerramenta->getNumeroSerieFerramenta()
+             << ") comprado com sucesso!" << endl;
+        return true;
+    }
+
+    return false;
+}
+
+// ========================================================
+// ========================================================
+// ========================================================
 
 // Comandos para controlar o jardineiro
 
