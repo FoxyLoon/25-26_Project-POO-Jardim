@@ -73,8 +73,8 @@ private:
     // ========================================================
 
     // Comandos para ações
-    bool comandoColhe(stringstream &ss);    // Não Implementado
-    bool comandoPlanta(stringstream &ss);   // Não Implementado
+    bool comandoColhe(stringstream &ss);    // OK
+    bool comandoPlanta(stringstream &ss);   // OK
     bool comandoLarga();                    // Não Implementado
     bool comandoPega(stringstream &ss);     // Não Implementado
     bool comandoCompra(stringstream &ss);   // Não Implementado
