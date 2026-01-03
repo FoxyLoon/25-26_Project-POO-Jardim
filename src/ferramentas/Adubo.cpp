@@ -39,15 +39,16 @@ bool Adubo::estaGasta() const
 }
 
 // Retorna informacoes da ferramenta
-string Adubo::getInfo() const
+string Adubo::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "[Ferramenta: " << getNome() << "]\n"
-        << " - ID: " << getNumeroSerie() << "\n"
-        << " - Simbolo: " << getSimbolo() << "\n"
-        << " - Capacidade Maxima: " << Settings::Adubo::capacidade << " unidades\n"
-        << " - Dose por uso: " << Settings::Adubo::dose << " unidades\n"
-        << " - Quantidade Atual: " << nutrientesDisponiveis << " unidades\n"
-        << " - Funcao: Aumentar os nutrientes do solo\n";
-    return oss.str();
+    oss << "\t[" << getNomeFerramenta() << "]"
+        << " (ID " << getNumeroSerieFerramenta() << ")"
+        << " | Simbolo: " << getSimboloFerramenta()
+        << " | Quantidade Atual/Capacidade Maxima: " << nutrientesDisponiveis << "/" << Settings::Adubo::capacidade
+        << " | Dose por uso: " << Settings::Adubo::dose << "\n"
+        << "\t\tFunção: Aumentar os nutrientes do solo" << endl;
+
+    string informacao = oss.str();
+    return informacao;
 }

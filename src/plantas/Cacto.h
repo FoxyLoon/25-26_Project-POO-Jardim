@@ -30,7 +30,7 @@ public:
     virtual ~Cacto() = default;
 
     // Informação da Planta
-    string getInfo() const override;
+    string getInfoPlanta() const override;
     
     // ========================================================
 

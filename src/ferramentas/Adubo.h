@@ -23,6 +23,6 @@ public:
     void usar() override;
     void aplicarNoSolo(Solo& s) override;
     bool estaGasta() const override;
-    string getInfo() const override;
+    string getInfoFerramenta() const override;
 };
 #endif

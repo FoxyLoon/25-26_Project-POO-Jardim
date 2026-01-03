@@ -21,10 +21,10 @@ public:
     virtual ~Ferramenta() = default;
 
     // Getters
-    int getNumeroSerie() const;
-    string getNome() const;
-    char getSimbolo() const;
-    virtual string getInfo() const = 0;
+    int getNumeroSerieFerramenta() const;
+    string getNomeFerramenta() const;
+    char getSimboloFerramenta() const;
+    virtual string getInfoFerramenta() const = 0;
 
     // Aplica a ferramenta no solo
     virtual void aplicarNoSolo(Solo& s) = 0;
