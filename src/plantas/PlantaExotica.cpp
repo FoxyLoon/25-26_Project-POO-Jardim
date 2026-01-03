@@ -15,17 +15,17 @@ Morte:
 - Ao morrer: Devolve 75% dos recursos ao solo.
 */
 
-PlantaExotica::PlantaExotica() : Planta(Settings::PlantaExotica::inicial_agua, Settings::PlantaExotica::inicial_nutrientes, 'x', "BONITA"), idade(0) {}
+PlantaExotica::PlantaExotica() : Planta("Bambu Lunar", Settings::PlantaExotica::inicial_agua, Settings::PlantaExotica::inicial_nutrientes, 'x', "BONITA"), idade(0) {}
 
 // ========================================================
 
 // Informação da Planta
-string PlantaExotica::getInfo() const
+string PlantaExotica::getInfoPlanta() const
 {
     int agua = getAguaInterna();
     int nutri = getNutrientesInternos();
-    char simbolo = getSimbolo();
-    string beleza = getBeleza();
+    char simbolo = getSimboloPlanta();
+    string beleza = getBelezaPlanta();
 
     ostringstream oss;
     oss << "[Planta Exótica] " << "\n";

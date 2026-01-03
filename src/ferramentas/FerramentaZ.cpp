@@ -57,11 +57,11 @@ bool FerramentaZ::estaGasta() const
     return bateria <= 0;
 }
 
-string FerramentaZ::getInfo() const
+string FerramentaZ::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "[Ferramenta: " << getNome() << "]\n"
-        << " - ID: " << getNumeroSerie() << "\n"
+    oss << "[Ferramenta: " << getNomeFerramenta() << "]\n"
+        << " - ID: " << getNumeroSerieFerramenta() << "\n"
         << " - Bateria: " << bateria << "/" << Settings::FerramentaZ::capacidade << "\n"
         << " - Função: Equilibrar Solo (Alvo: 90A/45N)\n";
     return oss.str();

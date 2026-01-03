@@ -15,21 +15,23 @@ class Planta
 private:
     int aguaInterna;
     int nutrientesInternos;
+    string nomePlanta;
     char simbolo;
     string beleza;
 
 public:
     // Construtor
-    explicit Planta(int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza);
+    explicit Planta(const string nomePlanta, int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza);
     virtual ~Planta() = default;
 
     // ========================================================
 
     // Informações sobre a planta
 
-    const char getSimbolo() const;
-    const string getBeleza() const;
-    virtual string getInfo() const = 0;
+    const string getNomePlanta() const;
+    const char getSimboloPlanta() const;
+    const string getBelezaPlanta() const;
+    virtual string getInfoPlanta() const = 0;
 
     // ========================================================
 

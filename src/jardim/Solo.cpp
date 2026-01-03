@@ -19,22 +19,27 @@ Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
 // ========================================================
 
 // Getters e Setters de recursos
+
+// Obtem diretamente a quantidade de água do solo
 int Solo::getAgua() const
 {
     return agua;
 }
 
+// Define diretamente a quantidade de água do solo
 void Solo::setAgua(int valor)
 {
     int valorFinal = (valor < 0) ? 0 : valor;
     agua = valorFinal;
 }
 
+// Obtem a direntamente a quantidade de nutrientes do solo
 int Solo::getNutrientes() const
 {
     return nutrientes;
 }
 
+// Define diretamente a quantidade de nutrientes do solo
 void Solo::setNutrientes(int valor)
 {
     int valorFinal = (valor < 0) ? 0 : valor;
@@ -44,24 +49,29 @@ void Solo::setNutrientes(int valor)
 // ========================================================
 
 // Gestão de recursos (adição/remoção)
+
+// Adiciona agua ao solo
 void Solo::adicionarAgua(int quantidade)
 {
     int novoValor = agua + quantidade;
     setAgua(novoValor);
 }
 
+// Remove agua do solo
 void Solo::removerAgua(int quantidade)
 {
     int novoValor = agua - quantidade;
     setAgua(novoValor);
 }
 
+// Adiciona nutrientes ao solo
 void Solo::adicionarNutrientes(int quantidade)
 {
     int novoValor = nutrientes + quantidade;
     setNutrientes(novoValor);
 }
 
+// Remove nutrientes do solo
 void Solo::removerNutrientes(int quantidade)
 {
     int novoValor = nutrientes - quantidade;
@@ -71,12 +81,15 @@ void Solo::removerNutrientes(int quantidade)
 // ========================================================
 
 // Gestão da Planta
+
+// Verifica se existe uma planta no solo
 bool Solo::temPlanta() const
 {
     bool existe = (planta != nullptr);
     return existe;
 }
 
+// Define uma planta no solo
 void Solo::setPlanta(Planta *p)
 {
     if (!temPlanta())
@@ -85,11 +98,13 @@ void Solo::setPlanta(Planta *p)
     }
 }
 
+// Devolve uma planta do solo
 Planta *Solo::getPlanta() const
 {
     return planta;
 }
 
+// Remove uma planta do solo
 Planta *Solo::removerPlanta()
 {
     if (planta == nullptr)
@@ -112,12 +127,15 @@ Planta *Solo::removerPlanta()
 // ========================================================
 
 // Gestão da Ferramenta
+
+// Verifica se existe uma ferramenta no solo
 bool Solo::temFerramenta() const
 {
     bool existe = (ferramenta != nullptr);
     return existe;
 }
 
+// Define uma ferramenta no solo
 void Solo::setFerramenta(Ferramenta *f)
 {
     if (!temFerramenta())
@@ -126,11 +144,13 @@ void Solo::setFerramenta(Ferramenta *f)
     }
 }
 
+// Devolve uma ferramenta do solo
 Ferramenta *Solo::getFerramenta() const
 {
     return ferramenta;
 }
 
+// Remove uma ferramenta do solo
 Ferramenta *Solo::removerFerramenta()
 {
     if (ferramenta == nullptr)
@@ -166,6 +186,8 @@ void Solo::setJardineiro(bool estado)
 // ========================================================
 
 // Verificações de estado e símbolos
+
+// Verifica se o solo está vazio (true = sem planta e sem ferramenta)
 bool Solo::estaVazio() const
 {
     bool semPlanta = (planta == nullptr);
@@ -174,6 +196,7 @@ bool Solo::estaVazio() const
     return resultado;
 }
 
+// Obtem o símbolo que representa o solo (por prioridade)
 char Solo::getSimboloPrioritario() const
 {
     if (temJardineiro)
@@ -181,13 +204,13 @@ char Solo::getSimboloPrioritario() const
 
     if (temPlanta())
     {
-        char simbPlanta = planta->getSimbolo();
+        char simbPlanta = planta->getSimboloPlanta();
         return simbPlanta;
     }
 
     if (temFerramenta())
     {
-        char simbFerramenta = ferramenta->getSimbolo();
+        char simbFerramenta = ferramenta->getSimboloFerramenta();
         return simbFerramenta;
     }
 
@@ -195,6 +218,7 @@ char Solo::getSimboloPrioritario() const
     return simbVazio;
 }
 
+// Obtem a informação do solo
 string Solo::getInfoSolo() const
 {
     int valAgua = getAgua();
@@ -205,7 +229,7 @@ string Solo::getInfoSolo() const
 
     if (temPlanta())
     {
-        string infoP = planta->getInfo();
+        string infoP = planta->getInfoPlanta();
         oss << " | Planta: " << infoP;
     }
     else

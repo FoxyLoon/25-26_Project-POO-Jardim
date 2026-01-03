@@ -28,7 +28,7 @@ public:
     virtual ~ErvaDaninha() = default;
 
     // Informação da Planta
-    string getInfo() const override;
+    string getInfoPlanta() const override;
 
     // ========================================================
 

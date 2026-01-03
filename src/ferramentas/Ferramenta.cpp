@@ -7,17 +7,17 @@ Ferramenta::Ferramenta(string nome, char simbolo) : nomeFerramenta(nome), simbol
     numeroSerieFerramenta_ID = proximo_ID++;
 }
 
-int Ferramenta::getNumeroSerie() const
+int Ferramenta::getNumeroSerieFerramenta() const
 {
     return numeroSerieFerramenta_ID;
 }
 
-string Ferramenta::getNome() const
+string Ferramenta::getNomeFerramenta() const
 {
     return nomeFerramenta;
 }
 
-char Ferramenta::getSimbolo() const
+char Ferramenta::getSimboloFerramenta() const
 {
     return simboloFerramenta;
 }

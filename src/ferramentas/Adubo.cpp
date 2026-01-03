@@ -39,12 +39,12 @@ bool Adubo::estaGasta() const
 }
 
 // Retorna informacoes da ferramenta
-string Adubo::getInfo() const
+string Adubo::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "[Ferramenta: " << getNome() << "]\n"
-        << " - ID: " << getNumeroSerie() << "\n"
-        << " - Simbolo: " << getSimbolo() << "\n"
+    oss << "[Ferramenta: " << getNomeFerramenta() << "]\n"
+        << " - ID: " << getNumeroSerieFerramenta() << "\n"
+        << " - Simbolo: " << getSimboloFerramenta() << "\n"
         << " - Capacidade Maxima: " << Settings::Adubo::capacidade << " unidades\n"
         << " - Dose por uso: " << Settings::Adubo::dose << " unidades\n"
         << " - Quantidade Atual: " << nutrientesDisponiveis << " unidades\n"

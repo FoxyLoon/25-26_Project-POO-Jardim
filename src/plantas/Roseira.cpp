@@ -12,17 +12,17 @@ Comportamento:
 - Multiplicação baseada em nutrientes
 */
 
-Roseira::Roseira() : Planta(Settings::Roseira::inicial_agua, Settings::Roseira::inicial_nutrientes, 'r', "BONITA"), idade(0) {}
+Roseira::Roseira() : Planta("Roseira", Settings::Roseira::inicial_agua, Settings::Roseira::inicial_nutrientes, 'r', "BONITA"), idade(0) {}
 
 // ========================================================
 
 // Informação da Planta
-string Roseira::getInfo() const
+string Roseira::getInfoPlanta() const
 {
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
-    char simbolo = getSimbolo();
-    string beleza = getBeleza();
+    char simbolo = getSimboloPlanta();
+    string beleza = getBelezaPlanta();
 
     ostringstream oss;
     oss << "[Roseira] " << "\n";

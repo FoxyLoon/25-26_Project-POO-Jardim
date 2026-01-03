@@ -11,17 +11,17 @@ Comportamento:
 - Multiplica-se por tempo e recursos.
 */
 
-ErvaDaninha::ErvaDaninha() : Planta(Settings::ErvaDaninha::inicial_agua, Settings::ErvaDaninha::inicial_nutrientes, 'e', "FEIA"), idade(0), instantesDesdeUltimaMultiplicacao(0) {}
+ErvaDaninha::ErvaDaninha() : Planta("Erva Daninha", Settings::ErvaDaninha::inicial_agua, Settings::ErvaDaninha::inicial_nutrientes, 'e', "FEIA"), idade(0), instantesDesdeUltimaMultiplicacao(0) {}
 
 // ========================================================
 
 // Informação da Planta
-string ErvaDaninha::getInfo() const
+string ErvaDaninha::getInfoPlanta() const
 {
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
-    char simbolo = getSimbolo();
-    string beleza = getBeleza();
+    char simbolo = getSimboloPlanta();
+    string beleza = getBelezaPlanta();
 
     ostringstream oss;
     oss << "[Erva Daninha] " << "\n";

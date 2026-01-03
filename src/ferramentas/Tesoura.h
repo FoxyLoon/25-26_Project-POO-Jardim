@@ -18,7 +18,7 @@ public:
     void usar() override;                   // Não faz nada
     void aplicarNoSolo(Solo& s) override;
     bool estaGasta() const override;        // Sempre Falso
-    string getInfo() const override;
+    string getInfoFerramenta() const override;
 };
 
 #endif

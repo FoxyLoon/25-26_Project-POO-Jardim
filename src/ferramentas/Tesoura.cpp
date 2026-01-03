@@ -12,7 +12,7 @@ void Tesoura::usar()
 void Tesoura::aplicarNoSolo(Solo& s) {
     // A tesoura só age se houver uma planta e se ela for "FEIA"
     if (s.temPlanta()) {
-        if (s.getPlanta()->getBeleza() == "FEIA") {
+        if (s.getPlanta()->getBelezaPlanta() == "FEIA") {
             // Remove a planta do solo e liberta a memória
             s.removerPlanta();
         }
@@ -27,12 +27,12 @@ bool Tesoura::estaGasta() const
 }
 
 // Retorna informacoes da ferramenta
-string Tesoura::getInfo() const
+string Tesoura::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "[Ferramenta: " << getNome() << "]\n"
-        << " - ID: " << getNumeroSerie() << "\n"
-        << " - Simbolo: " << getSimbolo() << "\n"
+    oss << "[Ferramenta: " << getNomeFerramenta() << "]\n"
+        << " - ID: " << getNumeroSerieFerramenta() << "\n"
+        << " - Simbolo: " << getSimboloFerramenta() << "\n"
         << " - Durabilidade: Infinita (Aço Cromado)\n"
         << " - Função: Eliminar plantas consideradas de beleza 'FEIA'\n";
     return oss.str();

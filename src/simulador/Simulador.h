@@ -98,7 +98,7 @@ private:
     // Funções auxiliares
 
     // Valida posições no jardim
-    static bool isPosicaoValida(const string &p);
+    static bool isLetraPequena(const string &p);
     
     // Verifica se existe um Jardim
     bool isJardimCriado();

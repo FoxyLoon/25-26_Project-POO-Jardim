@@ -26,7 +26,7 @@ public:
     virtual ~Roseira() = default;
 
     // Informação da Planta
-    string getInfo() const override;
+    string getInfoPlanta() const override;
 
     // ========================================================
 
