@@ -1,4 +1,6 @@
 #include "Simulador.h"
+#include "fstream"
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -40,14 +42,14 @@ bool Simulador::processaComando(const string &linha)
         return comandoFim();
     if (cmd == "jardim")
         return comandoJardim(ss);
-    // if (cmd == "grava")
-    //     return comandoGrava(ss);
-    // if (cmd == "recupera")
-    //     return comandoRecupera(ss);
-    // if (cmd == "apaga")
-    //     return comandoApaga(ss);
-    // if (cmd == "executa")
-    //     return comandoExecuta(ss);
+    if (cmd == "grava")
+        return comandoGrava(ss);
+    if (cmd == "recupera")
+        return comandoRecupera(ss);
+    if (cmd == "apaga")
+        return comandoApaga(ss);
+    if (cmd == "executa")
+        return comandoExecuta(ss);
 
     // ========================================================
 
@@ -215,35 +217,124 @@ bool Simulador::comandoJardim(stringstream &ss)
 
 // ========================================================
 
-// bool Simulador::comandoGrava(stringstream &ss)
-// {
-//     cout << "[INFO] Gravar estado nao implementado (sem persistencia nesta fase).\n";
-//     return true;
-// }
+bool Simulador::comandoGrava(stringstream &ss)
+{
+    if (!isJardimCriado())
+        return false;
 
-// // ========================================================
+    string nome;
+    if (!(ss >> nome))
+    {
+        cout << "[ERRO] >> É necessário fornecer um nome para a cópia.\n";
+        return false;
+    }
 
-// bool Simulador::comandoRecupera(stringstream &ss)
-// {
-//     cout << "[INFO] Recuperar estado nao implementado (sem persistencia nesta fase).\n";
-//     return true;
-// }
+    if (salvarJardimEmFicheiro(nome))
+    {
+        cout << "[INFO] >> Jardim guardado com sucesso como '" << nome << "'.\n";
+        jardim->mostraJardim();
+        return true;
+    }
 
-// // ========================================================
+    cout << "[ERRO] >> Erro ao guardar o jardim.\n";
+    return false;
+}
 
-// bool Simulador::comandoApaga(stringstream &ss)
-// {
-//     cout << "[INFO] Apagar copia nao implementado (sem persistencia nesta fase).\n";
-//     return true;
-// }
+// ========================================================
 
-// // ========================================================
+bool Simulador::comandoRecupera(stringstream &ss)
+{
+    string nome;
+    if (!(ss >> nome))
+    {
+        cout << "[ERRO] >> É necessário fornecer um nome para a cópia a recuperar.\n";
+        return false;
+    }
 
-// bool Simulador::comandoExecuta(stringstream &ss)
-// {
-//     cout << "[INFO] Executar ficheiro de comandos nao implementado (I/O de ficheiros nao disponivel nesta fase).\n";
-//     return true;
-// }
+    if (carregarJardimDeFicheiro(nome))
+    {
+        cout << "[INFO] >> Jardim recuperado com sucesso de '" << nome << "'.\n";
+        jardimCriado = true;
+        jardim->mostraJardim();
+        return true;
+    }
+
+    cout << "[ERRO] >> Erro ao recuperar o jardim.\n";
+    return false;
+}
+
+// ========================================================
+
+bool Simulador::comandoApaga(stringstream &ss)
+{
+    string nome;
+    if (!(ss >> nome))
+    {
+        cout << "[ERRO] >> É necessário fornecer um nome para a cópia a apagar.\n";
+        return false;
+    }
+
+    if (apagarFicheiro(nome))
+    {
+        cout << "[INFO] >> Cópia '" << nome << "' apagada com sucesso.\n";
+        return true;
+    }
+
+    cout << "[ERRO] >> Erro ao apagar a cópia.\n";
+    return false;
+}
+
+// ========================================================
+
+bool Simulador::comandoExecuta(stringstream &ss)
+{
+    string nomeFicheiro;
+    if (!(ss >> nomeFicheiro)) // Extrai nome do ficheiro
+    {
+        cout << "[ERRO] >> É necessário fornecer um nome de ficheiro.\n";
+        return false;
+    }
+
+    ifstream ficheiro(nomeFicheiro); // Abre para leitura
+    if (!ficheiro.is_open())
+    {
+        cout << "[ERRO] >> Ficheiro '" << nomeFicheiro << "' não encontrado.\n";
+        return false;
+    }
+
+    string linha;
+    int numeroLinha = 0;
+
+    // Lê e executa cada linha
+    while (getline(ficheiro, linha))
+    {
+        numeroLinha++;
+
+        // Ignora linhas vazias e comentários (#)
+        if (linha.empty() || linha[0] == '#')
+            continue;
+
+        // Remove espaços no início e fim
+        size_t inicio = linha.find_first_not_of(" \t");
+        size_t fim = linha.find_last_not_of(" \t");
+
+        if (inicio == string::npos)
+            continue;
+
+        linha = linha.substr(inicio, fim - inicio + 1);
+
+        // Executa o comando
+        cout << "[LINHA " << numeroLinha << "] > " << linha << "\n";
+        if (!processaComando(linha))
+        {
+            cout << "[AVISO] >> Comando na linha " << numeroLinha << " falhou.\n";
+        }
+    }
+
+    ficheiro.close();
+    cout << "[INFO] >> Ficheiro '" << nomeFicheiro << "' executado com sucesso.\n";
+    return true;
+}
 
 // // Não é suposto existir - necessário remover
 // /* bool Simulador::comandoEstado() const
@@ -1161,4 +1252,334 @@ bool Simulador::isForaDosLimites(int linhas, int colunas)
         return true;
     }
     return false;
+}
+
+// ================================================================
+// ================================================================
+
+// Funções para Serialização/Deserialização
+
+void Simulador::criarPastaSeNaoExistir(const string &caminho)
+{
+#ifdef _WIN32
+    mkdir(caminho.c_str());
+#else
+    mkdir(caminho.c_str(), 0755);
+#endif
+}
+
+bool Simulador::apagarFicheiro(const string &nome)
+{
+    // Construir caminho do ficheiro
+    string caminhoFicheiro = "saves/" + nome + ".garden";
+
+    // Tentar apagar o ficheiro
+    if (remove(caminhoFicheiro.c_str()) != 0) // c_str() converte a string (C++) para um const char* (C) para poder ser rercebido em remove()
+    {
+        cout << "[ERRO] >> Ficheiro '" << caminhoFicheiro << "' não encontrado ou não foi possível apagar.\n";
+        return false;
+    }
+
+    return true;
+}
+
+string Simulador::serializarPlanta(const Planta *p)
+{
+    if (p == nullptr)
+        return "TIPO:VAZIO";
+
+    char tipo = p->getSimboloPlanta();
+    int agua = p->getAguaInterna();
+    int nutrientes = p->getNutrientesInternos();
+
+    ostringstream oss;
+    oss << "TIPO:" << tipo << "|AGUA:" << agua << "|NUTRIENTES:" << nutrientes;
+
+    return oss.str();
+}
+
+Planta *Simulador::deserializarPlanta(const string &dados)
+{
+    if (dados.find("TIPO:VAZIO") != string::npos)
+        return nullptr;
+
+    // Parse dos dados
+    char tipo = 'C';
+    int agua = 0;
+    int nutrientes = 0;
+
+    stringstream ss(dados);
+    string token;
+
+    while (getline(ss, token, '|'))
+    {
+        size_t pos = token.find(':');
+        if (pos != string::npos)
+        {
+            string chave = token.substr(0, pos);
+            string valor = token.substr(pos + 1);
+
+            if (chave == "TIPO")
+                tipo = valor[0];
+            else if (chave == "AGUA")
+                agua = stoi(valor);
+            else if (chave == "NUTRIENTES")
+                nutrientes = stoi(valor);
+        }
+    }
+
+    // Criar planta apropriada
+    Planta *planta = nullptr;
+    switch (tipo)
+    {
+    case 'c':
+        planta = new Cacto();
+        break;
+    case 'r':
+        planta = new Roseira();
+        break;
+    case 'e':
+        planta = new ErvaDaninha();
+        break;
+    case 'x':
+        planta = new PlantaExotica();
+        break;
+    default:
+        return nullptr;
+    }
+
+    if (planta)
+    {
+        planta->setAguaInterna(agua);
+        planta->setNutrientesInternos(nutrientes);
+    }
+
+    return planta;
+}
+
+string Simulador::serializarFerramenta(const Ferramenta *f)
+{
+    if (f == nullptr)
+        return "TIPO:VAZIO";
+
+    char tipo = f->getSimboloFerramenta();
+    int serie = f->getNumeroSerieFerramenta();
+
+    ostringstream oss;
+    oss << "TIPO:" << tipo << "|SERIE:" << serie;
+
+    return oss.str();
+}
+
+Ferramenta *Simulador::deserializarFerramenta(const string &dados)
+{
+    if (dados.find("TIPO:VAZIO") != string::npos)
+        return nullptr;
+
+    // Parse dos dados
+    char tipo = 'g';
+    int serie = 0;
+
+    stringstream ss(dados);
+    string token;
+
+    while (getline(ss, token, '|'))
+    {
+        size_t pos = token.find(':');
+        if (pos != string::npos)
+        {
+            string chave = token.substr(0, pos);
+            string valor = token.substr(pos + 1);
+
+            if (chave == "TIPO")
+                tipo = valor[0];
+            else if (chave == "SERIE")
+                serie = stoi(valor);
+        }
+    }
+
+    // Criar ferramenta apropriada
+    Ferramenta *ferramenta = nullptr;
+    switch (tipo)
+    {
+    case 'g':
+        ferramenta = new Regador();
+        break;
+    case 'a':
+        ferramenta = new Adubo();
+        break;
+    case 't':
+        ferramenta = new Tesoura();
+        break;
+    case 'z':
+        ferramenta = new FerramentaZ();
+        break;
+    default:
+        ferramenta = nullptr;
+    }
+    return ferramenta;
+}
+
+string Simulador::serializarSolo(const Solo &s)
+{
+    int agua = s.getAgua();
+    int nutrientes = s.getNutrientes();
+
+    ostringstream oss;
+    oss << "AGUA:" << agua << "|NUTRIENTES:" << nutrientes;
+    oss << "|PLANTA:" << serializarPlanta(s.getPlanta());
+    oss << "|FERRAMENTA:" << serializarFerramenta(s.getFerramenta());
+
+    return oss.str();
+}
+
+bool Simulador::deserializarSolo(Solo &s, const string &dados)
+{
+    int agua = 0;
+    int nutrientes = 0;
+    string plantaStr = "TIPO:VAZIO";
+    string ferramentaStr = "TIPO:VAZIO";
+
+    stringstream ss(dados);
+    string token;
+
+    while (getline(ss, token, '|'))
+    {
+        size_t pos = token.find(':');
+        if (pos != string::npos)
+        {
+            string chave = token.substr(0, pos);
+            string valor = token.substr(pos + 1);
+
+            if (chave == "AGUA")
+                agua = stoi(valor);
+            else if (chave == "NUTRIENTES")
+                nutrientes = stoi(valor);
+            else if (chave == "PLANTA")
+                plantaStr = valor;
+            else if (chave == "FERRAMENTA")
+                ferramentaStr = valor;
+        }
+    }
+
+    s.setAgua(agua);
+    s.setNutrientes(nutrientes);
+
+    Planta *p = deserializarPlanta(plantaStr);
+    if (p != nullptr)
+        s.setPlanta(p);
+
+    Ferramenta *f = deserializarFerramenta(ferramentaStr);
+    if (f != nullptr)
+        s.setFerramenta(f);
+
+    return true;
+}
+
+bool Simulador::salvarJardimEmFicheiro(const string &nome)
+{
+    if (!jardimCriado || jardim == nullptr)
+    {
+        cout << "[ERRO] >> Não existe um jardim para guardar.\n";
+        return false;
+    }
+
+    // Criar pasta "saves" se não existir
+    criarPastaSeNaoExistir("saves");
+
+    // Construir caminho do ficheiro
+    string caminhoFicheiro = "saves/" + nome + ".garden";
+
+    // Abrir ficheiro para escrita
+    ofstream ficheiro(caminhoFicheiro);
+    if (!ficheiro.is_open())
+    {
+        cout << "[ERRO] >> Não foi possível abrir o ficheiro '" << caminhoFicheiro << "'.\n";
+        return false;
+    }
+
+    // Guardar dimensões do jardim
+    ficheiro << jardim->getLinhas() << " " << jardim->getColunas() << "\n";
+
+    // Guardar estado de cada posição do jardim
+    for (int l = 0; l < jardim->getLinhas(); ++l)
+    {
+        for (int c = 0; c < jardim->getColunas(); ++c)
+        {
+            const Solo &s = jardim->getSolo(l, c);
+            ficheiro << serializarSolo(s) << "\n";
+        }
+    }
+
+    ficheiro.close();
+    return true;
+}
+
+bool Simulador::carregarJardimDeFicheiro(const string &nome)
+{
+    // Construir caminho do ficheiro
+    string caminhoFicheiro = "saves/" + nome + ".garden";
+
+    // Abrir ficheiro para leitura
+    ifstream ficheiro(caminhoFicheiro);
+    if (!ficheiro.is_open())
+    {
+        cout << "[ERRO] >> Ficheiro '" << caminhoFicheiro << "' não encontrado.\n";
+        return false;
+    }
+
+    // Ler dimensões do jardim
+    int linhas, colunas;
+    if (!(ficheiro >> linhas >> colunas))
+    {
+        cout << "[ERRO] >> Formato de ficheiro inválido (dimensões).\n";
+        ficheiro.close();
+        return false;
+    }
+
+    // Destruir jardim anterior se existir
+    if (jardim != nullptr)
+    {
+        delete jardim;
+    }
+
+    // Criar novo jardim com as dimensões carregadas
+    jardim = new Jardim(linhas, colunas, false);
+    jardimCriado = true;
+
+    // Limpar o buffer de entrada
+    ficheiro.ignore();
+
+    // Carregar estado de cada posição do jardim
+    for (int l = 0; l < linhas; ++l)
+    {
+        for (int c = 0; c < colunas; ++c)
+        {
+            string linhaCompleta;
+            if (!getline(ficheiro, linhaCompleta))
+            {
+                cout << "[ERRO] >> Erro ao ler o estado do solo em (" << l << "," << c << ").\n";
+                ficheiro.close();
+                return false;
+            }
+
+            Solo &s = jardim->getSolo(l, c);
+            if (!deserializarSolo(s, linhaCompleta))
+            {
+                cout << "[ERRO] >> Erro ao deserializar o solo em (" << l << "," << c << ").\n";
+                ficheiro.close();
+                return false;
+            }
+        }
+    }
+
+    ficheiro.close();
+
+    // Apagar o ficheiro guardado após carregamento bem-sucedido
+    if (remove(caminhoFicheiro.c_str()) != 0)
+    {
+        cout << "[AVISO] >> Não foi possível apagar o ficheiro de cópia após recuperação.\n";
+    }
+
+    return true;
 }

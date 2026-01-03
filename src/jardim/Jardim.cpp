@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <vector>
 
-Jardim::Jardim(int l, int c) : linhas(l), colunas(c)
+Jardim::Jardim(int l, int c, bool criarFerramentas) : linhas(l), colunas(c)
 {
     srand(static_cast<unsigned>(time(nullptr)));
     // Alocação da matriz area no construtor
@@ -14,9 +14,12 @@ Jardim::Jardim(int l, int c) : linhas(l), colunas(c)
     }
 
     // Inicialização: Criar as 3 ferramentas aleatórias iniciais
-    for (int i = 0; i < 3; ++i)
+    if (criarFerramentas)
     {
-        processaFerramentasAleatorias();
+        for (int i = 0; i < 3; ++i)
+        {
+            processaFerramentasAleatorias();
+        }
     }
 }
 

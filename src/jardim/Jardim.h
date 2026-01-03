@@ -21,13 +21,12 @@ private:
     void processaRecursosPlantas();
     void processaMortes();
     void processaMultiplicacao();
-    
 
     // Geração de ferramentas
     Ferramenta *gerarFerramentaAleatoria();
 
 public:
-    explicit Jardim(int l, int c);
+    explicit Jardim(int l, int c, bool criarFerramentas = true);
     ~Jardim();
 
     void avancaInstante();

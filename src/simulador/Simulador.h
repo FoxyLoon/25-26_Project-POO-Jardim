@@ -108,6 +108,28 @@ private:
 
     // Verifica se está fora dos limites
     bool isForaDosLimites(int linha, int coluna);
+
+    // ========================================================
+    // ========================================================
+
+    // Funções para Serialização/Deserialização
+
+    bool salvarJardimEmFicheiro(const string &nome);
+    bool carregarJardimDeFicheiro(const string &nome);
+    bool apagarFicheiro(const string &nome);
+
+    // Funções auxiliares para criar pastas
+    void criarPastaSeNaoExistir(const string &caminho);
+
+    // Serialização de componentes
+    string serializarSolo(const Solo &s);
+    bool deserializarSolo(Solo &s, const string &dados);
+
+    string serializarPlanta(const Planta *p);
+    Planta *deserializarPlanta(const string &dados);
+
+    string serializarFerramenta(const Ferramenta *f);
+    Ferramenta *deserializarFerramenta(const string &dados);
 };
 
 #endif
