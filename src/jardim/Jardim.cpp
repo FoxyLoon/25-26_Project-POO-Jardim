@@ -3,20 +3,22 @@
 #include <cstdlib>
 #include <vector>
 
-Jardim::Jardim(int l, int c) : linhas(l), colunas(c)
+Jardim::Jardim(int l, int c, bool criarFerramentas) : linhas(l), colunas(c)
 {
     srand(static_cast<unsigned>(time(nullptr)));
-    // Alocação da matriz area no construtor
     area = new Solo *[linhas];
     for (int i = 0; i < linhas; ++i)
     {
         area[i] = new Solo[colunas];
     }
 
-    // Inicialização: Criar as 3 ferramentas aleatórias iniciais
-    for (int i = 0; i < 3; ++i)
+    // APENAS cria as 3 ferramentas aleatórias se criarFerramentas for true
+    if (criarFerramentas)
     {
-        processaFerramentasAleatorias();
+        for (int i = 0; i < 3; ++i)
+        {
+            processaFerramentasAleatorias();
+        }
     }
 }
 
