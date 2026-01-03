@@ -66,7 +66,7 @@ private:
     bool comandoLplanta(stringstream &ss); // OK
     bool comandoLarea();                   // OK
     bool comandoLsolo(stringstream &ss);   // OK
-    bool comandoLferr();                   // Não Implementado
+    bool comandoLferr();                   // PARCIALMENTE OK - Falta verificar se ferramenta aparece na mao (equipada)
 
     // ========================================================
     // ========================================================
