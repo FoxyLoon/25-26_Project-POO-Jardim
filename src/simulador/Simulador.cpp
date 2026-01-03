@@ -2,6 +2,11 @@
 #include "fstream"
 #include <sys/stat.h>
 
+#include "../plantas/Cacto.h"
+#include "../plantas/Roseira.h"
+#include "../plantas/ErvaDaninha.h"
+#include "../plantas/PlantaExotica.h"
+
 using namespace std;
 
 Simulador::Simulador() : jardim(nullptr), jardimCriado(false), jardineiroNoJardim(false) {}
@@ -217,10 +222,13 @@ bool Simulador::comandoJardim(stringstream &ss)
 
 // ========================================================
 
-bool Simulador::comandoGrava(stringstream &ss)
+bool Simulador::comandoGrava(stringstream &ss) const
 {
-    if (!isJardimCriado())
+    if (!jardimCriado || jardim == nullptr)
+    {
+        cout << "[ERRO] >> Não existe um jardim para guardar.\n";
         return false;
+    }
 
     string nome;
     if (!(ss >> nome))
@@ -355,7 +363,7 @@ bool Simulador::comandoExecuta(stringstream &ss)
 // Comandos para listar informação
 
 // Lista todas as plantas
-bool Simulador::comandoLplantas()
+bool Simulador::comandoLplantas() const
 {
     if (!isJardimCriado())
         return false;
@@ -408,7 +416,7 @@ bool Simulador::comandoLplantas()
 // ========================================================
 
 // Lista uma planta numa posição especifica
-bool Simulador::comandoLplanta(stringstream &ss)
+bool Simulador::comandoLplanta(stringstream &ss) const
 {
     if (!isJardimCriado())
     {
@@ -457,7 +465,7 @@ bool Simulador::comandoLplanta(stringstream &ss)
 // ========================================================
 
 // Lista todas as areas ocupadas do Solo
-bool Simulador::comandoLarea()
+bool Simulador::comandoLarea() const
 {
     if (!isJardimCriado())
     {
@@ -509,7 +517,7 @@ bool Simulador::comandoLarea()
 
 // ========================================================
 
-bool Simulador::comandoLsolo(stringstream &ss)
+bool Simulador::comandoLsolo(stringstream &ss) const
 {
     if (!isJardimCriado())
     {
@@ -615,8 +623,8 @@ bool Simulador::comandoLsolo(stringstream &ss)
 
 // ========================================================
 
-// TODO: verificar se o inventario apresenta a ferramenta equipada
-bool Simulador::comandoLferr()
+// verificar se o inventario apresenta a ferramenta equipada
+bool Simulador::comandoLferr() const
 {
     if (!isJardimCriado())
         return false;
@@ -734,9 +742,9 @@ bool Simulador::comandoPlanta(stringstream &ss)
 
     // ========================================================
 
-    // Criação da planta de acordo com o tipo fornecido
+    // Criação da planta conforme o tipo fornecido
     Planta *novaPlanta = nullptr;
-    tipoPlanta = tolower(tipoPlanta);
+    tipoPlanta = static_cast<char>(tolower(static_cast<unsigned char>(tipoPlanta)));
 
     switch (tipoPlanta)
     {
@@ -754,7 +762,6 @@ bool Simulador::comandoPlanta(stringstream &ss)
         break;
     default:
         cout << string(111, '=') << "\n[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << "(use c, r, e ou x)" << endl;
-        return false;
     }
 
     // ========================================================
@@ -833,9 +840,9 @@ bool Simulador::comandoCompra(stringstream &ss)
 
     // ========================================================
 
-    // Criação da ferramenta de acordo com o tipo fornecido
+    // Criação da ferramenta conforme o tipo fornecido
     Ferramenta *novaFerramenta = nullptr;
-    tipoFerramenta = tolower(tipoFerramenta);
+    tipoFerramenta = static_cast<char>(tolower(static_cast<unsigned char>(tipoFerramenta)));
 
     switch (tipoFerramenta)
     {
@@ -853,7 +860,6 @@ bool Simulador::comandoCompra(stringstream &ss)
         break;
     default:
         cout << "[ERRO] >> Tipo de ferramenta desconhecido: '" << tipoFerramenta << "'. Use g, a, t ou z." << endl;
-        return false;
     }
 
     // 3. Entrega a ferramenta ao jardineiro
@@ -1224,7 +1230,7 @@ bool Simulador::isLetraPequena(const string &p)
     return p.size() == 2 && islower(static_cast<unsigned char>(p[0])) && islower(static_cast<unsigned char>(p[1]));
 }
 
-bool Simulador::isJardimCriado()
+bool Simulador::isJardimCriado() const
 {
     if (!jardimCriado)
     {
@@ -1234,7 +1240,7 @@ bool Simulador::isJardimCriado()
     return true;
 }
 
-bool Simulador::isJardineiroNoJardim()
+bool Simulador::isJardineiroNoJardim() const
 {
     if (!jardineiroNoJardim)
     {
@@ -1244,7 +1250,7 @@ bool Simulador::isJardineiroNoJardim()
     return true;
 }
 
-bool Simulador::isForaDosLimites(int linhas, int colunas)
+bool Simulador::isForaDosLimites(int linhas, int colunas) const
 {
     if (linhas < 0 || linhas >= jardim->getLinhas() || colunas < 0 || colunas >= jardim->getColunas())
     {
@@ -1348,11 +1354,10 @@ Planta *Simulador::deserializarPlanta(const string &dados)
         return nullptr;
     }
 
-    if (planta)
-    {
-        planta->setAguaInterna(agua);
-        planta->setNutrientesInternos(nutrientes);
-    }
+
+    planta->setAguaInterna(agua);
+    planta->setNutrientesInternos(nutrientes);
+
 
     return planta;
 }
@@ -1417,6 +1422,13 @@ Ferramenta *Simulador::deserializarFerramenta(const string &dados)
     default:
         ferramenta = nullptr;
     }
+
+    // Restaurar o número de série original
+    if (ferramenta != nullptr && serie > 0)
+    {
+        ferramenta->setNumeroSerie(serie);
+    }
+
     return ferramenta;
 }
 
@@ -1443,6 +1455,7 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
     stringstream ss(dados);
     string token;
 
+    // Parse dos dados
     while (getline(ss, token, '|'))
     {
         size_t pos = token.find(':');
@@ -1451,10 +1464,19 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
             string chave = token.substr(0, pos);
             string valor = token.substr(pos + 1);
 
+            // Validar e converter valores numéricos
             if (chave == "AGUA")
+            {
+                if (!eNumeroValido(valor))
+                    return false;
                 agua = stoi(valor);
+            }
             else if (chave == "NUTRIENTES")
+            {
+                if (!eNumeroValido(valor))
+                    return false;
                 nutrientes = stoi(valor);
+            }
             else if (chave == "PLANTA")
                 plantaStr = valor;
             else if (chave == "FERRAMENTA")
@@ -1462,13 +1484,20 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
         }
     }
 
+    // Verificar se os valores são válidos
+    if (agua < 0 || nutrientes < 0)
+        return false;
+
+    // Aplicar os dados ao Solo
     s.setAgua(agua);
     s.setNutrientes(nutrientes);
 
+    // Desserializar planta
     Planta *p = deserializarPlanta(plantaStr);
     if (p != nullptr)
         s.setPlanta(p);
 
+    // Desserializar ferramenta
     Ferramenta *f = deserializarFerramenta(ferramentaStr);
     if (f != nullptr)
         s.setFerramenta(f);
@@ -1476,13 +1505,8 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
     return true;
 }
 
-bool Simulador::salvarJardimEmFicheiro(const string &nome)
+bool Simulador::salvarJardimEmFicheiro(const string &nome) const
 {
-    if (!jardimCriado || jardim == nullptr)
-    {
-        cout << "[ERRO] >> Não existe um jardim para guardar.\n";
-        return false;
-    }
 
     // Criar pasta "saves" se não existir
     criarPastaSeNaoExistir("saves");
@@ -1538,10 +1562,8 @@ bool Simulador::carregarJardimDeFicheiro(const string &nome)
     }
 
     // Destruir jardim anterior se existir
-    if (jardim != nullptr)
-    {
-        delete jardim;
-    }
+    delete jardim;
+
 
     // Criar novo jardim com as dimensões carregadas
     jardim = new Jardim(linhas, colunas, false);
@@ -1579,6 +1601,27 @@ bool Simulador::carregarJardimDeFicheiro(const string &nome)
     if (remove(caminhoFicheiro.c_str()) != 0)
     {
         cout << "[AVISO] >> Não foi possível apagar o ficheiro de cópia após recuperação.\n";
+    }
+
+    return true;
+}
+
+bool Simulador::eNumeroValido(const string &str)
+{
+    if (str.empty())
+        return false;
+
+    size_t inicio = 0;
+    if (str[0] == '-')  // Permite números negativos
+        inicio = 1;
+
+    if (inicio >= str.length())
+        return false;
+
+    for (size_t i = inicio; i < str.length(); ++i)
+    {
+        if (!isdigit(static_cast<unsigned char>(str[i])))
+            return false;
     }
 
     return true;

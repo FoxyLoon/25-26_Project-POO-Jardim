@@ -21,3 +21,8 @@ char Ferramenta::getSimboloFerramenta() const
 {
     return simboloFerramenta;
 }
+
+void Ferramenta::setNumeroSerie(int novoNumero)
+{
+    numeroSerieFerramenta_ID = novoNumero;
+}
