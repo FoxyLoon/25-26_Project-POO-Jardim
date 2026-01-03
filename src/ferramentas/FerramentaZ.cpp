@@ -60,9 +60,12 @@ bool FerramentaZ::estaGasta() const
 string FerramentaZ::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "[Ferramenta: " << getNomeFerramenta() << "]\n"
-        << " - ID: " << getNumeroSerieFerramenta() << "\n"
-        << " - Bateria: " << bateria << "/" << Settings::FerramentaZ::capacidade << "\n"
-        << " - Função: Equilibrar Solo (Alvo: 90A/45N)\n";
-    return oss.str();
+    oss << "\t[" << getNomeFerramenta() << "]"
+        << " (ID " << getNumeroSerieFerramenta() << ")"
+        << " | Simbolo: " << getSimboloFerramenta()
+        << " | Bateria Atual/Capacidade Maxima: " << bateria << "/" << Settings::FerramentaZ::capacidade << "\n"
+        << "\t\tFunção: Equilibra o Solo ao adicionar ou remover recursos (Objetivo: 90 Água / 45 Nutrientes)" << endl;
+
+    string informacao = oss.str();
+    return informacao;
 }

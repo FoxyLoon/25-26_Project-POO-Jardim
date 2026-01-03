@@ -56,10 +56,10 @@ bool Simulador::processaComando(const string &linha)
         return comandoLplantas();
     if (cmd == "lplanta")
         return comandoLplanta(ss);
-    // if (cmd == "larea")
-    //     return comandoLarea();
-    // if (cmd == "lsolo")
-    //     return comandoLsolo(ss);
+    if (cmd == "larea")
+        return comandoLarea();
+    if (cmd == "lsolo")
+        return comandoLsolo(ss);
     // if (cmd == "lferr")
     //     return comandoLferr();
 
@@ -269,50 +269,46 @@ bool Simulador::comandoLplantas()
         return false;
     }
 
+    bool encontrouPlantas = false;
+    int contadorPlantas = 0;
+
     cout << "\n"
          << string(39, '=') << "[ LISTAGEM DE PLANTAS NO JARDIM ]" << string(39, '=') << endl;
-    bool encontrouPlantas = false;
-    int totalPlantas = 0;
 
     // Percorre todas as linhas do jardim
-    for (int linha = 0; linha < jardim->getLinhas(); ++linha)
+    for (int linha_atual = 0; linha_atual < jardim->getLinhas(); ++linha_atual)
     {
         // Percorre todas as colunas do jardim
-        for (int coluna = 0; coluna < jardim->getColunas(); ++coluna)
+        for (int coluna_atual = 0; coluna_atual < jardim->getColunas(); ++coluna_atual)
         {
-            Solo &soloAtual = jardim->getSolo(linha, coluna);
+            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
 
             // Verifica se este solo possui uma planta
             if (soloAtual.temPlanta())
             {
                 encontrouPlantas = true;
-                totalPlantas++;
+                contadorPlantas++;
                 Planta *plantaNoSolo = soloAtual.getPlanta();
 
                 // Conversão de indices inteiros para letras
-                char letraLinha = static_cast<char>('a' + linha);
-                char letraColuna = static_cast<char>('a' + coluna);
+                char letraLinha = static_cast<char>('a' + linha_atual);
+                char letraColuna = static_cast<char>('a' + coluna_atual);
 
-                cout << "\n"
-                     << totalPlantas << "ª Planta - Posicao ( " << letraLinha << " , " << letraColuna << " )" << endl;
-                cout << string(111, '-') << endl;
-
-                // Propriedades internas da planta
-                cout << "{Planta}" << plantaNoSolo->getInfoPlanta() << endl;
-
-                // Propriedades do solo
-                cout << "{Solo}" << soloAtual.getInfoSolo();
+                cout << string(111, '-') << "\n"
+                     << contadorPlantas << "ª Planta - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n"
+                     << "{Planta}" << plantaNoSolo->getInfoPlanta() << "\n"
+                     << "{Solo}" << soloAtual.getInfoSolo();
             }
         }
     }
-    cout << string(111, '-') << endl;
 
     if (!encontrouPlantas)
     {
         cout << "[INFO] >> Nao existem plantas no jardim no momento." << endl;
     }
 
-    cout << string(111, '=') << endl;
+    cout << string(111, '-') << "\n"
+         << string(111, '=') << endl;
 
     return true;
 }
@@ -355,12 +351,62 @@ bool Simulador::comandoLplanta(stringstream &ss)
     Planta *plantaAlvo = soloAlvo.getPlanta();
 
     cout << "\n"
-         << string(44, '=') << "[ DETALHE DA PLANTA ]" << string(44, '=') << endl;
-    cout << "\nPosicao ( " << posicao[0] << " , " << posicao[1] << " )" << endl;
-    cout << string(111, '-') << endl;
+         << string(44, '=') << "[ DETALHE DA PLANTA ]" << string(44, '=') << "\n"
+         << string(111, '-') << "\n"
+         << "Posicao ( " << posicao[0] << " , " << posicao[1] << " )" << "\n"
+         << "{Planta}" << plantaAlvo->getInfoPlanta()
+         << string(111, '-') << "\n"
+         << string(111, '=') << endl;
 
-    // Propriedades internas da planta
-    cout << "{Planta}" << plantaAlvo->getInfoPlanta();
+    return true;
+}
+
+// ========================================================
+
+// Lista todas as areas ocupadas do Solo
+bool Simulador::comandoLarea()
+{
+    if (!isJardimCriado())
+    {
+        return false;
+    }
+
+    cout << "\n"
+         << string(39, '=') << "[ LISTAGEM DAS ÁREAS OCUPADAS ]" << string(39, '=') << endl;
+
+    bool encontrouSoloOcupado = false;
+    int contadorSolos = 0;
+
+    // Percorre todas as linhas do jardim
+    for (int linha_atual = 0; linha_atual < jardim->getLinhas(); ++linha_atual)
+    {
+        // Percorre todas as colunas do jardim
+        for (int coluna_atual = 0; coluna_atual < jardim->getColunas(); ++coluna_atual)
+        {
+            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
+
+            // Verifica se este solo tem conteudo
+            if (!soloAtual.estaVazio())
+            {
+                encontrouSoloOcupado = true;
+                contadorSolos++;
+
+                // Conversão de indices inteiros para letras
+                char letraLinha = static_cast<char>('a' + linha_atual);
+                char letraColuna = static_cast<char>('a' + coluna_atual);
+
+                cout << string(111, '-') << "\n"
+                     << contadorSolos << "ª Area Ocupada - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n"
+                     << "{Solo}" << soloAtual.getInfoSolo();
+            }
+        }
+    }
+
+    // Nota: Condição tecnicamente impossivel pois o jardim sempre terá 3 ferramentas
+    if (!encontrouSoloOcupado)
+    {
+        cout << "[INFO] >> Não existem plantas ou ferramentas no jardim." << endl;
+    }
 
     cout << string(111, '-') << "\n"
          << string(111, '=') << endl;
@@ -370,61 +416,105 @@ bool Simulador::comandoLplanta(stringstream &ss)
 
 // ========================================================
 
-// bool Simulador::comandoLarea()
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoLsolo(stringstream &ss)
+{
+    if (!isJardimCriado())
+    {
+        return false;
+    }
 
-//     // Mostrar toda a area com o estado actual
-//     jardim->mostraJardim();
-//     return true;
-// }
+    string posicaoCentral;
+    if (!(ss >> posicaoCentral) || !isLetraPequena(posicaoCentral))
+    {
+        cout << "[ERRO] >> O comando lsolo requer pelo menos uma posicao (ex: lsolo aa [numero_opcional])." << endl;
+        return false;
+    }
 
-// // ========================================================
+    // Tenta ler o raio opcional.
+    // Se não existir, "ss >> raioBusca" falha e raioBusca mantém-se com o valor 0
+    int raioBusca = 0;
+    ss >> raioBusca;
 
-// bool Simulador::comandoLsolo(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+    // Conversão de letras para índices inteiros
+    int linhaCentral = posicaoCentral[0] - 'a';
+    int colunaCentral = posicaoCentral[1] - 'a';
 
-//     string pos;
-//     if (!(ss >> pos) || !isPosicaoValida(pos))
-//     {
-//         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
-//         return false;
-//     }
+    // Limites do raio do quadrado
+    int linhaInicial = linhaCentral - raioBusca;
+    int linhaFinal = linhaCentral + raioBusca;
+    int colunaInicial = colunaCentral - raioBusca;
+    int colunaFinal = colunaCentral + raioBusca;
 
-//     int raio = 0;
-//     if (!(ss >> raio))
-//     {
-//         raio = 0; // se não fornecido, apenas a posição indicada
-//     }
-//     if (raio < 0)
-//         raio = 0;
+    cout << "\n"
+         << string(35, '=') << "[ INSPECAO DE SOLO ]" << string(35, '=') << endl;
 
-//     int li = pos[0] - 'a';
-//     int ci = pos[1] - 'a';
+    bool encontrouSoloOcupado = false;
+    int contadorSolos = 0;
 
-//     for (int dl = -raio; dl <= raio; ++dl)
-//     {
-//         for (int dc = -raio; dc <= raio; ++dc)
-//         {
-//             int l = li + dl;
-//             int c = ci + dc;
-//             Solo *s = jardim->getSolo(l, c);
-//             if (s)
-//             {
-//                 char pl = char('a' + l);
-//                 char pc = char('a' + c);
+    // Procura de todos os solos dentro do raio especificado
+    // Começa no canto superior esquerdo e termina no canto inferior direito
+    // Se raioBusca = 0 ou não for especificado, devolve apenas o solo central (escrito no comando)
+    for (int linha_atual = linhaInicial; linha_atual <= linhaFinal; ++linha_atual)
+    {
+        for (int coluna_atual = colunaInicial; coluna_atual <= colunaFinal; ++coluna_atual)
+        {
+            // Verifica se o solo está fora dos limites
+            // Esta condição é a mesma de isForaDosLimites() mas sem o cout para não spammar na consola
+            if (linha_atual < 0 || linha_atual >= jardim->getLinhas() || coluna_atual < 0 || coluna_atual >= jardim->getColunas())
+            {
+                continue;
+            }
 
-//                 cout << "Posicao " << pl << pc << " -> agua: " << s->getAgua()
-//                      << ", nutrientes: " << s->getNutrientes() << "\n";
-//             }
-//         }
-//     }
+            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
 
-//     return true;
-// }
+            // Verifica se este solo tem conteudo
+            if (!soloAtual.estaVazio())
+            {
+                encontrouSoloOcupado = true;
+                contadorSolos++;
+
+                // Verifica se o solo está fora dos limites
+                if (isForaDosLimites(linha_atual, coluna_atual))
+                {
+                    contadorSolos--;
+                    continue;
+                }
+
+                // Conversão de indices inteiros para letras
+                char letraLinha = static_cast<char>('a' + linha_atual);
+                char letraColuna = static_cast<char>('a' + coluna_atual);
+
+                cout << string(111, '-') << "\n"
+                     << contadorSolos << "ª Area Ocupada - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n";
+
+                // Propriedades do Solo
+                cout << "{Solo} " << soloAtual.getInfoSolo();
+
+                // Propriedades da Planta (se existir)
+                if (soloAtual.temPlanta())
+                {
+                    cout << "\n{Planta} " << soloAtual.getPlanta()->getInfoPlanta();
+                }
+
+                // Propriedades da Ferramenta (se existir)
+                if (soloAtual.temFerramenta())
+                {
+                    cout << "\n{Ferramenta} " << soloAtual.getFerramenta()->getInfoFerramenta();
+                }
+            }
+        }
+    }
+
+    // Nota: Condição tecnicamente impossivel pois o jardim sempre terá 3 ferramentas
+    if (!encontrouSoloOcupado)
+    {
+        cout << "[INFO] >> Não existem plantas ou ferramentas na posição especificada ou na área indicada do jardim." << endl;
+    }
+
+    cout << string(111, '-') << "\n"
+         << string(111, '=') << endl;
+    return true;
+}
 
 // // ========================================================
 
@@ -1005,7 +1095,7 @@ bool Simulador::isForaDosLimites(int linhas, int colunas)
 {
     if (linhas < 0 || linhas >= jardim->getLinhas() || colunas < 0 || colunas >= jardim->getColunas())
     {
-        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
+        cout << "[ERRO] >> Posição inválida! (fora dos limites).\n";
         return true;
     }
     return false;

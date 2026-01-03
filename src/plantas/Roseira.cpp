@@ -19,18 +19,12 @@ Roseira::Roseira() : Planta("Roseira", Settings::Roseira::inicial_agua, Settings
 // Informação da Planta
 string Roseira::getInfoPlanta() const
 {
-    string nome = getNomePlanta();
-    int agua = getAguaInterna();
-    int nutrientes = getNutrientesInternos();
-    char simbolo = getSimboloPlanta();
-    string beleza = getBelezaPlanta();
-
     ostringstream oss;
-    oss << "\t[" << nome << "]"
-        << " | Simbolo: " << simbolo
-        << " | Beleza: " << beleza
-        << " | Água: " << agua
-        << " | Nutrientes: " << nutrientes
+    oss << "\t[" << getNomePlanta() << "]"
+        << " | Simbolo: " << getSimboloPlanta()
+        << " | Beleza: " << getBelezaPlanta()
+        << " | Água: " << getAguaInterna()
+        << " | Nutrientes: " << getNutrientesInternos()
         << " | Idade (Instantes): " << idade << endl;
 
     string informacao = oss.str();

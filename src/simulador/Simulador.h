@@ -62,10 +62,10 @@ private:
     // ========================================================
 
     // Comandos para listar informação
-    bool comandoLplantas();                // Não Implementado
-    bool comandoLplanta(stringstream &ss); // Não Implementado
-    bool comandoLarea();                   // Não Implementado
-    bool comandoLsolo(stringstream &ss);   // Não Implementado
+    bool comandoLplantas();                // OK
+    bool comandoLplanta(stringstream &ss); // OK
+    bool comandoLarea();                   // OK
+    bool comandoLsolo(stringstream &ss);   // OK
     bool comandoLferr();                   // Não Implementado
 
     // ========================================================
