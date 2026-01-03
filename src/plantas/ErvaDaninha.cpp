@@ -18,19 +18,20 @@ ErvaDaninha::ErvaDaninha() : Planta("Erva Daninha", Settings::ErvaDaninha::inici
 // Informação da Planta
 string ErvaDaninha::getInfoPlanta() const
 {
+    string nome = getNomePlanta();
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
     char simbolo = getSimboloPlanta();
     string beleza = getBelezaPlanta();
 
     ostringstream oss;
-    oss << "[Erva Daninha] " << "\n";
-    oss << "Simbolo: " << simbolo << "\n";
-    oss << "Beleza: " << beleza << "\n";
-    oss << "Água: " << agua << "\n";
-    oss << "Nutrientes: " << nutrientes << "\n";
-    oss << "Idade (Instantes): " << idade << "\n";
-    oss << "Instantes desde ultima multiplicacao: " << instantesDesdeUltimaMultiplicacao << "\n";
+    oss << "\t[" << nome << "]"
+        << " | Simbolo: " << simbolo
+        << " | Beleza: " << beleza
+        << " | Água: " << agua
+        << " | Nutrientes: " << nutrientes
+        << " | Idade (Instantes): " << idade << "\n"
+        << "\t\tInstantes desde ultima multiplicacao: " << instantesDesdeUltimaMultiplicacao << endl;
 
     string informacao = oss.str();
     return informacao;

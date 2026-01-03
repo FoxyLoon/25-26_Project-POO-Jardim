@@ -1,7 +1,6 @@
 #include "Solo.h"
 #include <cstdlib>
 
-
 Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
 {
     int aguaMinima = Settings::Jardim::agua_min;
@@ -225,30 +224,33 @@ string Solo::getInfoSolo() const
     int valNutri = getNutrientes();
 
     ostringstream oss;
-    oss << "Água: " << valAgua << " | Nutrientes: " << valNutri;
+    oss << "\t\tÁgua: " << valAgua << " | Nutrientes: " << valNutri;
 
     if (temPlanta())
     {
-        string infoP = planta->getInfoPlanta();
-        oss << " | Planta: " << infoP;
+        oss << " | Planta: Sim";
     }
     else
     {
-        oss << " | Planta: Vazio";
+        oss << " | Planta: Não";
     }
 
     if (temFerramenta())
     {
-        oss << " | Ferramenta: Presente";
+        oss << " | Ferramenta: Sim";
     }
     else
     {
-        oss << " | Ferramenta: Vazio";
+        oss << " | Ferramenta: Não";
     }
 
     if (temJardineiro)
     {
-        oss << " | [Jardineiro no Local]";
+        oss << " | [Jardineiro: Presente neste Solo]" << endl;
+    }
+    else
+    {
+        oss << " | [Jardineiro: Não]" << endl;
     }
 
     string infoFinal = oss.str();

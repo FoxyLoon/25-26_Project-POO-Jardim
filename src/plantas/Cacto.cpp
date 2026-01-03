@@ -20,20 +20,21 @@ Cacto::Cacto() : Planta("Cacto", 20, 20, 'c', "NEUTRA"), instantesAguaExcessiva(
 // Informação da Planta
 string Cacto::getInfoPlanta() const
 {
+    string nome = getNomePlanta();
     int agua = getAguaInterna();
     int nutrientes = getNutrientesInternos();
     char simbolo = getSimboloPlanta();
     string beleza = getBelezaPlanta();
 
     ostringstream oss;
-    oss << "[Cacto] " << "\n";
-    oss << "Simbolo: " << simbolo << "\n";
-    oss << "Beleza: " << beleza << "\n";
-    oss << "Água: " << agua << "\n";
-    oss << "Nutrientes: " << nutrientes << "\n";
-    oss << "Idade (Instantes): " << idade << "\n";
-    oss << "Instantes Água Excessiva: " << instantesAguaExcessiva << "\n";
-    oss << "Instantes Sem Nutrientes: " << instantesSemNutrientes << "\n";
+    oss << "\t[" << nome << "]"
+        << " | Simbolo: " << simbolo
+        << " | Beleza: " << beleza
+        << " | Água: " << agua
+        << " | Nutrientes: " << nutrientes
+        << " | Idade (Instantes): " << idade << "\n"
+        << "\t\tInstantes Água Excessiva: " << instantesAguaExcessiva
+        << " | Instantes Sem Nutrientes: " << instantesSemNutrientes << "\n";
 
     string informacao = oss.str();
     return informacao;

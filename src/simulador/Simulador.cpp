@@ -49,13 +49,13 @@ bool Simulador::processaComando(const string &linha)
     // if (cmd == "executa")
     //     return comandoExecuta(ss);
 
-    // // ========================================================
+    // ========================================================
 
-    // // Comandos para listar informação
-    // if (cmd == "lplantas")
-    //     return comandoLplantas();
-    // if (cmd == "lplanta")
-    //     return comandoLplanta(ss);
+    // Comandos para listar informação
+    if (cmd == "lplantas")
+        return comandoLplantas();
+    if (cmd == "lplanta")
+        return comandoLplanta(ss);
     // if (cmd == "larea")
     //     return comandoLarea();
     // if (cmd == "lsolo")
@@ -255,54 +255,120 @@ bool Simulador::comandoJardim(stringstream &ss)
 //     return true;
 // } */
 
-// // ========================================================
-// // ========================================================
-// // ========================================================
+// ========================================================
+// ========================================================
+// ========================================================
 
-// // Comandos para listar informação
+// Comandos para listar informação
 
-// // Lista todas as plantas
-// bool Simulador::comandoLplantas()
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+// Lista todas as plantas
+bool Simulador::comandoLplantas()
+{
+    if (!isJardimCriado())
+    {
+        return false;
+    }
 
-//     // Nesta meta ainda não existem plantas armazenadas no solo (estrutura Solo não contem plantas).
-//     cout << "[INFO] Listagem de plantas nao implementada nesta fase.\n";
-//     jardim->mostraJardim();
-//     return true;
-// }
+    cout << "\n"
+         << string(39, '=') << "[ LISTAGEM DE PLANTAS NO JARDIM ]" << string(39, '=') << endl;
+    bool encontrouPlantas = false;
+    int totalPlantas = 0;
 
-// // ========================================================
+    // Percorre todas as linhas do jardim
+    for (int linha = 0; linha < jardim->getLinhas(); ++linha)
+    {
+        // Percorre todas as colunas do jardim
+        for (int coluna = 0; coluna < jardim->getColunas(); ++coluna)
+        {
+            Solo &soloAtual = jardim->getSolo(linha, coluna);
 
-// // Lista uma planta numa posição especifica
-// bool Simulador::comandoLplanta(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+            // Verifica se este solo possui uma planta
+            if (soloAtual.temPlanta())
+            {
+                encontrouPlantas = true;
+                totalPlantas++;
+                Planta *plantaNoSolo = soloAtual.getPlanta();
 
-//     string pos;
-//     if (!(ss >> pos) || !isPosicaoValida(pos))
-//     {
-//         cout << "[ERRO] Posicao invalida. Use duas letras minusculas.\n";
-//         return false;
-//     }
+                // Conversão de indices inteiros para letras
+                char letraLinha = static_cast<char>('a' + linha);
+                char letraColuna = static_cast<char>('a' + coluna);
 
-//     int l = pos[0] - 'a';
-//     int c = pos[1] - 'a';
-//     Solo *s = jardim->getSolo(l, c);
-//     if (!s)
-//     {
-//         cout << "[ERRO] Posicao fora do jardim.\n";
-//         return false;
-//     }
+                cout << "\n"
+                     << totalPlantas << "ª Planta - Posicao ( " << letraLinha << " , " << letraColuna << " )" << endl;
+                cout << string(111, '-') << endl;
 
-//     cout << "[INFO] Informacao da planta em " << pos << ": (nao implementado).\n";
-//     cout << "Solo - agua: " << s->getAgua() << ", nutrientes: " << s->getNutrientes() << "\n";
-//     return true;
-// }
+                // Propriedades internas da planta
+                cout << "{Planta}" << plantaNoSolo->getInfoPlanta() << endl;
 
-// // ========================================================
+                // Propriedades do solo
+                cout << "{Solo}" << soloAtual.getInfoSolo();
+            }
+        }
+    }
+    cout << string(111, '-') << endl;
+
+    if (!encontrouPlantas)
+    {
+        cout << "[INFO] >> Nao existem plantas no jardim no momento." << endl;
+    }
+
+    cout << string(111, '=') << endl;
+
+    return true;
+}
+
+// ========================================================
+
+// Lista uma planta numa posição especifica
+bool Simulador::comandoLplanta(stringstream &ss)
+{
+    if (!isJardimCriado())
+    {
+        return false;
+    }
+
+    string posicao;
+    if (!(ss >> posicao) || !isLetraPequena(posicao))
+    {
+        cout << "[ERRO] >> Formato de posicao invalido! Use duas letras minusculas (ex: lplanta aa)." << endl;
+        return false;
+    }
+
+    // Conversão de letras para índices inteiros
+    int linha = posicao[0] - 'a';
+    int coluna = posicao[1] - 'a';
+    if (isForaDosLimites(linha, coluna))
+    {
+        return false;
+    }
+
+    Solo &soloAlvo = jardim->getSolo(linha, coluna);
+    if (!soloAlvo.temPlanta())
+    {
+        cout << "[INFO] >> Nao existe nenhuma planta na posicao ( "
+             << posicao[0] << " , " << posicao[1] << " )." << endl;
+        return false;
+    }
+
+    // ========================================================
+
+    Planta *plantaAlvo = soloAlvo.getPlanta();
+
+    cout << "\n"
+         << string(44, '=') << "[ DETALHE DA PLANTA ]" << string(44, '=') << endl;
+    cout << "\nPosicao ( " << posicao[0] << " , " << posicao[1] << " )" << endl;
+    cout << string(111, '-') << endl;
+
+    // Propriedades internas da planta
+    cout << "{Planta}" << plantaAlvo->getInfoPlanta();
+
+    cout << string(111, '-') << "\n"
+         << string(111, '=') << endl;
+
+    return true;
+}
+
+// ========================================================
 
 // bool Simulador::comandoLarea()
 // {
@@ -396,9 +462,9 @@ bool Simulador::comandoColhe(stringstream &ss)
         return false;
     }
 
-    int linhaParaColher = posicao[0] - 'a';
-    int colunaParaColher = posicao[1] - 'a';
-    if (isForaDosLimites(linhaParaColher, colunaParaColher))
+    int linha = posicao[0] - 'a';
+    int coluna = posicao[1] - 'a';
+    if (isForaDosLimites(linha, coluna))
     {
         return false;
     }
@@ -409,7 +475,7 @@ bool Simulador::comandoColhe(stringstream &ss)
         return false;
     }
 
-    Solo &solo = jardim->getSolo(linhaParaColher, colunaParaColher);
+    Solo &solo = jardim->getSolo(linha, coluna);
     if (!solo.temPlanta())
     {
         cout << "[ERRO] >> Não existe nenhuma planta na posição " << posicao << "!" << endl;
@@ -445,9 +511,9 @@ bool Simulador::comandoPlanta(stringstream &ss)
         return false;
     }
 
-    int linhaParaPlantar = posicao[0] - 'a';
-    int colunaParaPlantar = posicao[1] - 'a';
-    if (isForaDosLimites(linhaParaPlantar, colunaParaPlantar))
+    int linha = posicao[0] - 'a';
+    int coluna = posicao[1] - 'a';
+    if (isForaDosLimites(linha, coluna))
     {
         return false;
     }
@@ -458,7 +524,7 @@ bool Simulador::comandoPlanta(stringstream &ss)
         return false;
     }
 
-    Solo &solo = jardim->getSolo(linhaParaPlantar, colunaParaPlantar);
+    Solo &solo = jardim->getSolo(linha, coluna);
     if (solo.temPlanta())
     {
         cout << "[ERRO] >> Ja existe uma planta na posicao " << posicao << "!" << endl;
@@ -887,11 +953,11 @@ bool Simulador::comandoSai()
         return false;
     }
 
-    int linhaAtual = jardineiro.getLinha();
-    int colunaAtual = jardineiro.getColuna();
-    if (!isForaDosLimites(linhaAtual, colunaAtual))
+    int linha_atual = jardineiro.getLinha();
+    int coluna_atual = jardineiro.getColuna();
+    if (!isForaDosLimites(linha_atual, coluna_atual))
     {
-        Solo &solo = jardim->getSolo(linhaAtual, colunaAtual);
+        Solo &solo = jardim->getSolo(linha_atual, coluna_atual);
         solo.setJardineiro(false);
     }
 
