@@ -37,7 +37,6 @@ bool Jardineiro::verificarPresenca() const
 {
     if (estaNoJardim)
         return true;
-    cout << string(111, '=') << "\n[ERRO] >> O jardineiro nao esta no jardim!" << endl;
     return false;
 }
 

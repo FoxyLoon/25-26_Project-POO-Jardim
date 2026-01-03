@@ -49,7 +49,7 @@ private:
     // ========================================================
 
     // Comandos Gerais
-    bool comandoAvanca(stringstream &ss);   // Não Implementado
+    bool comandoAvanca(stringstream &ss);   // OK
     static bool comandoFim();               // OK
     bool comandoJardim(stringstream &ss);   // OK
     bool comandoGrava(stringstream &ss);    // Não Implementado
@@ -77,7 +77,7 @@ private:
     bool comandoPlanta(stringstream &ss); // OK
     bool comandoLarga();                  // OK
     bool comandoPega(stringstream &ss);   // OK
-    bool comandoCompra(stringstream &ss); // Não Implementado
+    bool comandoCompra(stringstream &ss); // OK
 
     // ========================================================
     // ========================================================

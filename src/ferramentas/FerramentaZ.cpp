@@ -1,7 +1,7 @@
 #include "FerramentaZ.h"
 #include <cmath> // Para usar abs() se necessário
 
-FerramentaZ::FerramentaZ() : Ferramenta("FerramentaZ", 'z')
+FerramentaZ::FerramentaZ() : Ferramenta("Harmonizador de Solo", 'z')
 {
     bateria = Settings::FerramentaZ::capacidade;
 }
