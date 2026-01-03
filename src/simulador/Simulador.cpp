@@ -63,17 +63,17 @@ bool Simulador::processaComando(const string &linha)
     if (cmd == "lferr")
         return comandoLferr();
 
-    // // ========================================================
+    // ========================================================
 
-    // // Comandos para ações
+    // Comandos para ações
     if (cmd == "colhe")
         return comandoColhe(ss);
     if (cmd == "planta")
         return comandoPlanta(ss);
-    // if (cmd == "larga")
-    //     return comandoLarga();
-    // if (cmd == "pega")
-    //     return comandoPega(ss);
+    if (cmd == "larga")
+        return comandoLarga();
+    if (cmd == "pega")
+        return comandoPega(ss);
     // if (cmd == "compra")
     //     return comandoCompra(ss);
 
@@ -684,35 +684,45 @@ bool Simulador::comandoPlanta(stringstream &ss)
 
 // ========================================================
 
-// bool Simulador::comandoLarga()
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoLarga()
+{
+    if (!isJardimCriado())
+        return false;
 
-//     jardineiro.largarFerramenta();
+    if (jardineiro.getFerramentaNaMao() == nullptr)
+    {
+        cout << string(111, '=') << "\n[ERRO] >> O jardineiro não tem ferramentas equipadas para largar!" << endl;
+        return false;
+    }
 
-//     return true;
-// }
+    jardineiro.depositarFerramentaDaMaoParaInventario();
+    jardineiro.mostrarEstado();
+    jardim->mostraJardim();
+    return true;
+}
 
-// // ========================================================
+// ========================================================
 
-// bool Simulador::comandoPega(stringstream &ss)
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+bool Simulador::comandoPega(stringstream &ss)
+{
+    if (!isJardimCriado())
+    {
+        return false;
+    }
 
-//     int numeroSerie;
-//     if (!(ss >> numeroSerie))
-//     {
-//         cout << "[ERRO] Uso: pega <numero_de_serie>.\n";
-//         return false;
-//     }
+    int ID_Ferramenta;
+    if (!(ss >> ID_Ferramenta))
+    {
+        cout << string(111, '=') << "\n[ERRO] >> O comando pega requer o id da ferramenta (ex: pega 1)." << endl;
+        return false;
+    }
 
-//     // Pegar ferramenta do inventário
-//     jardineiro.pegarFerramenta(numeroSerie);
-
-//     return true;
-// }
+    // Seleciona a ferramenta do inventário
+    jardineiro.selecionarFerramentaDoInventario(ID_Ferramenta);
+    jardineiro.mostrarEstado();
+    jardim->mostraJardim();
+    return true;
+}
 
 // // ========================================================
 
@@ -738,7 +748,7 @@ bool Simulador::comandoPlanta(stringstream &ss)
 //     }
 
 //     // Adicionar ao inventário do jardineiro
-//     jardineiro.adicionarFerramenta(f);
+//     jardineiro.adicionarFerramentaAoInventario(f);
 
 //     return true;
 // }
@@ -795,12 +805,13 @@ bool Simulador::comandoE()
     Solo &novoSolo = jardim->getSolo(linha_atual, nova_coluna);
     novoSolo.setJardineiro(true);
 
-    // Apanha ferramenta se houver alguma no novo solo
+    // Se houver ferramenta no solo, o jardineiro apanha-a
     if (novoSolo.temFerramenta())
     {
-        Ferramenta *ferramentaEncontrada = novoSolo.removerFerramenta();
-        jardineiro.adicionarFerramenta(ferramentaEncontrada);
-        cout << "[INFO] >> O Jardineiro apanhou uma ferramenta: " << ferramentaEncontrada->getNomeFerramenta() << "!\n";
+        Ferramenta *ferramenta = novoSolo.removerFerramenta();
+        jardineiro.adicionarFerramentaAoInventario(ferramenta);
+        jardim->processaFerramentasAleatorias();
+        cout << "[INFO] >> O jardineiro encontrou e apanhou uma ferramenta!" << endl;
     }
 
     // Mostra o Jardim
@@ -856,12 +867,13 @@ bool Simulador::comandoD()
     Solo &novoSolo = jardim->getSolo(linha_atual, nova_coluna);
     novoSolo.setJardineiro(true);
 
-    // Apanha ferramenta se houver alguma no novo solo
+    // Se houver ferramenta no solo, o jardineiro apanha-a
     if (novoSolo.temFerramenta())
     {
-        Ferramenta *ferramentaEncontrada = novoSolo.removerFerramenta();
-        jardineiro.adicionarFerramenta(ferramentaEncontrada);
-        cout << "[INFO] >> O Jardineiro apanhou uma ferramenta: " << ferramentaEncontrada->getNomeFerramenta() << "!\n";
+        Ferramenta *ferramenta = novoSolo.removerFerramenta();
+        jardineiro.adicionarFerramentaAoInventario(ferramenta);
+        jardim->processaFerramentasAleatorias();
+        cout << "[INFO] >> O jardineiro encontrou e apanhou uma ferramenta!" << endl;
     }
 
     // Mostra o Jardim
@@ -917,12 +929,13 @@ bool Simulador::comandoC()
     Solo &novoSolo = jardim->getSolo(nova_linha, coluna_atual);
     novoSolo.setJardineiro(true);
 
-    // Apanha ferramenta se houver alguma no novo solo
+    // Se houver ferramenta no solo, o jardineiro apanha-a
     if (novoSolo.temFerramenta())
     {
-        Ferramenta *ferramentaEncontrada = novoSolo.removerFerramenta();
-        jardineiro.adicionarFerramenta(ferramentaEncontrada);
-        cout << "[INFO] >> O Jardineiro apanhou uma ferramenta: " << ferramentaEncontrada->getNomeFerramenta() << "!\n";
+        Ferramenta *ferramenta = novoSolo.removerFerramenta();
+        jardineiro.adicionarFerramentaAoInventario(ferramenta);
+        jardim->processaFerramentasAleatorias();
+        cout << "[INFO] >> O jardineiro encontrou e apanhou uma ferramenta!" << endl;
     }
 
     // Mostra o Jardim
@@ -978,12 +991,13 @@ bool Simulador::comandoB()
     Solo &novoSolo = jardim->getSolo(nova_linha, coluna_atual);
     novoSolo.setJardineiro(true);
 
-    // Apanha ferramenta se houver alguma no novo solo
+    // Se houver ferramenta no solo, o jardineiro apanha-a
     if (novoSolo.temFerramenta())
     {
-        Ferramenta *ferramentaEncontrada = novoSolo.removerFerramenta();
-        jardineiro.adicionarFerramenta(ferramentaEncontrada);
-        cout << "[INFO] >> O Jardineiro apanhou uma ferramenta: " << ferramentaEncontrada->getNomeFerramenta() << "!\n";
+        Ferramenta *ferramenta = novoSolo.removerFerramenta();
+        jardineiro.adicionarFerramentaAoInventario(ferramenta);
+        jardim->processaFerramentasAleatorias();
+        cout << "[INFO] >> O jardineiro encontrou e apanhou uma ferramenta!" << endl;
     }
 
     // Mostra o Jardim
@@ -1035,8 +1049,9 @@ bool Simulador::comandoEntra(stringstream &ss)
     if (solo.temFerramenta())
     {
         Ferramenta *ferramenta = solo.removerFerramenta();
-        jardineiro.adicionarFerramenta(ferramenta);
-        cout << "[INFO] >> O jardineiro encontrou e apanhou: " << ferramenta->getNomeFerramenta() << "!\n";
+        jardineiro.adicionarFerramentaAoInventario(ferramenta);
+        jardim->processaFerramentasAleatorias();
+        cout << "[INFO] >> O jardineiro encontrou e apanhou uma ferramenta!" << endl;
     }
 
     cout << "[INFO] >> O Jardineiro entrou na posicao " << pos << ".\n";

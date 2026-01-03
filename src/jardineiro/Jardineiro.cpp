@@ -134,54 +134,84 @@ void Jardineiro::usaColher(Solo &s)
 
 // Gestão de Inventário
 
-void Jardineiro::adicionarFerramenta(Ferramenta *f)
+// Adiciona uma ferramenta ao inventário
+void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
 {
     if (f)
     {
         inventario.push_back(f);
-        cout << string(111, '=') << "\n[INFO] >> Ferramenta adicionada: " << f->getNomeFerramenta() << ". (Mochila: " << inventario.size() << " itens)" << endl;
+        cout << string(111, '=') << "\n"
+             << "[INFO] >> Ferramenta adicionada: " << f->getNomeFerramenta() << ". (Iventário: " << inventario.size() << " itens)" << endl;
     }
 }
 
-void Jardineiro::selecionarFerramenta(int indice)
+// Seleciona uma ferramenta do inventário
+void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
 {
-    if (indice >= 0 && indice < (int)inventario.size())
+    // Procura a ferramenta no inventário pelo seu ID
+    int posicaoNoVetor = -1;
+    for (size_t i = 0; i < inventario.size(); ++i)
     {
-        largarFerramenta();
-        ferramentaNaMao = inventario[indice];
-        inventario.erase(inventario.begin() + indice);
-        cout << string(111, '=') << "\n[INFO] >> O jardineiro equipou a ferramenta " << ferramentaNaMao->getNomeFerramenta() << endl;
+        if (inventario[i]->getNumeroSerieFerramenta() == ID_Ferramenta)
+        {
+            posicaoNoVetor = i;
+            break;
+        }
+    }
+
+    if (posicaoNoVetor == -1)
+    {
+        cout << string(111, '=') << "\n[ERRO] >> O jardineiro nao transporta nenhuma ferramenta com o ID " << ID_Ferramenta << endl;
     }
     else
     {
-        cout << string(111, '=') << "\n[ERRO] >> Posição do inventário inválido!" << endl;
+
+        // Se existir, larga a ferramenta na mao
+        depositarFerramentaDaMaoParaInventario();
+
+        // 4. Move a ferramenta selecionada do inventário para a mão
+        ferramentaNaMao = inventario[posicaoNoVetor];
+        inventario.erase(inventario.begin() + posicaoNoVetor);
+
+        cout << string(111, '=') << "\n[INFO] >> O Jardineiro equipou a ferramenta: " << ferramentaNaMao->getNomeFerramenta()
+             << " (ID " << ID_Ferramenta << ")" << endl;
     }
 }
 
-void Jardineiro::largarFerramenta()
+// Larga a ferramenta na mao e deixa a mão vazia
+void Jardineiro::depositarFerramentaDaMaoParaInventario()
 {
-    if (ferramentaNaMao)
+    if (ferramentaNaMao != nullptr)
     {
         string nome = ferramentaNaMao->getNomeFerramenta();
+        int id = ferramentaNaMao->getNumeroSerieFerramenta();
+
         inventario.push_back(ferramentaNaMao);
         ferramentaNaMao = nullptr;
-        cout << string(111, '=') << "\n[INFO] >> O jardineiro desequipou a ferramenta: " << nome << endl;
+
+        cout << string(111, '=') << "\n[INFO] >> O jardineiro desequipou a ferramenta: "
+             << nome << " (ID " << id << ")" << endl;
     }
 }
 
-Ferramenta *Jardineiro::removerFerramenta(int indice)
+// Remove uma ferramenta do inventário pelo ID quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
+void Jardineiro::removerFerramentaDoInventario(int ID_Ferramenta)
 {
-    if (indice >= 0 && indice < (int)inventario.size())
+    // Verifica se existe uma ferramenta na mão e se o ID coincide
+    if (ferramentaNaMao != nullptr && ferramentaNaMao->getNumeroSerieFerramenta() == ID_Ferramenta)
     {
-        Ferramenta *f = inventario[indice];
-        string nome = f->getNomeFerramenta();
-        inventario.erase(inventario.begin() + indice);
-        cout << string(111, '=') << "\n[INFO] >> A ferramenta " << nome << " esgotou-se e saiu do inventario." << endl;
-        return f;
+        string nome = ferramentaNaMao->getNomeFerramenta();
+
+        // Remove a ferramenta da mao
+        delete ferramentaNaMao;
+        ferramentaNaMao = nullptr;
+
+        cout << string(111, '=') << endl;
+        cout << "[INFO] >> A ferramenta " << nome << " (ID: " << ID_Ferramenta << ") esgotou-se e foi removida da mao." << endl;
     }
-    return nullptr;
 }
 
+// Listagem de ferramentas do inventário
 void Jardineiro::listarFerramentas() const
 {
     cout << string(41, '=') << "[ INVENTARIO DO JARDINEIRO ]" << string(42, '=') << endl;
@@ -193,28 +223,27 @@ void Jardineiro::listarFerramentas() const
     {
         for (size_t i = 0; i < inventario.size(); ++i)
         {
-            cout << "[" << i + 1 << ".] " << inventario[i]->getNomeFerramenta() << " - " << i << ". " << inventario[i]->getInfoFerramenta() << endl;
+            cout << "[" << i + 1 << ".] " << inventario[i]->getInfoFerramenta() << endl;
         }
     }
 }
 
+// Retorna a ferramenta equipada
 Ferramenta *Jardineiro::getFerramentaNaMao() const { return ferramentaNaMao; }
 
 // ========================================================
 
 void Jardineiro::mostrarEstado() const
 {
-    cout << "--- Estado do Jardineiro ---" << endl;
     if (ferramentaNaMao)
     {
-        cout << "Equipado: " << ferramentaNaMao->getNomeFerramenta() << endl;
-        cout << "Detalhes: " << ferramentaNaMao->getInfoFerramenta() << endl;
+        cout << "\n- Equipado: " << ferramentaNaMao->getNomeFerramenta() << endl;
+        cout << "- " << ferramentaNaMao->getInfoExtraFerramenta() << endl;
     }
     else
     {
-        cout << "Equipado: Nada (Mao vazia)" << endl;
+        cout << "\n- Equipado: Nada (Mao vazia)" << endl;
     }
-    cout << "Recursos Turno: Movimentos(" << movimentosRestantes << ") | Colheitas(" << colheitasRestantes << ")" << endl;
 }
 
 // ========================================================

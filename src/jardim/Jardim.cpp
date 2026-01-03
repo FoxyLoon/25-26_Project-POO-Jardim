@@ -172,33 +172,23 @@ void Jardim::processaMultiplicacao()
 void Jardim::processaFerramentasAleatorias()
 {
     int total = 0;
-    // 1. Verificar se o jardineiro apanhou alguma e contar as existentes
     for (int i = 0; i < linhas; ++i)
     {
         for (int j = 0; j < colunas; ++j)
         {
             if (area[i][j].temFerramenta())
             {
-                if (area[i][j].possuiJardineiro())
-                {
-                    cout << "[INFO] >> O Jardineiro recolheu a ferramenta" << area[i][j].getFerramenta()->getNomeFerramenta() << "\n";
-                    // Aqui passar o ponteiro para o inventário do jardineiro antes de anular no solo
-                    area[i][j].removerFerramenta();
-                }
-                else
-                {
-                    total++;
-                }
+                total++;
             }
         }
     }
 
-    // 2. Repor ferramentas até ter 3 no chão
+    // Mantém sempre 3 ferramentas no chão
     while (total < 3)
     {
         int rl = rand() % linhas;
         int rc = rand() % colunas;
-        if (!area[rl][rc].temFerramenta() && !area[rl][rc].possuiJardineiro())
+        if (area[rl][rc].estaVazio() && !area[rl][rc].possuiJardineiro())
         {
             area[rl][rc].setFerramenta(gerarFerramentaAleatoria());
             total++;

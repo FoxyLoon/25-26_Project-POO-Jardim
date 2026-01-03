@@ -21,7 +21,7 @@ private:
     void processaRecursosPlantas();
     void processaMortes();
     void processaMultiplicacao();
-    void processaFerramentasAleatorias();
+    
 
     // Geração de ferramentas
     Ferramenta *gerarFerramentaAleatoria();
@@ -32,6 +32,7 @@ public:
 
     void avancaInstante();
     void mostraJardim() const;
+    void processaFerramentasAleatorias();
 
     // Getters
     int getLinhas() const;
