@@ -1,0 +1,95 @@
+jardim 10 12
+
+larea
+lplantas
+lferr
+
+entra bb
+
+planta cc c
+planta cd r
+planta ce e
+planta cf x
+
+avanca
+
+larea
+lplantas
+lplanta cc
+lsolo cc
+lsolo cc 2
+
+compra g
+compra a
+compra t
+compra z
+
+lferr
+
+pega 1
+avanca
+larga
+
+pega 2
+avanca
+larga
+
+pega 3
+avanca
+larga
+
+pega 4
+avanca
+larga
+
+e
+d
+c
+b
+e
+d
+c
+b
+e
+d
+
+avanca
+
+colhe cc
+colhe cd
+colhe ce
+colhe cf
+colhe cb
+
+avanca
+
+planta dd r
+planta de c
+
+avanca
+
+grava snap1
+
+planta aa e
+planta ab e
+planta ac e
+
+avanca
+
+recupera snap1
+
+avanca
+
+grava snap2
+
+apaga snap2
+
+sai
+
+avanca
+
+entra ff
+
+avanca
+
+fim
