@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Simulador::Simulador() : jardim(nullptr), jardimCriado(false), jardineiroCriado(false) {}
+Simulador::Simulador() : jardim(nullptr), jardimCriado(false), jardineiroNoJardim(false) {}
 
 Simulador::~Simulador()
 {
@@ -60,8 +60,8 @@ bool Simulador::processaComando(const string &linha)
         return comandoLarea();
     if (cmd == "lsolo")
         return comandoLsolo(ss);
-    // if (cmd == "lferr")
-    //     return comandoLferr();
+    if (cmd == "lferr")
+        return comandoLferr();
 
     // // ========================================================
 
@@ -96,7 +96,7 @@ bool Simulador::processaComando(const string &linha)
     // ========================================================
 
     // Retorna "false" caso o comando não for nenhum dos de cima
-    cout << "[ERRO] Comando desconhecido: " << cmd << "\n";
+    cout << string(111, '=') << "\n[ERRO] >> Comando desconhecido: " << cmd << "\n";
     return false;
 }
 
@@ -177,33 +177,33 @@ bool Simulador::comandoJardim(stringstream &ss)
     string extra;
     if (jardimCriado)
     {
-        cout << "[INFO] Já existe um jardim criado!\n";
+        cout << string(111, '=') << "\n[ERRO] Já existe um jardim criado!\n";
         return false;
     }
     else if (!(ss >> linhas >> colunas))
     {
-        cout << "[ERRO] >> Faltam valores!\n";
+        cout << string(111, '=') << "\n[ERRO] >> Faltam valores!\n";
         return false;
     }
     else if (ss >> extra)
     {
-        cout << "[ERRO] >> Existem parametros a mais!\n";
+        cout << string(111, '=') << "\n[ERRO] >> Existem parametros a mais!\n";
         return false;
     }
     else if (linhas < 1 || linhas > 26)
     {
-        cout << "[ERRO] >> Número de LINHAS Inválido!\n";
+        cout << string(111, '=') << "\n[ERRO] >> Número de LINHAS Inválido!\n";
         return false;
     }
     else if (colunas < 1 || colunas > 26)
     {
-        cout << "[ERRO] >> Número de COLUNAS Inválido!\n";
+        cout << string(111, '=') << "\n[ERRO] >> Número de COLUNAS Inválido!\n";
         return false;
     }
 
     jardim = new Jardim(linhas, colunas);
     jardimCriado = true;
-    cout << "[INFO] >> Foi criado um Jardim com "
+    cout << string(111, '=') << "\n[INFO] >> Foi criado um Jardim com "
          << linhas << " linhas e "
          << colunas << " colunas.\n";
 
@@ -273,7 +273,7 @@ bool Simulador::comandoLplantas()
     int contadorPlantas = 0;
 
     cout << "\n"
-         << string(39, '=') << "[ LISTAGEM DE PLANTAS NO JARDIM ]" << string(39, '=') << endl;
+         << string(40, '=') << "[ LISTA DAS PLANTAS NO JARDIM ]" << string(40, '=') << endl;
 
     // Percorre todas as linhas do jardim
     for (int linha_atual = 0; linha_atual < jardim->getLinhas(); ++linha_atual)
@@ -281,14 +281,14 @@ bool Simulador::comandoLplantas()
         // Percorre todas as colunas do jardim
         for (int coluna_atual = 0; coluna_atual < jardim->getColunas(); ++coluna_atual)
         {
-            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
+            Solo &solo = jardim->getSolo(linha_atual, coluna_atual);
 
             // Verifica se este solo possui uma planta
-            if (soloAtual.temPlanta())
+            if (solo.temPlanta())
             {
                 encontrouPlantas = true;
                 contadorPlantas++;
-                Planta *plantaNoSolo = soloAtual.getPlanta();
+                Planta *plantaNoSolo = solo.getPlanta();
 
                 // Conversão de indices inteiros para letras
                 char letraLinha = static_cast<char>('a' + linha_atual);
@@ -296,8 +296,9 @@ bool Simulador::comandoLplantas()
 
                 cout << string(111, '-') << "\n"
                      << contadorPlantas << "ª Planta - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n"
-                     << "{Planta}" << plantaNoSolo->getInfoPlanta() << "\n"
-                     << "{Solo}" << soloAtual.getInfoSolo();
+                     << "{Planta}\t" << plantaNoSolo->getInfoPlanta() << "\t\t"
+                     << plantaNoSolo->getInfoExtraPlanta()
+                     << "{Solo}\t\t" << solo.getInfoSolo();
             }
         }
     }
@@ -326,7 +327,7 @@ bool Simulador::comandoLplanta(stringstream &ss)
     string posicao;
     if (!(ss >> posicao) || !isLetraPequena(posicao))
     {
-        cout << "[ERRO] >> Formato de posicao invalido! Use duas letras minusculas (ex: lplanta aa)." << endl;
+        cout << string(111, '=') << "\n[ERRO] >> Formato de posicao invalido! Use duas letras minusculas (ex: lplanta aa)." << endl;
         return false;
     }
 
@@ -338,23 +339,24 @@ bool Simulador::comandoLplanta(stringstream &ss)
         return false;
     }
 
-    Solo &soloAlvo = jardim->getSolo(linha, coluna);
-    if (!soloAlvo.temPlanta())
+    Solo &solo = jardim->getSolo(linha, coluna);
+    if (!solo.temPlanta())
     {
-        cout << "[INFO] >> Nao existe nenhuma planta na posicao ( "
+        cout << string(111, '=') << "\n[ERRO] >> Nao existe nenhuma planta na posicao ( "
              << posicao[0] << " , " << posicao[1] << " )." << endl;
         return false;
     }
 
     // ========================================================
 
-    Planta *plantaAlvo = soloAlvo.getPlanta();
+    Planta *plantaNoSolo = solo.getPlanta();
 
     cout << "\n"
          << string(44, '=') << "[ DETALHE DA PLANTA ]" << string(44, '=') << "\n"
          << string(111, '-') << "\n"
          << "Posicao ( " << posicao[0] << " , " << posicao[1] << " )" << "\n"
-         << "{Planta}" << plantaAlvo->getInfoPlanta()
+         << "{Planta}\t" << plantaNoSolo->getInfoPlanta() << "\t\t"
+         << plantaNoSolo->getInfoExtraPlanta()
          << string(111, '-') << "\n"
          << string(111, '=') << endl;
 
@@ -372,7 +374,7 @@ bool Simulador::comandoLarea()
     }
 
     cout << "\n"
-         << string(39, '=') << "[ LISTAGEM DAS ÁREAS OCUPADAS ]" << string(39, '=') << endl;
+         << string(41, '=') << "[ LISTA DAS ÁREAS OCUPADAS ]" << string(42, '=') << endl;
 
     bool encontrouSoloOcupado = false;
     int contadorSolos = 0;
@@ -383,10 +385,10 @@ bool Simulador::comandoLarea()
         // Percorre todas as colunas do jardim
         for (int coluna_atual = 0; coluna_atual < jardim->getColunas(); ++coluna_atual)
         {
-            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
+            Solo &solo = jardim->getSolo(linha_atual, coluna_atual);
 
             // Verifica se este solo tem conteudo
-            if (!soloAtual.estaVazio())
+            if (!solo.estaVazio())
             {
                 encontrouSoloOcupado = true;
                 contadorSolos++;
@@ -397,7 +399,7 @@ bool Simulador::comandoLarea()
 
                 cout << string(111, '-') << "\n"
                      << contadorSolos << "ª Area Ocupada - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n"
-                     << "{Solo}" << soloAtual.getInfoSolo();
+                     << "{Solo}\t\t" << solo.getInfoSolo();
             }
         }
     }
@@ -426,7 +428,7 @@ bool Simulador::comandoLsolo(stringstream &ss)
     string posicaoCentral;
     if (!(ss >> posicaoCentral) || !isLetraPequena(posicaoCentral))
     {
-        cout << "[ERRO] >> O comando lsolo requer pelo menos uma posicao (ex: lsolo aa [numero_opcional])." << endl;
+        cout << string(111, '=') << "\n[ERRO] >> O comando lsolo requer pelo menos uma posicao (ex: lsolo aa [numero_opcional])." << endl;
         return false;
     }
 
@@ -446,7 +448,7 @@ bool Simulador::comandoLsolo(stringstream &ss)
     int colunaFinal = colunaCentral + raioBusca;
 
     cout << "\n"
-         << string(35, '=') << "[ INSPECAO DE SOLO ]" << string(35, '=') << endl;
+         << string(43, '=') << "[ PROPRIEDADES DO SOLO ]" << string(44, '=') << endl;
 
     bool encontrouSoloOcupado = false;
     int contadorSolos = 0;
@@ -465,10 +467,10 @@ bool Simulador::comandoLsolo(stringstream &ss)
                 continue;
             }
 
-            Solo &soloAtual = jardim->getSolo(linha_atual, coluna_atual);
+            Solo &solo = jardim->getSolo(linha_atual, coluna_atual);
 
             // Verifica se este solo tem conteudo
-            if (!soloAtual.estaVazio())
+            if (!solo.estaVazio())
             {
                 encontrouSoloOcupado = true;
                 contadorSolos++;
@@ -483,23 +485,27 @@ bool Simulador::comandoLsolo(stringstream &ss)
                 // Conversão de indices inteiros para letras
                 char letraLinha = static_cast<char>('a' + linha_atual);
                 char letraColuna = static_cast<char>('a' + coluna_atual);
+                Planta *plantaNoSolo = solo.getPlanta();
+                Ferramenta *ferramentaNoSolo = solo.getFerramenta();
 
                 cout << string(111, '-') << "\n"
                      << contadorSolos << "ª Area Ocupada - Posicao ( " << letraLinha << " , " << letraColuna << " )" << "\n";
 
                 // Propriedades do Solo
-                cout << "{Solo} " << soloAtual.getInfoSolo();
+                cout << "{Solo}\t\t" << solo.getInfoSolo();
 
                 // Propriedades da Planta (se existir)
-                if (soloAtual.temPlanta())
+                if (solo.temPlanta())
                 {
-                    cout << "\n{Planta} " << soloAtual.getPlanta()->getInfoPlanta();
+                    cout << "\n{Planta}\t" << plantaNoSolo->getInfoPlanta() << "\t\t"
+                         << plantaNoSolo->getInfoExtraPlanta();
                 }
 
                 // Propriedades da Ferramenta (se existir)
-                if (soloAtual.temFerramenta())
+                if (solo.temFerramenta())
                 {
-                    cout << "\n{Ferramenta} " << soloAtual.getFerramenta()->getInfoFerramenta();
+                    cout << "\n{Ferramenta}\t" << ferramentaNoSolo->getInfoFerramenta() << "\t\t"
+                         << ferramentaNoSolo->getInfoExtraFerramenta();
                 }
             }
         }
@@ -516,23 +522,39 @@ bool Simulador::comandoLsolo(stringstream &ss)
     return true;
 }
 
-// // ========================================================
+// ========================================================
 
-// bool Simulador::comandoLferr()
-// {
-//     if (!isJardimCriado(jardimCriado))
-//         return false;
+// TODO: verificar se o inventario apresenta a ferramenta equipada
+bool Simulador::comandoLferr()
+{
+    if (!isJardimCriado())
+        return false;
 
-//     jardineiro.listarFerramentas();
+    jardineiro.listarFerramentas();
 
-//     return true;
-// }
+    cout << string(51, '-') << endl;
 
-// // ========================================================
-// // ========================================================
-// // ========================================================
+    Ferramenta *ferramentaEquipada = jardineiro.getFerramentaNaMao();
+    if (ferramentaEquipada != nullptr)
+    {
+        cout << "FERRAMENTA EQUIPADA:" << "\n"
+             << ferramentaEquipada->getInfoFerramenta() << endl;
+    }
+    else
+    {
+        cout << "FERRAMENTA EQUIPADA:\n[INFO] >> O jardineiro está com as mãos vazias!" << endl;
+    }
 
-// // Comandos para ações
+    cout << string(111, '=') << endl;
+
+    return true;
+}
+
+// ========================================================
+// ========================================================
+// ========================================================
+
+// Comandos para ações
 
 bool Simulador::comandoColhe(stringstream &ss)
 {
@@ -548,7 +570,7 @@ bool Simulador::comandoColhe(stringstream &ss)
     string posicao;
     if (!(ss >> posicao) || !isLetraPequena(posicao))
     {
-        cout << "[ERRO] >> O comando colhe requer uma posição (ex: colhe aa)." << endl;
+        cout << string(111, '=') << "\n[ERRO] >> O comando colhe requer uma posição (ex: colhe aa)." << endl;
         return false;
     }
 
@@ -568,7 +590,7 @@ bool Simulador::comandoColhe(stringstream &ss)
     Solo &solo = jardim->getSolo(linha, coluna);
     if (!solo.temPlanta())
     {
-        cout << "[ERRO] >> Não existe nenhuma planta na posição " << posicao << "!" << endl;
+        cout << string(111, '=') << "\n[ERRO] >> Não existe nenhuma planta na posição " << posicao << "!" << endl;
         return false;
     }
 
@@ -597,7 +619,7 @@ bool Simulador::comandoPlanta(stringstream &ss)
     char tipoPlanta;
     if (!(ss >> posicao >> tipoPlanta) || !isLetraPequena(posicao))
     {
-        cout << "[ERRO] >> O comando planta requer posicao e tipo (ex: planta aa C)." << endl;
+        cout << string(111, '=') << "\n[ERRO] >> O comando planta requer posicao e tipo (ex: planta aa C)." << endl;
         return false;
     }
 
@@ -642,7 +664,7 @@ bool Simulador::comandoPlanta(stringstream &ss)
         novaPlanta = new PlantaExotica();
         break;
     default:
-        cout << "[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << endl;
+        cout << string(111, '=') << "\n[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << endl;
         return false;
     }
 
@@ -738,7 +760,7 @@ bool Simulador::comandoE()
     }
 
     // Verifica se o jardineiro foi criado
-    if (!isJardineiroCriado())
+    if (!isJardineiroNoJardim())
     {
         return false;
     }
@@ -756,7 +778,6 @@ bool Simulador::comandoE()
     // Valida se o movimento está dentro dos limites
     if (isForaDosLimites(linha_atual, nova_coluna))
     {
-        cout << "[ERRO] >> Movimento invalido (fora dos limites).\n";
         return false;
     }
 
@@ -800,7 +821,7 @@ bool Simulador::comandoD()
     }
 
     // Verifica se o jardineiro foi criado
-    if (!isJardineiroCriado())
+    if (!isJardineiroNoJardim())
     {
         return false;
     }
@@ -861,7 +882,7 @@ bool Simulador::comandoC()
     }
 
     // Verifica se o jardineiro foi criado
-    if (!isJardineiroCriado())
+    if (!isJardineiroNoJardim())
     {
         return false;
     }
@@ -922,7 +943,7 @@ bool Simulador::comandoB()
     }
 
     // Verifica se o jardineiro foi criado
-    if (!isJardineiroCriado())
+    if (!isJardineiroNoJardim())
     {
         return false;
     }
@@ -985,7 +1006,7 @@ bool Simulador::comandoEntra(stringstream &ss)
     string pos;
     if (!(ss >> pos) || !isLetraPequena(pos))
     {
-        cout << "[ERRO] >> Formato invalido! Use: entra <letras> (ex: entra aa)" << endl;
+        cout << string(111, '=') << "\n[ERRO] >> Formato invalido! Use: entra <letras> (ex: entra aa)" << endl;
         return false;
     }
 
@@ -1005,7 +1026,7 @@ bool Simulador::comandoEntra(stringstream &ss)
 
     // Entra no jardim
     jardineiro.usaEntrar(linha, coluna);
-    jardineiroCriado = true;
+    jardineiroNoJardim = true;
 
     Solo &solo = jardim->getSolo(linha, coluna);
     solo.setJardineiro(true);
@@ -1033,7 +1054,7 @@ bool Simulador::comandoSai()
         return false;
     }
 
-    if (!isJardineiroCriado())
+    if (!isJardineiroNoJardim())
     {
         return false;
     }
@@ -1053,7 +1074,7 @@ bool Simulador::comandoSai()
 
     // Executa a saida do jardineiro. Feedback está neste comando.
     jardineiro.usaSair();
-    jardineiroCriado = false;
+    jardineiroNoJardim = false;
 
     jardim->mostraJardim();
     return true;
@@ -1075,17 +1096,17 @@ bool Simulador::isJardimCriado()
 {
     if (!jardimCriado)
     {
-        cout << "[ERRO] >> É necessário criar um jardim primeiro!" << endl;
+        cout << string(111, '=') << "\n[ERRO] >> É necessário criar um jardim primeiro!" << endl;
         return false;
     }
     return true;
 }
 
-bool Simulador::isJardineiroCriado()
+bool Simulador::isJardineiroNoJardim()
 {
-    if (!jardineiroCriado)
+    if (!jardineiroNoJardim)
     {
-        cout << "[ERRO] >> É necessário o jardineiro entrar no jardim primeiro!" << endl;
+        cout << string(111, '=') << "\n[ERRO] >> É necessário o jardineiro entrar no jardim primeiro!" << endl;
         return false;
     }
     return true;
@@ -1095,7 +1116,7 @@ bool Simulador::isForaDosLimites(int linhas, int colunas)
 {
     if (linhas < 0 || linhas >= jardim->getLinhas() || colunas < 0 || colunas >= jardim->getColunas())
     {
-        cout << "[ERRO] >> Posição inválida! (fora dos limites).\n";
+        cout << string(111, '=') << "\n[ERRO] >> Posição inválida! (fora dos limites).\n";
         return true;
     }
     return false;

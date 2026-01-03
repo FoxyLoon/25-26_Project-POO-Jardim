@@ -33,12 +33,20 @@ bool Tesoura::estaGasta() const
 string Tesoura::getInfoFerramenta() const
 {
     ostringstream oss;
-    oss << "\t[" << getNomeFerramenta() << "]"
+    oss << "[" << getNomeFerramenta() << "]"
         << " (ID " << getNumeroSerieFerramenta() << ")"
         << " | Simbolo: " << getSimboloFerramenta()
-        << " | Quantidade Atual/Capacidade Maxima:  Infinita (Aço Cromado)" << "\n"
-        << "\t\tFunção: Eliminar plantas consideradas de beleza 'FEIA'" << endl;
+        << " | Quantidade Atual/Capacidade Maxima:  Infinita (Aço Cromado)" << endl;
 
     string informacao = oss.str();
     return informacao;
+}
+
+string Tesoura::getInfoExtraFerramenta() const
+{
+    ostringstream oss;
+    oss << "Função: Eliminar plantas consideradas de beleza 'FEIA'" << endl;
+
+    string informacaoExtra = oss.str();
+    return informacaoExtra;
 }

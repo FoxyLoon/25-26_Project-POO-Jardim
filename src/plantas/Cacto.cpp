@@ -21,17 +21,25 @@ Cacto::Cacto() : Planta("Cacto", 20, 20, 'c', "NEUTRA"), instantesAguaExcessiva(
 string Cacto::getInfoPlanta() const
 {
     ostringstream oss;
-    oss << "\t[" << getNomePlanta() << "]"
+    oss << "[" << getNomePlanta() << "]"
         << " | Simbolo: " << getSimboloPlanta()
         << " | Beleza: " << getBelezaPlanta()
         << " | Água: " << getAguaInterna()
         << " | Nutrientes: " << getNutrientesInternos()
-        << " | Idade (Instantes): " << idade << "\n"
-        << "\t\tInstantes Água Excessiva: " << instantesAguaExcessiva
-        << " | Instantes Sem Nutrientes: " << instantesSemNutrientes << "\n";
+        << " | Idade (Instantes): " << idade << endl;
 
     string informacao = oss.str();
     return informacao;
+}
+
+string Cacto::getInfoExtraPlanta() const
+{
+    ostringstream oss;
+    oss << "Instantes Água Excessiva: " << instantesAguaExcessiva
+        << " | Instantes Sem Nutrientes: " << instantesSemNutrientes << endl;
+
+    string informacaoExtra = oss.str();
+    return informacaoExtra;
 }
 
 // ========================================================

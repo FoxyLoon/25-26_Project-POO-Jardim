@@ -40,7 +40,7 @@ private:
 
     // Flags indicando se o jardim e o jardineiro foram criados
     bool jardimCriado;
-    bool jardineiroCriado;
+    bool jardineiroNoJardim;
 
     /* bool comandoEstado() const; */ // Não existe no enunciado
 
@@ -104,7 +104,7 @@ private:
     bool isJardimCriado();
 
     // Verifica se existe um Jardineiro
-    bool isJardineiroCriado();
+    bool isJardineiroNoJardim();
 
     // Verifica se está fora dos limites
     bool isForaDosLimites(int linha, int coluna);

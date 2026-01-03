@@ -101,7 +101,7 @@ void Jardim::processaMortes()
 
             if (deveMorrer)
             {
-                cout << "[MORTE] Planta " << p->getSimboloPlanta() << " em (" << i << "," << j << ")\n";
+                cout << "[MORTE] >> A planta " << p->getSimboloPlanta() << " morreu na posição (" << i << "," << j << ")\n";
                 p->aoMorrer(s);
                 delete p;
                 s.removerPlanta(); // Define nullptr internamente no Solo
@@ -134,7 +134,7 @@ void Jardim::processaMultiplicacao()
                         if (area[ni][nj].temPlanta())
                             delete area[ni][nj].getPlanta();
                         area[ni][nj].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] Erva Daninha em (" << ni << "," << nj << ")\n";
+                        cout << "[NASCIMENTO] >> Uma Erva Daninha apareceu na posição (" << ni << "," << nj << ")\n";
                     }
                 }
                 else
@@ -161,7 +161,7 @@ void Jardim::processaMultiplicacao()
                     {
                         auto pos = livres[rand() % livres.size()];
                         area[pos.first][pos.second].setPlanta(p->gerarSemente());
-                        cout << "[NASCIMENTO] " << simb << " em (" << pos.first << "," << pos.second << ")\n";
+                        cout << "[NASCIMENTO] >> Uma planta " << simb << " nasceu na posicao (" << pos.first << "," << pos.second << ")\n";
                     }
                 }
             }
@@ -181,7 +181,7 @@ void Jardim::processaFerramentasAleatorias()
             {
                 if (area[i][j].possuiJardineiro())
                 {
-                    cout << "[INFO] Jardineiro recolheu " << area[i][j].getFerramenta()->getNomeFerramenta() << "\n";
+                    cout << "[INFO] >> O Jardineiro recolheu a ferramenta" << area[i][j].getFerramenta()->getNomeFerramenta() << "\n";
                     // Aqui passar o ponteiro para o inventário do jardineiro antes de anular no solo
                     area[i][j].removerFerramenta();
                 }

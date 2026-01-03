@@ -25,6 +25,7 @@ public:
     string getNomeFerramenta() const;
     char getSimboloFerramenta() const;
     virtual string getInfoFerramenta() const = 0;
+    virtual string getInfoExtraFerramenta() const = 0;
 
     // Aplica a ferramenta no solo
     virtual void aplicarNoSolo(Solo& s) = 0;
