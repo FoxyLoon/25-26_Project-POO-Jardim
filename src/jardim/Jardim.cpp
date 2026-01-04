@@ -159,7 +159,7 @@ void Jardim::processaMultiplicacao() const
                             {
                                 sementesParaPlantar.push_back({nl, nc, novaSemente});
                             }
-                            // Para a Roseira/Cacto, talvez queiras apenas 1 semente por turno
+                            // Para a Roseira/Cato, talvez queiras apenas 1 semente por turno
                             break;
                         }
                     }

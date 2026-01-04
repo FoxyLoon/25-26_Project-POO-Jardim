@@ -37,7 +37,7 @@ public:
     // Getters
     [[nodiscard]] int getLinhas() const;
     [[nodiscard]] int getColunas() const;
-    Solo &getSolo(int l, int c) const;
+    [[nodiscard]] Solo &getSolo(int l, int c) const;
 };
 
 #endif

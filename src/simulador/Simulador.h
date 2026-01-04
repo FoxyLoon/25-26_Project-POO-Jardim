@@ -35,11 +35,10 @@ private:
     // Jardineiro do simulador
     Jardineiro jardineiro;
 
-    // Flags indicando se o jardim e o jardineiro foram criados
+    // ‘Flags’ indicando se o jardim e o jardineiro foram criados
     bool jardimCriado;
     bool jardineiroNoJardim;
 
-    /* bool comandoEstado() const; */ // Não existe no enunciado
 
     // ========================================================
     // ========================================================

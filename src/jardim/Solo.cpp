@@ -205,18 +205,18 @@ char Solo::getSimboloPrioritario() const
 
     if (temPlanta())
     {
-        char simbPlanta = planta->getSimboloPlanta();
-        return simbPlanta;
+        char simboloPlanta = planta->getSimboloPlanta();
+        return simboloPlanta;
     }
 
     if (temFerramenta())
     {
-        char simbFerramenta = ferramenta->getSimboloFerramenta();
-        return simbFerramenta;
+        char simboloFerramenta = ferramenta->getSimboloFerramenta();
+        return simboloFerramenta;
     }
 
-    char simbVazio = ' ';
-    return simbVazio;
+    char simboloVazio = ' ';
+    return simboloVazio;
 }
 
 // Obtem a informação do solo

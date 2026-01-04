@@ -9,12 +9,12 @@ Beleza: BONITA
 Comportamento por Fases:
 - Jovem (0-20): Absorve 3 água e 2 nutrientes.
 - Adulta (21-40): Dormência (não absorve nem produz).
-- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente internos.
+- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente interno.
 
 Morte:
 - Água interna < 5 ou Nutrientes internos < 3.
 - Idade >= 80 instantes.
-- Ao morrer: Devolve 75% dos recursos ao solo.
+- Ao morrer: devolve 75% dos recursos ao solo.
 */
 
 PlantaExotica::PlantaExotica() : Planta("Bambu Lunar", Settings::PlantaExotica::inicial_agua, Settings::PlantaExotica::inicial_nutrientes, 'x', "BONITA"), idade(0) {}
@@ -39,7 +39,7 @@ string PlantaExotica::getInfoPlanta() const
 string PlantaExotica::getInfoExtraPlanta() const
 {
     ostringstream oss;
-    // Identificação da fase atual de acordo com a idade
+    // Identificação da fase atual consoante a idade
     if (idade <= Settings::PlantaExotica::fim_jovem)
         oss << "Fase: JOVEM" << endl;
     else if (idade <= Settings::PlantaExotica::fim_adulta)
@@ -137,7 +137,7 @@ Planta *PlantaExotica::gerarSemente()
 
     // ==== Planta Original ====
 
-    // Planta Original fica com metade da agua e nutrientes
+    // Planta Original fica com metade da água e nutrientes
     int novaAguaPlantaOriginal = aguaPlantaOriginal / 2;
     int novosNutrientesPlantaOriginal = nutrientesPlantaOriginal / 2;
 
@@ -192,7 +192,7 @@ void PlantaExotica::aoMorrer(Solo &s)
     int nutrientesInternos = getNutrientesInternos();
     int percentagem = Settings::PlantaExotica::percentagem_recursos_pos_morte;
 
-    // Cálculo a depositar de acordo com a percentagem
+    // Cálculo a depositar consoante a percentagem
     int aguaParaDevolver = (aguaInterna * percentagem) / 100;
     int nutrientesParaDevolver = (nutrientesInternos * percentagem) / 100;
 

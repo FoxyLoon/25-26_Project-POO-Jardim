@@ -144,14 +144,14 @@ void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
     {
         inventario.push_back(f);
         cout << string(111, '=') << "\n"
-             << "[INFO] >> Ferramenta adicionada ao inventário: " << f->getNomeFerramenta() << ". (Inventário: " << inventario.size() << " iten(s))" << endl;
+             << "[INFO] >> Ferramenta adicionada ao inventário: " << f->getNomeFerramenta() << ". (Inventário: " << inventario.size() << " item(s))" << endl;
     }
 }
 
 // Seleciona uma ferramenta do inventário
 void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
 {
-    // Procura a ferramenta no inventário pelo seu ID
+    // Procura a ferramenta no inventário pelo seu ‘ID’
     int contador = 0;
     int posicaoNoVetor = -1;
 
@@ -198,10 +198,10 @@ void Jardineiro::depositarFerramentaDaMaoParaInventario()
     }
 }
 
-// Remove uma ferramenta do inventário pelo ID quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
+// Remove uma ferramenta do inventário pelo ‘ID’ quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
 void Jardineiro::removerFerramentaDoInventario(int ID_Ferramenta)
 {
-    // Verifica se existe uma ferramenta na mão e se o ID coincide
+    // Verifica se existe uma ferramenta na mão e se o ‘ID’ coincide
     if (ferramentaNaMao != nullptr && ferramentaNaMao->getNumeroSerieFerramenta() == ID_Ferramenta)
     {
         string nome = ferramentaNaMao->getNomeFerramenta();

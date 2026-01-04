@@ -34,7 +34,7 @@ void Regador::aplicarNoSolo(Solo &s)
     }
 }
 
-// Retorna true se a ferramenta estiver gastada
+// Retorna true se a ferramenta estiver gasta
 bool Regador::estaGasta() const
 {
     return aguaDisponivel <= 0;

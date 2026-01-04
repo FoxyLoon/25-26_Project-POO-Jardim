@@ -16,7 +16,7 @@ string Planta::getNomePlanta() const
     return nomePlanta;
 }
 
-// Obtem o simbolo da planta
+// Obtem o símbolo da planta
 char Planta::getSimboloPlanta() const
 {
     return simbolo;
