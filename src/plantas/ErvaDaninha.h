@@ -25,11 +25,11 @@ private:
 
 public:
     ErvaDaninha();
-    virtual ~ErvaDaninha() = default;
+    ~ErvaDaninha() override = default;
 
     // Informação da Planta
-    string getInfoPlanta() const override;
-    string getInfoExtraPlanta() const override;
+    [[nodiscard]] string getInfoPlanta() const override;
+    [[nodiscard]] string getInfoExtraPlanta() const override;
 
     // ========================================================
 
@@ -43,7 +43,7 @@ public:
     // ========================================================
 
     // Condições de Multiplicação
-    bool podeMultiplicar() const override;
+    [[nodiscard]] bool podeMultiplicar() const override;
     Planta *gerarSemente() override;
 
     // ========================================================
