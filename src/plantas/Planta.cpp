@@ -3,8 +3,8 @@
 #include <utility>
 #include "../jardim/Solo.h"
 
-Planta::Planta(string nome, int agua_inicial, int nutrientes_inicial, char simbolo, string  beleza)
-    : nomePlanta(std::move(nome)),aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), simbolo(simbolo), beleza(std::move(beleza)) {}
+Planta::Planta(string nome, int agua_inicial, int nutrientes_inicial, char simbolo, string beleza)
+    : nomePlanta(std::move(nome)), aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), simbolo(simbolo), beleza(std::move(beleza)) {}
 
 // ========================================================
 

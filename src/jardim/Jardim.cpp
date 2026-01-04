@@ -200,7 +200,7 @@ void Jardim::processaFerramentasAleatorias() const
     // Mantém sempre 3 ferramentas no chão
     while (total < 3)
     {
-        int rl = rand() % linhas; // NOLINT
+        int rl = rand() % linhas;  // NOLINT
         int rc = rand() % colunas; // NOLINT
         if (area[rl][rc].estaVazio() && !area[rl][rc].possuiJardineiro())
         {

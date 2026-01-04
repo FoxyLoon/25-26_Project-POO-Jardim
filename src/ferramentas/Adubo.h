@@ -21,7 +21,7 @@ public:
     ~Adubo() override = default;
 
     void usar() override;
-    void aplicarNoSolo(Solo& s) override;
+    void aplicarNoSolo(Solo &s) override;
     [[nodiscard]] bool estaGasta() const override;
     [[nodiscard]] string getInfoFerramenta() const override;
     [[nodiscard]] string getInfoExtraFerramenta() const override;

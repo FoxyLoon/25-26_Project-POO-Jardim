@@ -46,7 +46,7 @@ public:
 
     // Ações de Movimento e Jardim
 
-    void usaMovimento(int novaL, int novaC, const string& direcao);
+    void usaMovimento(int novaL, int novaC, const string &direcao);
     void usaEntrar(int l, int c);
     void usaSair();
     void usaPlantar(Solo &s, Planta *novaPlanta);

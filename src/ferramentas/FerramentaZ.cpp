@@ -74,7 +74,7 @@ string FerramentaZ::getInfoExtraFerramenta() const
 {
     ostringstream oss;
     oss << "Função: Equilibra o Solo ao adicionar ou remover recursos (Objetivo: 90 Água / 45 Nutrientes)" << endl;
-    
+
     string informacaoExtra = oss.str();
     return informacaoExtra;
 }

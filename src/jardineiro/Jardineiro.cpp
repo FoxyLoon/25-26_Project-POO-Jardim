@@ -83,7 +83,7 @@ bool Jardineiro::podeColher() const
 
 // Ações de Movimento e Jardim
 
-void Jardineiro::usaMovimento(int novaL, int novaC, const string& direcao)
+void Jardineiro::usaMovimento(int novaL, int novaC, const string &direcao)
 {
     linha = novaL;
     coluna = novaC;
@@ -155,8 +155,10 @@ void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
     int contador = 0;
     int posicaoNoVetor = -1;
 
-    for (const auto& item : inventario) {
-        if (item->getNumeroSerieFerramenta() == ID_Ferramenta) {
+    for (const auto &item : inventario)
+    {
+        if (item->getNumeroSerieFerramenta() == ID_Ferramenta)
+        {
             posicaoNoVetor = contador;
             break;
         }

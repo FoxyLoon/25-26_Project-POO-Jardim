@@ -1352,8 +1352,6 @@ Planta *Simulador::deserializarPlanta(const string &dados)
     planta->setAguaInterna(agua);
     planta->setNutrientesInternos(nutrientes);
 
-
-
     return planta;
 }
 
@@ -1559,7 +1557,6 @@ bool Simulador::carregarJardimDeFicheiro(const string &nome)
     // Destruir jardim anterior se existir
     delete jardim;
 
-
     // Criar jardim com as dimensões carregadas
     jardim = new Jardim(linhas, colunas, false);
     jardimCriado = true;
@@ -1607,7 +1604,7 @@ bool Simulador::eNumeroValido(const string &str)
         return false;
 
     size_t inicio = 0;
-    if (str[0] == '-')  // Permite números negativos
+    if (str[0] == '-') // Permite números negativos
         inicio = 1;
 
     if (inicio >= str.length())

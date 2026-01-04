@@ -39,30 +39,29 @@ private:
     bool jardimCriado;
     bool jardineiroNoJardim;
 
-
     // ========================================================
     // ========================================================
     // ========================================================
 
     // Comandos Gerais
-    bool comandoAvanca(stringstream &ss);   // OK
-    static bool comandoFim();               // OK
-    bool comandoJardim(stringstream &ss);   // OK
-    bool comandoGrava(stringstream &ss) const;    // Não Implementado
-    bool comandoRecupera(stringstream &ss); // Não Implementado
-    static bool comandoApaga(stringstream &ss);    // Não Implementado
-    bool comandoExecuta(stringstream &ss);  // Não Implementado
+    bool comandoAvanca(stringstream &ss);       // OK
+    static bool comandoFim();                   // OK
+    bool comandoJardim(stringstream &ss);       // OK
+    bool comandoGrava(stringstream &ss) const;  // Não Implementado
+    bool comandoRecupera(stringstream &ss);     // Não Implementado
+    static bool comandoApaga(stringstream &ss); // Não Implementado
+    bool comandoExecuta(stringstream &ss);      // Não Implementado
 
     // ========================================================
     // ========================================================
     // ========================================================
 
     // Comandos para listar informação
-    [[nodiscard]] bool comandoLplantas() const;                // OK
+    [[nodiscard]] bool comandoLplantas() const;  // OK
     bool comandoLplanta(stringstream &ss) const; // OK
-    [[nodiscard]] bool comandoLarea() const;                   // OK
+    [[nodiscard]] bool comandoLarea() const;     // OK
     bool comandoLsolo(stringstream &ss) const;   // OK
-    [[nodiscard]] bool comandoLferr() const;                   // OK
+    [[nodiscard]] bool comandoLferr() const;     // OK
 
     // ========================================================
     // ========================================================

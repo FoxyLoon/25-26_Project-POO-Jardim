@@ -19,7 +19,7 @@ private:
 
 public:
     // Construtor
-    explicit Planta(string nomePlanta, int agua_inicial, int nutrientes_inicial, char simbolo, string  beleza);
+    explicit Planta(string nomePlanta, int agua_inicial, int nutrientes_inicial, char simbolo, string beleza);
     virtual ~Planta() = default;
 
     // ========================================================

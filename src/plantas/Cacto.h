@@ -16,7 +16,8 @@ Comportamento:
 - Multiplica-se se nutrientes > 100 e água > 50
 */
 
-class Cacto : public Planta {
+class Cacto : public Planta
+{
 private:
     // Contadores para condições de morte
     int instantesAguaExcessiva;
@@ -32,27 +33,27 @@ public:
     // Informação da Planta
     [[nodiscard]] string getInfoPlanta() const override;
     [[nodiscard]] string getInfoExtraPlanta() const override;
-    
+
     // ========================================================
 
     // Processamento de cada instante
-    void removeRecursosSolo(Solo& s) override;
-    void adicionaRecursosPlanta(Solo& s) override;
+    void removeRecursosSolo(Solo &s) override;
+    void adicionaRecursosPlanta(Solo &s) override;
     void envelhecimento() override;
     void removeRecursosPlanta() override;
-    void adicionaRecursosSolo(Solo& s) override;
+    void adicionaRecursosSolo(Solo &s) override;
 
     // ========================================================
 
     // Condições de Multiplicação
     [[nodiscard]] bool podeMultiplicar() const override;
-    Planta* gerarSemente() override;
+    Planta *gerarSemente() override;
 
     // ========================================================
 
     // Condições de Morte
-    bool verificaMorte(const Solo& s) override;
-    void aoMorrer(Solo& s) override;
+    bool verificaMorte(const Solo &s) override;
+    void aoMorrer(Solo &s) override;
 };
 
 #endif

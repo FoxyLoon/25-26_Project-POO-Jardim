@@ -10,7 +10,7 @@ Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
     int nutrientesMinimo = Settings::Jardim::nutrientes_min;
     int nutrientesMaximo = Settings::Jardim::nutrientes_max;
 
-    int aguaAleatoria = aguaMinima + (rand() % (aguaMaxima - aguaMinima + 1)); // NOLINT
+    int aguaAleatoria = aguaMinima + (rand() % (aguaMaxima - aguaMinima + 1));                    // NOLINT
     int nutriAleatorio = nutrientesMinimo + (rand() % (nutrientesMaximo - nutrientesMinimo + 1)); // NOLINT
 
     agua = aguaAleatoria;

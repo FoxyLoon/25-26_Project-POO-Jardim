@@ -10,14 +10,15 @@
  * - Símbolo: 't'
  */
 
-class Tesoura : public Ferramenta {
+class Tesoura : public Ferramenta
+{
 public:
     Tesoura();
     ~Tesoura() override = default;
 
-    void usar() override;                   // Não faz nada
-    void aplicarNoSolo(Solo& s) override;
-    [[nodiscard]] bool estaGasta() const override;        // Sempre Falso
+    void usar() override; // Não faz nada
+    void aplicarNoSolo(Solo &s) override;
+    [[nodiscard]] bool estaGasta() const override; // Sempre Falso
     [[nodiscard]] string getInfoFerramenta() const override;
     [[nodiscard]] string getInfoExtraFerramenta() const override;
 };

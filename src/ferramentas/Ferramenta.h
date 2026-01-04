@@ -27,9 +27,8 @@ public:
     [[nodiscard]] virtual string getInfoFerramenta() const = 0;
     [[nodiscard]] virtual string getInfoExtraFerramenta() const = 0;
 
-
     // Aplica a ferramenta no solo
-    virtual void aplicarNoSolo(Solo& s) = 0;
+    virtual void aplicarNoSolo(Solo &s) = 0;
 
     // Usa a ferramenta
     virtual void usar() = 0;
