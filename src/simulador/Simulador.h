@@ -47,10 +47,10 @@ private:
     bool comandoAvanca(stringstream &ss);       // OK
     static bool comandoFim();                   // OK
     bool comandoJardim(stringstream &ss);       // OK
-    bool comandoGrava(stringstream &ss) const;  // Não Implementado
-    bool comandoRecupera(stringstream &ss);     // Não Implementado
-    static bool comandoApaga(stringstream &ss); // Não Implementado
-    bool comandoExecuta(stringstream &ss);      // Não Implementado
+    bool comandoGrava(stringstream &ss) const;  // OK
+    bool comandoRecupera(stringstream &ss);     // OK
+    static bool comandoApaga(stringstream &ss); // OK
+    bool comandoExecuta(stringstream &ss);      // OK
 
     // ========================================================
     // ========================================================
