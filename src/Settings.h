@@ -126,7 +126,7 @@ public:
         static const int multiplica_nutrientes_maior = 30;
         static const int multiplica_instantes = 5;
         static const int nova_nutrientes = 5;
-        static const int original_nutrientes = 5; // Não usado (mãe não perde)
+        static const int original_nutrientes = 5;
     };
 
     class PlantaExotica

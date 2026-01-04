@@ -27,7 +27,7 @@ private:
     static Ferramenta *gerarFerramentaAleatoria();
 
 public:
-    explicit Jardim(int l, int c, bool criarFerramentas = true);
+    explicit Jardim(int linha, int coluna, bool criarFerramentas = true);
     ~Jardim();
 
     void avancaInstante() const;

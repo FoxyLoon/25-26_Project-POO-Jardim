@@ -25,29 +25,29 @@ void FerramentaZ::aplicarNoSolo(Solo &s)
 
     if (aguaAtual < alvoAgua)
     {
-        int dif = alvoAgua - aguaAtual;
-        s.setAgua(aguaAtual + (dif > ajusteMaxAgua ? ajusteMaxAgua : dif));
+        int diferenca = alvoAgua - aguaAtual;
+        s.setAgua(aguaAtual + (diferenca > ajusteMaxAgua ? ajusteMaxAgua : diferenca));
     }
     else if (aguaAtual > alvoAgua)
     {
-        int dif = aguaAtual - alvoAgua;
-        s.setAgua(aguaAtual - (dif > ajusteMaxAgua ? ajusteMaxAgua : dif));
+        int diferenca = aguaAtual - alvoAgua;
+        s.setAgua(aguaAtual - (diferenca > ajusteMaxAgua ? ajusteMaxAgua : diferenca));
     }
 
     // Lógica dos Nutrientes
     int nutriAtual = s.getNutrientes();
-    int alvoNutri = Settings::FerramentaZ::otimo_nutrientes;
-    int ajusteMaxNutri = Settings::FerramentaZ::max_ajuste_nutrientes;
+    int alvoNutrientes = Settings::FerramentaZ::otimo_nutrientes;
+    int ajusteMaxNutrientes = Settings::FerramentaZ::max_ajuste_nutrientes;
 
-    if (nutriAtual < alvoNutri)
+    if (nutriAtual < alvoNutrientes)
     {
-        int dif = alvoNutri - nutriAtual;
-        s.setNutrientes(nutriAtual + (dif > ajusteMaxNutri ? ajusteMaxNutri : dif));
+        int diferenca = alvoNutrientes - nutriAtual;
+        s.setNutrientes(nutriAtual + (diferenca > ajusteMaxNutrientes ? ajusteMaxNutrientes : diferenca));
     }
-    else if (nutriAtual > alvoNutri)
+    else if (nutriAtual > alvoNutrientes)
     {
-        int dif = nutriAtual - alvoNutri;
-        s.setNutrientes(nutriAtual - (dif > ajusteMaxNutri ? ajusteMaxNutri : dif));
+        int diferenca = nutriAtual - alvoNutrientes;
+        s.setNutrientes(nutriAtual - (diferenca > ajusteMaxNutrientes ? ajusteMaxNutrientes : diferenca));
     }
 
     usar(); // Consome 1 carga de bateria
