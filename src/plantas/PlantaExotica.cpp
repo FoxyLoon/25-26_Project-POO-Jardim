@@ -2,20 +2,6 @@
 #include <sstream>
 #include "../Settings.h"
 
-/*
-PLANTA EXÓTICA (x) - BAMBU LUNAR
-Beleza: BONITA
-
-Comportamento por Fases:
-- Jovem (0-20): Absorve 3 água e 2 nutrientes.
-- Adulta (21-40): Dormência (não absorve nem produz).
-- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente interno.
-
-Morte:
-- Água interna < 5 ou Nutrientes internos < 3.
-- Idade >= 80 instantes.
-- Ao morrer: devolve 75% dos recursos ao solo.
-*/
 
 PlantaExotica::PlantaExotica() : Planta("Bambu Lunar", Settings::PlantaExotica::inicial_agua, Settings::PlantaExotica::inicial_nutrientes, 'x', "BONITA"), idade(0) {}
 
