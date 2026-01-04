@@ -126,48 +126,62 @@ void Jardim::processaMortes() const
 
 void Jardim::processaMultiplicacao() const
 {
-    // Vetor temporário para armazenar onde as novas plantas devem nascer
-    // Evita processar uma planta que acabou de nascer no mesmo turno
     struct NovaPlanta
     {
-        int linha_NovaPlanta, coluna_NovaPlanta;
+        int linha_atual, coluna_atual;
         Planta *semente;
     };
     vector<NovaPlanta> sementesParaPlantar;
 
-    for (int linha_NovaPlanta = 0; linha_NovaPlanta < linhas; ++linha_NovaPlanta)
+    for (int linha_atual = 0; linha_atual < linhas; ++linha_atual)
     {
-        for (int coluna_NovaPlanta = 0; coluna_NovaPlanta < colunas; ++coluna_NovaPlanta)
+        for (int coluna_atual = 0; coluna_atual < colunas; ++coluna_atual)
         {
-            Solo &soloAtual = area[linha_NovaPlanta][coluna_NovaPlanta];
+            Solo &soloAtual = area[linha_atual][coluna_atual];
 
-            // Verifica se existe planta e se pode multiplicar
             if (soloAtual.temPlanta() && soloAtual.getPlanta()->podeMultiplicar())
             {
+                Planta *plantaPai = soloAtual.getPlanta();
+                char simbolo = plantaPai->getSimboloPlanta();
 
-                // Procurar um solo vizinha vazio (Cima, Baixo, Esquerda, Direita)
-                int vizinhosL[] = {linha_NovaPlanta - 1, linha_NovaPlanta + 1, linha_NovaPlanta, linha_NovaPlanta};
-                int vizinhosC[] = {coluna_NovaPlanta, coluna_NovaPlanta, coluna_NovaPlanta - 1, coluna_NovaPlanta + 1};
+                // 1. Definir vizinhos possíveis
+                vector<pair<int, int>> vizinhos;
+                if (simbolo == 'x')
+                { // Planta Exótica: Apenas Diagonais
+                    vizinhos = {{linha_atual - 1, coluna_atual - 1}, {linha_atual - 1, coluna_atual + 1}, {linha_atual + 1, coluna_atual - 1}, {linha_atual + 1, coluna_atual + 1}};
+                }
+                else
+                { // Outras: Cima, Baixo, Esquerda, Direita
+                    vizinhos = {{linha_atual - 1, coluna_atual}, {linha_atual + 1, coluna_atual}, {linha_atual, coluna_atual - 1}, {linha_atual, coluna_atual + 1}};
+                }
 
-                for (int linha_atual = 0; linha_atual < 4; ++linha_atual)
+                // 2. Escolher uma posição aleatória dos vizinhos válidos
+                // Baralhamos a lista de vizinhos usando rand()
+                for (size_t i = 0; i < vizinhos.size(); ++i)
                 {
-                    int nl = vizinhosL[linha_atual];
-                    int nc = vizinhosC[linha_atual];
+                    size_t j = i + (rand() % (vizinhos.size() - i)); // NOLINT
+                    swap(vizinhos[i], vizinhos[j]);
+                }
 
-                    // Verificar limites do jardim e se o solo está vazio
+                // 3. Tentar plantar no primeiro vizinho disponível (dentro dos limites)
+                for (auto &pos : vizinhos)
+                {
+                    int nl = pos.first;
+                    int nc = pos.second;
+
                     if (nl >= 0 && nl < linhas && nc >= 0 && nc < colunas)
                     {
-                        if (area[nl][nc].estaVazio())
-                        {
-                            // Gera a semente (usa o método virtual da tua classe Planta)
-                            Planta *novaSemente = soloAtual.getPlanta()->gerarSemente();
+                        Solo &soloDestino = area[nl][nc];
 
+                        // Regra: Erva Daninha ('e') ignora se está ocupado. Outras exigem vazio.
+                        if (simbolo == 'e' || soloDestino.estaVazio())
+                        {
+                            Planta *novaSemente = plantaPai->gerarSemente();
                             if (novaSemente != nullptr)
                             {
                                 sementesParaPlantar.push_back({nl, nc, novaSemente});
                             }
-                            // Para a Roseira/Cato, talvez queiras apenas 1 semente por turno
-                            break;
+                            break; // Apenas uma multiplicação de sucesso por planta
                         }
                     }
                 }
@@ -175,17 +189,29 @@ void Jardim::processaMultiplicacao() const
         }
     }
 
-    // Planta sementes
+    // 4. Efetuar a plantação (Fase de resolução)
     for (auto &n : sementesParaPlantar)
     {
-        // Verifica para evitar que duas plantas vizinhas "nasçam" no mesmo lugar
-        if (area[n.linha_NovaPlanta][n.coluna_NovaPlanta].estaVazio())
+        Solo &soloAlvo = area[n.linha_atual][n.coluna_atual];
+
+        if (n.semente->getSimboloPlanta() == 'e')
         {
-            area[n.linha_NovaPlanta][n.coluna_NovaPlanta].setPlanta(n.semente);
+            // Erva Daninha: Se houver planta, mata-a (delete) e ocupa o lugar
+            if (soloAlvo.temPlanta())
+            {
+                delete soloAlvo.removerPlanta();
+            }
+            soloAlvo.setPlanta(n.semente);
+        }
+        else if (soloAlvo.estaVazio())
+        {
+            // Plantas normais: Só ocupam se o solo continuar vazio
+            soloAlvo.setPlanta(n.semente);
         }
         else
         {
-            delete n.semente; // Limpa a memória se o lugar foi ocupado
+            // Se o lugar foi ocupado entretanto (ex: por uma Erva Daninha), apaga a semente
+            delete n.semente;
         }
     }
 }
