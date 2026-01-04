@@ -144,7 +144,6 @@ void Jardim::processaMultiplicacao() const
                 Planta *plantaPai = soloAtual.getPlanta();
                 char simbolo = plantaPai->getSimboloPlanta();
 
-                // 1. Definir vizinhos possíveis
                 vector<pair<int, int>> vizinhos;
                 if (simbolo == 'x')
                 { // Planta Exótica: Apenas Diagonais
@@ -155,33 +154,32 @@ void Jardim::processaMultiplicacao() const
                     vizinhos = {{linha_atual - 1, coluna_atual}, {linha_atual + 1, coluna_atual}, {linha_atual, coluna_atual - 1}, {linha_atual, coluna_atual + 1}};
                 }
 
-                // 2. Escolher uma posição aleatória dos vizinhos válidos
-                // Baralhamos a lista de vizinhos usando rand()
+                // Escolher uma posição aleatória dos vizinhos válidos
                 for (size_t i = 0; i < vizinhos.size(); ++i)
                 {
                     size_t j = i + (rand() % (vizinhos.size() - i)); // NOLINT
                     swap(vizinhos[i], vizinhos[j]);
                 }
 
-                // 3. Tentar plantar no primeiro vizinho disponível (dentro dos limites)
+                // Planta no primeiro vizinho
                 for (auto &pos : vizinhos)
                 {
-                    int nl = pos.first;
-                    int nc = pos.second;
+                    int nova_linha = pos.first;
+                    int nova_coluna = pos.second;
 
-                    if (nl >= 0 && nl < linhas && nc >= 0 && nc < colunas)
+                    if (nova_linha >= 0 && nova_linha < linhas && nova_coluna >= 0 && nova_coluna < colunas)
                     {
-                        Solo &soloDestino = area[nl][nc];
+                        Solo &soloDestino = area[nova_linha][nova_coluna];
 
-                        // Regra: Erva Daninha ('e') ignora se está ocupado. Outras exigem vazio.
+                        // Erva Daninha: Se houver planta, mata-a
                         if (simbolo == 'e' || soloDestino.estaVazio())
                         {
                             Planta *novaSemente = plantaPai->gerarSemente();
                             if (novaSemente != nullptr)
                             {
-                                sementesParaPlantar.push_back({nl, nc, novaSemente});
+                                sementesParaPlantar.push_back({nova_linha, nova_coluna, novaSemente});
                             }
-                            break; // Apenas uma multiplicação de sucesso por planta
+                            break;
                         }
                     }
                 }
@@ -189,7 +187,7 @@ void Jardim::processaMultiplicacao() const
         }
     }
 
-    // 4. Efetuar a plantação (Fase de resolução)
+    // Plantar as sementes
     for (auto &n : sementesParaPlantar)
     {
         Solo &soloAlvo = area[n.linha_atual][n.coluna_atual];
