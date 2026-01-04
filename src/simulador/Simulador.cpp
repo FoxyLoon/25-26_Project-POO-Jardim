@@ -8,6 +8,11 @@
 #include "../plantas/ErvaDaninha.h"
 #include "../plantas/PlantaExotica.h"
 
+#include "../ferramentas/Regador.h"
+#include "../ferramentas/Adubo.h"
+#include "../ferramentas/Tesoura.h"
+#include "../ferramentas/FerramentaZ.h"
+
 using namespace std;
 
 Simulador::Simulador() : jardim(nullptr), jardimCriado(false), jardineiroNoJardim(false) {}
@@ -225,7 +230,7 @@ bool Simulador::comandoJardim(stringstream &ss)
 
 bool Simulador::comandoGrava(stringstream &ss) const
 {
-    if (!jardimCriado || jardim == nullptr)
+    if (!isJardimCriado())
     {
         cout << "[ERRO] >> Não existe um jardim para guardar.\n";
         return false;
@@ -1355,9 +1360,9 @@ Planta *Simulador::deserializarPlanta(const string &dados)
         return nullptr;
     }
 
-
     planta->setAguaInterna(agua);
     planta->setNutrientesInternos(nutrientes);
+
 
 
     return planta;

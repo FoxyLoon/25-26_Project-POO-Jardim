@@ -17,10 +17,10 @@ private:
     vector<Ferramenta *> inventario;
     Ferramenta *ferramentaNaMao;
 
-    int movimentosRestantes{};
-    int entradasSaidasRestantes{};
-    int plantacoesRestantes{};
-    int colheitasRestantes{};
+    int movimentosRestantes;
+    int entradasSaidasRestantes;
+    int plantacoesRestantes;
+    int colheitasRestantes;
 
 public:
     Jardineiro();

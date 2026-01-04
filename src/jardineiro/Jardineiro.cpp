@@ -5,7 +5,10 @@ using namespace std;
 
 Jardineiro::Jardineiro() : linha(-1), coluna(-1), estaNoJardim(false), ferramentaNaMao(nullptr)
 {
-    reiniciarTurno();
+    movimentosRestantes = Settings::Jardineiro::max_movimentos;
+    entradasSaidasRestantes = Settings::Jardineiro::max_entradas_saidas;
+    plantacoesRestantes = Settings::Jardineiro::max_plantacoes;
+    colheitasRestantes = Settings::Jardineiro::max_colheitas;
 }
 
 Jardineiro::~Jardineiro()
@@ -148,14 +151,15 @@ void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
 void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
 {
     // Procura a ferramenta no inventário pelo seu ID
+    int contador = 0;
     int posicaoNoVetor = -1;
-    for (size_t i = 0; i < inventario.size(); ++i)
-    {
-        if (inventario[i]->getNumeroSerieFerramenta() == ID_Ferramenta)
-        {
-            posicaoNoVetor = static_cast<int>(i);
+
+    for (const auto& item : inventario) {
+        if (item->getNumeroSerieFerramenta() == ID_Ferramenta) {
+            posicaoNoVetor = contador;
             break;
         }
+        contador++;
     }
 
     if (posicaoNoVetor == -1)

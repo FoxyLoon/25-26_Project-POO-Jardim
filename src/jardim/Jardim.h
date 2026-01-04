@@ -3,10 +3,11 @@
 
 #include <vector>
 #include "Solo.h"
-#include "../ferramentas/Regador.h"
-#include "../ferramentas/Adubo.h"
-#include "../ferramentas/Tesoura.h"
-#include "../ferramentas/FerramentaZ.h"
+#include "../ferramentas/Ferramenta.h"
+// #include "../ferramentas/Regador.h"
+// #include "../ferramentas/Adubo.h"
+// #include "../ferramentas/Tesoura.h"
+// #include "../ferramentas/FerramentaZ.h"
 
 using namespace std;
 
@@ -18,25 +19,25 @@ private:
     Solo **area;
 
     // Funções auxiliares
-    void processaRecursosPlantas();
-    void processaMortes();
-    void processaMultiplicacao();
+    void processaRecursosPlantas() const;
+    void processaMortes() const;
+    void processaMultiplicacao() const;
 
     // Geração de ferramentas
-    Ferramenta *gerarFerramentaAleatoria();
+    static Ferramenta *gerarFerramentaAleatoria();
 
 public:
     explicit Jardim(int l, int c, bool criarFerramentas = true);
     ~Jardim();
 
-    void avancaInstante();
+    void avancaInstante() const;
     void mostraJardim() const;
-    void processaFerramentasAleatorias();
+    void processaFerramentasAleatorias() const;
 
     // Getters
-    int getLinhas() const;
-    int getColunas() const;
-    Solo &getSolo(int l, int c);
+    [[nodiscard]] int getLinhas() const;
+    [[nodiscard]] int getColunas() const;
+    Solo &getSolo(int l, int c) const;
 };
 
 #endif
