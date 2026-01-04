@@ -1,4 +1,5 @@
 #include "Tesoura.h"
+#include <sstream>
 
 // Construtor: Símbolo 'T', nome "Tesoura"
 Tesoura::Tesoura() : Ferramenta("Tesoura", 't') {}

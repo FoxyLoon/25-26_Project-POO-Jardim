@@ -1,4 +1,6 @@
 #include "Cacto.h"
+#include <sstream>
+#include "../Settings.h"
 
 /*
 CACTO

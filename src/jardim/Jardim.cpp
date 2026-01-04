@@ -10,7 +10,7 @@
 
 Jardim::Jardim(int l, int c, bool criarFerramentas) : linhas(l), colunas(c)
 {
-    srand(static_cast<unsigned>(time(nullptr)));
+    srand(static_cast<unsigned>(time(nullptr))); // NOLINT
     // Alocação da matriz area no construtor
     area = new Solo *[linhas];
     for (int i = 0; i < linhas; ++i)
@@ -200,8 +200,8 @@ void Jardim::processaFerramentasAleatorias() const
     // Mantém sempre 3 ferramentas no chão
     while (total < 3)
     {
-        int rl = rand() % linhas;
-        int rc = rand() % colunas;
+        int rl = rand() % linhas; // NOLINT
+        int rc = rand() % colunas; // NOLINT
         if (area[rl][rc].estaVazio() && !area[rl][rc].possuiJardineiro())
         {
             area[rl][rc].setFerramenta(gerarFerramentaAleatoria());
@@ -212,7 +212,7 @@ void Jardim::processaFerramentasAleatorias() const
 
 Ferramenta *Jardim::gerarFerramentaAleatoria()
 {
-    switch (rand() % 4)
+    switch (rand() % 4) // NOLINT
     {
     case 0:
         return new Regador();

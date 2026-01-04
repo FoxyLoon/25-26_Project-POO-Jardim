@@ -1,4 +1,6 @@
 #include "ErvaDaninha.h"
+#include <sstream>
+#include "../Settings.h"
 
 /*
 ERVA DANINHA

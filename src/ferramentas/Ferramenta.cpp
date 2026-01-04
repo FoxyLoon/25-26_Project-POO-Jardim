@@ -1,6 +1,7 @@
 #include "Ferramenta.h"
 
 #include <utility>
+#include <sstream>
 
 int Ferramenta::proximo_ID = 1;
 

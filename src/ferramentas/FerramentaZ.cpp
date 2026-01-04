@@ -1,4 +1,6 @@
 #include "FerramentaZ.h"
+#include <sstream>
+#include "../Settings.h"
 
 FerramentaZ::FerramentaZ() : Ferramenta("Harmonizador de Solo", 'z')
 {

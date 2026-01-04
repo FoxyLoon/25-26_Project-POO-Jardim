@@ -2,6 +2,7 @@
 #include "fstream"
 #include <sys/stat.h>
 #include <iostream>
+#include <sstream>
 
 #include "../plantas/Cacto.h"
 #include "../plantas/Roseira.h"

@@ -2,8 +2,6 @@
 #define SOLO_H
 
 #include <string>
-#include <sstream>
-#include "../Settings.h"
 #include "../plantas/Planta.h"
 #include "../ferramentas/Ferramenta.h"
 
@@ -27,9 +25,9 @@ public:
     ~Solo() = default;
 
     // Getters e Setters de recursos
-    int getAgua() const;
+    [[nodiscard]] int getAgua() const;
     void setAgua(int valor);
-    int getNutrientes() const;
+    [[nodiscard]] int getNutrientes() const;
     void setNutrientes(int valor);
 
     // Gestão de recursos (adição/remoção)
@@ -39,25 +37,25 @@ public:
     void removerNutrientes(int quantidade);
 
     // Gestão da Planta
-    bool temPlanta() const;
+    [[nodiscard]] bool temPlanta() const;
     void setPlanta(Planta *p);
-    Planta *getPlanta() const;
+    [[nodiscard]] Planta *getPlanta() const;
     Planta *removerPlanta();
 
     // Gestão da Ferramenta
-    bool temFerramenta() const;
+    [[nodiscard]] bool temFerramenta() const;
     void setFerramenta(Ferramenta *f);
-    Ferramenta *getFerramenta() const;
+    [[nodiscard]] Ferramenta *getFerramenta() const;
     Ferramenta *removerFerramenta();
 
     // Gestão do Jardineiro (entrada/saída/movimento)
-    bool possuiJardineiro() const;
+    [[nodiscard]] bool possuiJardineiro() const;
     void setJardineiro(bool estado);
 
     // Verificações de estado e símbolos
-    bool estaVazio() const;
-    char getSimboloPrioritario() const;
-    string getInfoSolo() const;
+    [[nodiscard]] bool estaVazio() const;
+    [[nodiscard]] char getSimboloPrioritario() const;
+    [[nodiscard]] string getInfoSolo() const;
 };
 
 #endif

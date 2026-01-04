@@ -1,4 +1,6 @@
 #include "Adubo.h"
+#include <sstream>
+#include "../Settings.h"
 
 Adubo::Adubo() : Ferramenta("Adubo", 'a')
 {

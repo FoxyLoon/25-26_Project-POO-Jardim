@@ -1,5 +1,6 @@
 #include "Jardineiro.h"
 #include <iostream>
+#include "../Settings.h"
 
 using namespace std;
 

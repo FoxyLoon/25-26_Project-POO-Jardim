@@ -1,5 +1,7 @@
 #include "Solo.h"
 #include <cstdlib>
+#include <sstream>
+#include "../Settings.h"
 
 Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
 {
@@ -8,8 +10,8 @@ Solo::Solo() : planta(nullptr), ferramenta(nullptr), temJardineiro(false)
     int nutrientesMinimo = Settings::Jardim::nutrientes_min;
     int nutrientesMaximo = Settings::Jardim::nutrientes_max;
 
-    int aguaAleatoria = aguaMinima + (rand() % (aguaMaxima - aguaMinima + 1));
-    int nutriAleatorio = nutrientesMinimo + (rand() % (nutrientesMaximo - nutrientesMinimo + 1));
+    int aguaAleatoria = aguaMinima + (rand() % (aguaMaxima - aguaMinima + 1)); // NOLINT
+    int nutriAleatorio = nutrientesMinimo + (rand() % (nutrientesMaximo - nutrientesMinimo + 1)); // NOLINT
 
     agua = aguaAleatoria;
     nutrientes = nutriAleatorio;
@@ -32,7 +34,7 @@ void Solo::setAgua(int valor)
     agua = valorFinal;
 }
 
-// Obtem a direntamente a quantidade de nutrientes do solo
+// Obtem a diretamente a quantidade de nutrientes do solo
 int Solo::getNutrientes() const
 {
     return nutrientes;

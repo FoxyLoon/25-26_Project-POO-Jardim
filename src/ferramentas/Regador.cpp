@@ -1,4 +1,6 @@
 #include "Regador.h"
+#include <sstream>
+#include "../Settings.h"
 
 Regador::Regador() : Ferramenta("Regador", 'g')
 {

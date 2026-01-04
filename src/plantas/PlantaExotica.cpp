@@ -1,4 +1,6 @@
 #include "PlantaExotica.h"
+#include <sstream>
+#include "../Settings.h"
 
 /*
 PLANTA EXÓTICA (x) - BAMBU LUNAR
