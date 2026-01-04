@@ -1,4 +1,5 @@
 #include "Tesoura.h"
+#include <sstream>
 
 // Construtor: Símbolo 'T', nome "Tesoura"
 Tesoura::Tesoura() : Ferramenta("Tesoura", 't') {}
@@ -22,7 +23,7 @@ void Tesoura::aplicarNoSolo(Solo &s)
     }
 }
 
-// Retorna true se a ferramenta estiver gastada
+// Retorna true se a ferramenta estiver gasta
 bool Tesoura::estaGasta() const
 {
     // A tesoura não tem desgaste

@@ -2,18 +2,15 @@
 #define SIMULADOR_H
 
 #include <string>
-#include <iostream>
-#include <sstream>
 
 #include "../jardim/Jardim.h"
 #include "../jardineiro/Jardineiro.h"
-#include "../ferramentas/FerramentaZ.h"
 
 #include "../plantas/Planta.h"
-#include "../plantas/Cacto.h"
-#include "../plantas/Roseira.h"
-#include "../plantas/ErvaDaninha.h"
-#include "../plantas/PlantaExotica.h"
+// #include "../plantas/Cacto.h"
+// #include "../plantas/Roseira.h"
+// #include "../plantas/ErvaDaninha.h"
+// #include "../plantas/PlantaExotica.h"
 
 // NOTA: "std::stringstream" é usado APENAS para parsing textual, e não é uma coleção.
 // É permitido segundo o enunciado, pois não armazena estruturas do jardim.
@@ -38,11 +35,10 @@ private:
     // Jardineiro do simulador
     Jardineiro jardineiro;
 
-    // Flags indicando se o jardim e o jardineiro foram criados
+    // ‘Flags’ indicando se o jardim e o jardineiro foram criados
     bool jardimCriado;
     bool jardineiroNoJardim;
 
-    /* bool comandoEstado() const; */ // Não existe no enunciado
 
     // ========================================================
     // ========================================================
@@ -52,9 +48,9 @@ private:
     bool comandoAvanca(stringstream &ss);   // OK
     static bool comandoFim();               // OK
     bool comandoJardim(stringstream &ss);   // OK
-    bool comandoGrava(stringstream &ss);    // Não Implementado
+    bool comandoGrava(stringstream &ss) const;    // Não Implementado
     bool comandoRecupera(stringstream &ss); // Não Implementado
-    bool comandoApaga(stringstream &ss);    // Não Implementado
+    static bool comandoApaga(stringstream &ss);    // Não Implementado
     bool comandoExecuta(stringstream &ss);  // Não Implementado
 
     // ========================================================
@@ -62,11 +58,11 @@ private:
     // ========================================================
 
     // Comandos para listar informação
-    bool comandoLplantas();                // OK
-    bool comandoLplanta(stringstream &ss); // OK
-    bool comandoLarea();                   // OK
-    bool comandoLsolo(stringstream &ss);   // OK
-    bool comandoLferr();                   // OK
+    [[nodiscard]] bool comandoLplantas() const;                // OK
+    bool comandoLplanta(stringstream &ss) const; // OK
+    [[nodiscard]] bool comandoLarea() const;                   // OK
+    bool comandoLsolo(stringstream &ss) const;   // OK
+    [[nodiscard]] bool comandoLferr() const;                   // OK
 
     // ========================================================
     // ========================================================
@@ -101,35 +97,37 @@ private:
     static bool isLetraPequena(const string &p);
 
     // Verifica se existe um Jardim
-    bool isJardimCriado();
+    [[nodiscard]] bool isJardimCriado() const;
 
     // Verifica se existe um Jardineiro
-    bool isJardineiroNoJardim();
+    [[nodiscard]] bool isJardineiroNoJardim() const;
 
     // Verifica se está fora dos limites
-    bool isForaDosLimites(int linha, int coluna);
+    [[nodiscard]] bool isForaDosLimites(int linha, int coluna) const;
 
     // ========================================================
     // ========================================================
 
     // Funções para Serialização/Deserialização
 
-    bool salvarJardimEmFicheiro(const string &nome);
+    [[nodiscard]] bool salvarJardimEmFicheiro(const string &nome) const;
     bool carregarJardimDeFicheiro(const string &nome);
-    bool apagarFicheiro(const string &nome);
+    static bool apagarFicheiro(const string &nome);
 
     // Funções auxiliares para criar pastas
-    void criarPastaSeNaoExistir(const string &caminho);
+    static void criarPastaSeNaoExistir(const string &caminho);
 
     // Serialização de componentes
-    string serializarSolo(const Solo &s);
-    bool deserializarSolo(Solo &s, const string &dados);
+    static bool eNumeroValido(const string &str);
 
-    string serializarPlanta(const Planta *p);
-    Planta *deserializarPlanta(const string &dados);
+    static string serializarSolo(const Solo &s);
+    static bool deserializarSolo(Solo &s, const string &dados);
 
-    string serializarFerramenta(const Ferramenta *f);
-    Ferramenta *deserializarFerramenta(const string &dados);
+    static string serializarPlanta(const Planta *p);
+    static Planta *deserializarPlanta(const string &dados);
+
+    static string serializarFerramenta(const Ferramenta *f);
+    static Ferramenta *deserializarFerramenta(const string &dados);
 };
 
 #endif

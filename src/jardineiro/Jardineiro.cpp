@@ -1,18 +1,23 @@
 #include "Jardineiro.h"
+#include <iostream>
+#include "../Settings.h"
 
 using namespace std;
 
 Jardineiro::Jardineiro() : linha(-1), coluna(-1), estaNoJardim(false), ferramentaNaMao(nullptr)
 {
-    reiniciarTurno();
+    movimentosRestantes = Settings::Jardineiro::max_movimentos;
+    entradasSaidasRestantes = Settings::Jardineiro::max_entradas_saidas;
+    plantacoesRestantes = Settings::Jardineiro::max_plantacoes;
+    colheitasRestantes = Settings::Jardineiro::max_colheitas;
 }
 
 Jardineiro::~Jardineiro()
 {
     for (auto f : inventario)
         delete f;
-    if (ferramentaNaMao)
-        delete ferramentaNaMao;
+
+    delete ferramentaNaMao;
 }
 
 // ========================================================
@@ -40,7 +45,7 @@ bool Jardineiro::verificarPresenca() const
     return false;
 }
 
-bool Jardineiro::podeMovimentar()
+bool Jardineiro::podeMovimentar() const
 {
     if (movimentosRestantes > 0)
         return true;
@@ -48,7 +53,7 @@ bool Jardineiro::podeMovimentar()
     return false;
 }
 
-bool Jardineiro::podeEntrarSair()
+bool Jardineiro::podeEntrarSair() const
 {
     if (entradasSaidasRestantes > 0)
         return true;
@@ -56,7 +61,7 @@ bool Jardineiro::podeEntrarSair()
     return false;
 }
 
-bool Jardineiro::podePlantar()
+bool Jardineiro::podePlantar() const
 {
     if (plantacoesRestantes > 0)
         return true;
@@ -64,7 +69,7 @@ bool Jardineiro::podePlantar()
     return false;
 }
 
-bool Jardineiro::podeColher()
+bool Jardineiro::podeColher() const
 {
     if (colheitasRestantes > 0)
         return true;
@@ -78,7 +83,7 @@ bool Jardineiro::podeColher()
 
 // Ações de Movimento e Jardim
 
-void Jardineiro::usaMovimento(int novaL, int novaC, string direcao)
+void Jardineiro::usaMovimento(int novaL, int novaC, const string& direcao)
 {
     linha = novaL;
     coluna = novaC;
@@ -117,8 +122,7 @@ void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
 
 void Jardineiro::usaColher(Solo &s)
 {
-    Planta *p = s.removerPlanta();
-    if (p)
+    if (Planta *p = s.removerPlanta())
     {
         string nome = p->getNomePlanta();
         delete p;
@@ -140,22 +144,23 @@ void Jardineiro::adicionarFerramentaAoInventario(Ferramenta *f)
     {
         inventario.push_back(f);
         cout << string(111, '=') << "\n"
-             << "[INFO] >> Ferramenta adicionada ao inventário: " << f->getNomeFerramenta() << ". (Inventário: " << inventario.size() << " iten(s))" << endl;
+             << "[INFO] >> Ferramenta adicionada ao inventário: " << f->getNomeFerramenta() << ". (Inventário: " << inventario.size() << " item(s))" << endl;
     }
 }
 
 // Seleciona uma ferramenta do inventário
 void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
 {
-    // Procura a ferramenta no inventário pelo seu ID
+    // Procura a ferramenta no inventário pelo seu ‘ID’
+    int contador = 0;
     int posicaoNoVetor = -1;
-    for (size_t i = 0; i < inventario.size(); ++i)
-    {
-        if (inventario[i]->getNumeroSerieFerramenta() == ID_Ferramenta)
-        {
-            posicaoNoVetor = i;
+
+    for (const auto& item : inventario) {
+        if (item->getNumeroSerieFerramenta() == ID_Ferramenta) {
+            posicaoNoVetor = contador;
             break;
         }
+        contador++;
     }
 
     if (posicaoNoVetor == -1)
@@ -193,10 +198,10 @@ void Jardineiro::depositarFerramentaDaMaoParaInventario()
     }
 }
 
-// Remove uma ferramenta do inventário pelo ID quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
+// Remove uma ferramenta do inventário pelo ‘ID’ quando estiver esgotada (a validação não é feita aqui, apenas a remoção)
 void Jardineiro::removerFerramentaDoInventario(int ID_Ferramenta)
 {
-    // Verifica se existe uma ferramenta na mão e se o ID coincide
+    // Verifica se existe uma ferramenta na mão e se o ‘ID’ coincide
     if (ferramentaNaMao != nullptr && ferramentaNaMao->getNumeroSerieFerramenta() == ID_Ferramenta)
     {
         string nome = ferramentaNaMao->getNomeFerramenta();

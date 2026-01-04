@@ -1,5 +1,6 @@
 #include "FerramentaZ.h"
-#include <cmath> // Para usar abs() se necessário
+#include <sstream>
+#include "../Settings.h"
 
 FerramentaZ::FerramentaZ() : Ferramenta("Harmonizador de Solo", 'z')
 {

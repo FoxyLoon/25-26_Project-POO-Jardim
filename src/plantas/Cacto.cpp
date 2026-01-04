@@ -1,7 +1,9 @@
 #include "Cacto.h"
+#include <sstream>
+#include "../Settings.h"
 
 /*
-CACTO
+CATO
 Beleza: NEUTRA
 
 Comportamento:
@@ -80,12 +82,12 @@ void Cacto::envelhecimento()
 
 void Cacto::removeRecursosPlanta()
 {
-    // O Cacto não perde recursos
+    // O Cato não perde recursos
 }
 
 void Cacto::adicionaRecursosSolo(Solo &s)
 {
-    // O Cacto não fornece recursos ao solo enquanto está vivo
+    // O Cato não fornece recursos ao solo enquanto está vivo
 }
 
 // ========================================================
@@ -122,8 +124,8 @@ Planta *Cacto::gerarSemente()
     setNutrientesInternos(nutrientesSemente);
 
     // Cria a nova planta
-    // Nota: Como a Planta Original e Semente terâo os mesmos valores,
-    // a água e nutrientes vão ser uma copia da Planta original após o calculo
+    // Nota: Como a Planta Original e Semente terão os mesmos valores,
+    // a água e nutrientes vão ser uma cópia da Planta original após o cálculo
     Planta *semente = new Cacto();
     return semente;
 }

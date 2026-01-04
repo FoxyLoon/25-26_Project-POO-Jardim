@@ -1,6 +1,18 @@
 #include "Simulador.h"
 #include "fstream"
 #include <sys/stat.h>
+#include <iostream>
+#include <sstream>
+
+#include "../plantas/Cacto.h"
+#include "../plantas/Roseira.h"
+#include "../plantas/ErvaDaninha.h"
+#include "../plantas/PlantaExotica.h"
+
+#include "../ferramentas/Regador.h"
+#include "../ferramentas/Adubo.h"
+#include "../ferramentas/Tesoura.h"
+#include "../ferramentas/FerramentaZ.h"
 
 using namespace std;
 
@@ -133,7 +145,7 @@ bool Simulador::comandoAvanca(stringstream &ss)
         // Atualiza as trocas de recursos do jardim
         jardim->avancaInstante();
 
-        // Verifica se o jardineiro esta no jardim
+        // Verifica se o jardineiro está no jardim
         if (jardineiro.verificarPresenca())
         {
             Ferramenta *ferramentaNaMao = jardineiro.getFerramentaNaMao();
@@ -217,10 +229,13 @@ bool Simulador::comandoJardim(stringstream &ss)
 
 // ========================================================
 
-bool Simulador::comandoGrava(stringstream &ss)
+bool Simulador::comandoGrava(stringstream &ss) const
 {
     if (!isJardimCriado())
+    {
+        cout << "[ERRO] >> Não existe um jardim para guardar.\n";
         return false;
+    }
 
     string nome;
     if (!(ss >> nome))
@@ -336,18 +351,6 @@ bool Simulador::comandoExecuta(stringstream &ss)
     return true;
 }
 
-// // Não é suposto existir - necessário remover
-// /* bool Simulador::comandoEstado() const
-// {
-//     if (!jardimCriado)
-//     {
-//         cout << "[ERRO] E necessario criar o jardim antes de ver o seu estado.\n";
-//         return false;
-//     }
-//     jardim->mostrar();
-//     return true;
-// } */
-
 // ========================================================
 // ========================================================
 // ========================================================
@@ -355,7 +358,7 @@ bool Simulador::comandoExecuta(stringstream &ss)
 // Comandos para listar informação
 
 // Lista todas as plantas
-bool Simulador::comandoLplantas()
+bool Simulador::comandoLplantas() const
 {
     if (!isJardimCriado())
         return false;
@@ -408,7 +411,7 @@ bool Simulador::comandoLplantas()
 // ========================================================
 
 // Lista uma planta numa posição especifica
-bool Simulador::comandoLplanta(stringstream &ss)
+bool Simulador::comandoLplanta(stringstream &ss) const
 {
     if (!isJardimCriado())
     {
@@ -457,7 +460,7 @@ bool Simulador::comandoLplanta(stringstream &ss)
 // ========================================================
 
 // Lista todas as areas ocupadas do Solo
-bool Simulador::comandoLarea()
+bool Simulador::comandoLarea() const
 {
     if (!isJardimCriado())
     {
@@ -495,7 +498,7 @@ bool Simulador::comandoLarea()
         }
     }
 
-    // Nota: Condição tecnicamente impossivel pois o jardim sempre terá 3 ferramentas
+    // Nota: Condição tecnicamente impossivel, pois o jardim sempre terá 3 ferramentas
     if (!encontrouSoloOcupado)
     {
         cout << "[INFO] >> Não existem plantas ou ferramentas no jardim." << endl;
@@ -509,7 +512,7 @@ bool Simulador::comandoLarea()
 
 // ========================================================
 
-bool Simulador::comandoLsolo(stringstream &ss)
+bool Simulador::comandoLsolo(stringstream &ss) const
 {
     if (!isJardimCriado())
     {
@@ -552,7 +555,7 @@ bool Simulador::comandoLsolo(stringstream &ss)
         for (int coluna_atual = colunaInicial; coluna_atual <= colunaFinal; ++coluna_atual)
         {
             // Verifica se o solo está fora dos limites
-            // Esta condição é a mesma de isForaDosLimites() mas sem o cout para não spammar na consola
+            // Está condição é a mesma de isForaDosLimites() mas sem o cout para não spammar na consola
             if (linha_atual < 0 || linha_atual >= jardim->getLinhas() || coluna_atual < 0 || coluna_atual >= jardim->getColunas())
             {
                 continue;
@@ -602,7 +605,7 @@ bool Simulador::comandoLsolo(stringstream &ss)
         }
     }
 
-    // Nota: Condição tecnicamente impossivel pois o jardim sempre terá 3 ferramentas
+    // Nota: Condição tecnicamente impossivel, pois o jardim sempre terá 3 ferramentas
     if (!encontrouSoloOcupado)
     {
         cout << "[INFO] >> Não existem plantas ou ferramentas na posição especificada ou na área indicada do jardim." << endl;
@@ -615,8 +618,8 @@ bool Simulador::comandoLsolo(stringstream &ss)
 
 // ========================================================
 
-// TODO: verificar se o inventario apresenta a ferramenta equipada
-bool Simulador::comandoLferr()
+// verificar se o inventario apresenta a ferramenta equipada
+bool Simulador::comandoLferr() const
 {
     if (!isJardimCriado())
         return false;
@@ -734,9 +737,9 @@ bool Simulador::comandoPlanta(stringstream &ss)
 
     // ========================================================
 
-    // Criação da planta de acordo com o tipo fornecido
+    // Criação da planta conforme o tipo fornecido
     Planta *novaPlanta = nullptr;
-    tipoPlanta = tolower(tipoPlanta);
+    tipoPlanta = static_cast<char>(tolower(static_cast<unsigned char>(tipoPlanta)));
 
     switch (tipoPlanta)
     {
@@ -754,7 +757,6 @@ bool Simulador::comandoPlanta(stringstream &ss)
         break;
     default:
         cout << string(111, '=') << "\n[ERRO] >> Tipo de planta desconhecido: " << tipoPlanta << "(use c, r, e ou x)" << endl;
-        return false;
     }
 
     // ========================================================
@@ -833,9 +835,9 @@ bool Simulador::comandoCompra(stringstream &ss)
 
     // ========================================================
 
-    // Criação da ferramenta de acordo com o tipo fornecido
+    // Criação da ferramenta conforme o tipo fornecido
     Ferramenta *novaFerramenta = nullptr;
-    tipoFerramenta = tolower(tipoFerramenta);
+    tipoFerramenta = static_cast<char>(tolower(static_cast<unsigned char>(tipoFerramenta)));
 
     switch (tipoFerramenta)
     {
@@ -853,7 +855,6 @@ bool Simulador::comandoCompra(stringstream &ss)
         break;
     default:
         cout << "[ERRO] >> Tipo de ferramenta desconhecido: '" << tipoFerramenta << "'. Use g, a, t ou z." << endl;
-        return false;
     }
 
     // 3. Entrega a ferramenta ao jardineiro
@@ -1131,7 +1132,7 @@ bool Simulador::comandoEntra(stringstream &ss)
         return false;
     }
 
-    // Nota: Não é preciso verificar se jardineiro já está cá dentro pois
+    // Nota: Não é preciso verificar se jardineiro já está cá dentro, pois
     // ele pode entrar para a posição que quiser mesmo já estando dentro do jardim
 
     string pos;
@@ -1216,15 +1217,15 @@ bool Simulador::comandoSai()
 // ========================================================
 // ========================================================
 
-// Funões Auxiliares
+// Funções Auxiliares
 
-// Verifica se uma string contém duas letras minusculas
+// Verifica se uma ‘string’ contém duas letras minusculas
 bool Simulador::isLetraPequena(const string &p)
 {
     return p.size() == 2 && islower(static_cast<unsigned char>(p[0])) && islower(static_cast<unsigned char>(p[1]));
 }
 
-bool Simulador::isJardimCriado()
+bool Simulador::isJardimCriado() const
 {
     if (!jardimCriado)
     {
@@ -1234,7 +1235,7 @@ bool Simulador::isJardimCriado()
     return true;
 }
 
-bool Simulador::isJardineiroNoJardim()
+bool Simulador::isJardineiroNoJardim() const
 {
     if (!jardineiroNoJardim)
     {
@@ -1244,7 +1245,7 @@ bool Simulador::isJardineiroNoJardim()
     return true;
 }
 
-bool Simulador::isForaDosLimites(int linhas, int colunas)
+bool Simulador::isForaDosLimites(int linhas, int colunas) const
 {
     if (linhas < 0 || linhas >= jardim->getLinhas() || colunas < 0 || colunas >= jardim->getColunas())
     {
@@ -1257,7 +1258,7 @@ bool Simulador::isForaDosLimites(int linhas, int colunas)
 // ================================================================
 // ================================================================
 
-// Funções para Serialização/Deserialização
+// Funções para Serializer/Deserialization
 
 void Simulador::criarPastaSeNaoExistir(const string &caminho)
 {
@@ -1274,7 +1275,7 @@ bool Simulador::apagarFicheiro(const string &nome)
     string caminhoFicheiro = "saves/" + nome + ".garden";
 
     // Tentar apagar o ficheiro
-    if (remove(caminhoFicheiro.c_str()) != 0) // c_str() converte a string (C++) para um const char* (C) para poder ser rercebido em remove()
+    if (remove(caminhoFicheiro.c_str()) != 0) // c_str() converte a string (C++) para um const char* (C) para poder ser recebido em remove()
     {
         cout << "[ERRO] >> Ficheiro '" << caminhoFicheiro << "' não encontrado ou não foi possível apagar.\n";
         return false;
@@ -1348,11 +1349,10 @@ Planta *Simulador::deserializarPlanta(const string &dados)
         return nullptr;
     }
 
-    if (planta)
-    {
-        planta->setAguaInterna(agua);
-        planta->setNutrientesInternos(nutrientes);
-    }
+    planta->setAguaInterna(agua);
+    planta->setNutrientesInternos(nutrientes);
+
+
 
     return planta;
 }
@@ -1417,6 +1417,13 @@ Ferramenta *Simulador::deserializarFerramenta(const string &dados)
     default:
         ferramenta = nullptr;
     }
+
+    // Restaurar o número de série original
+    if (ferramenta != nullptr && serie > 0)
+    {
+        ferramenta->setNumeroSerie(serie);
+    }
+
     return ferramenta;
 }
 
@@ -1443,6 +1450,7 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
     stringstream ss(dados);
     string token;
 
+    // Parse dos dados
     while (getline(ss, token, '|'))
     {
         size_t pos = token.find(':');
@@ -1451,10 +1459,19 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
             string chave = token.substr(0, pos);
             string valor = token.substr(pos + 1);
 
+            // Validar e converter valores numéricos
             if (chave == "AGUA")
+            {
+                if (!eNumeroValido(valor))
+                    return false;
                 agua = stoi(valor);
+            }
             else if (chave == "NUTRIENTES")
+            {
+                if (!eNumeroValido(valor))
+                    return false;
                 nutrientes = stoi(valor);
+            }
             else if (chave == "PLANTA")
                 plantaStr = valor;
             else if (chave == "FERRAMENTA")
@@ -1462,13 +1479,20 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
         }
     }
 
+    // Verificar se os valores são válidos
+    if (agua < 0 || nutrientes < 0)
+        return false;
+
+    // Aplicar os dados ao Solo
     s.setAgua(agua);
     s.setNutrientes(nutrientes);
 
+    // Deserializer planta
     Planta *p = deserializarPlanta(plantaStr);
     if (p != nullptr)
         s.setPlanta(p);
 
+    // Deserializer ferramenta
     Ferramenta *f = deserializarFerramenta(ferramentaStr);
     if (f != nullptr)
         s.setFerramenta(f);
@@ -1476,13 +1500,8 @@ bool Simulador::deserializarSolo(Solo &s, const string &dados)
     return true;
 }
 
-bool Simulador::salvarJardimEmFicheiro(const string &nome)
+bool Simulador::salvarJardimEmFicheiro(const string &nome) const
 {
-    if (!jardimCriado || jardim == nullptr)
-    {
-        cout << "[ERRO] >> Não existe um jardim para guardar.\n";
-        return false;
-    }
 
     // Criar pasta "saves" se não existir
     criarPastaSeNaoExistir("saves");
@@ -1538,12 +1557,10 @@ bool Simulador::carregarJardimDeFicheiro(const string &nome)
     }
 
     // Destruir jardim anterior se existir
-    if (jardim != nullptr)
-    {
-        delete jardim;
-    }
+    delete jardim;
 
-    // Criar novo jardim com as dimensões carregadas
+
+    // Criar jardim com as dimensões carregadas
     jardim = new Jardim(linhas, colunas, false);
     jardimCriado = true;
 
@@ -1579,6 +1596,27 @@ bool Simulador::carregarJardimDeFicheiro(const string &nome)
     if (remove(caminhoFicheiro.c_str()) != 0)
     {
         cout << "[AVISO] >> Não foi possível apagar o ficheiro de cópia após recuperação.\n";
+    }
+
+    return true;
+}
+
+bool Simulador::eNumeroValido(const string &str)
+{
+    if (str.empty())
+        return false;
+
+    size_t inicio = 0;
+    if (str[0] == '-')  // Permite números negativos
+        inicio = 1;
+
+    if (inicio >= str.length())
+        return false;
+
+    for (size_t i = inicio; i < str.length(); ++i)
+    {
+        if (!isdigit(static_cast<unsigned char>(str[i])))
+            return false;
     }
 
     return true;

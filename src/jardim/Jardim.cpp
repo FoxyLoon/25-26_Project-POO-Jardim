@@ -1,11 +1,16 @@
 #include "Jardim.h"
 #include <iostream>
-#include <cstdlib>
 #include <vector>
+#include <random>
+
+#include "../ferramentas/Regador.h"
+#include "../ferramentas/Adubo.h"
+#include "../ferramentas/Tesoura.h"
+#include "../ferramentas/FerramentaZ.h"
 
 Jardim::Jardim(int l, int c, bool criarFerramentas) : linhas(l), colunas(c)
 {
-    srand(static_cast<unsigned>(time(nullptr)));
+    srand(static_cast<unsigned>(time(nullptr))); // NOLINT
     // Alocação da matriz area no construtor
     area = new Solo *[linhas];
     for (int i = 0; i < linhas; ++i)
@@ -44,7 +49,7 @@ Jardim::~Jardim()
     delete[] area;
 }
 
-void Jardim::avancaInstante()
+void Jardim::avancaInstante() const
 {
     processaRecursosPlantas();
     processaMortes();
@@ -52,7 +57,7 @@ void Jardim::avancaInstante()
     processaFerramentasAleatorias();
 }
 
-void Jardim::processaRecursosPlantas()
+void Jardim::processaRecursosPlantas() const
 {
     for (int i = 0; i < linhas; ++i)
     {
@@ -66,7 +71,7 @@ void Jardim::processaRecursosPlantas()
     }
 }
 
-void Jardim::processaMortes()
+void Jardim::processaMortes() const
 {
     for (int i = 0; i < linhas; ++i)
     {
@@ -112,7 +117,7 @@ void Jardim::processaMortes()
     }
 }
 
-void Jardim::processaMultiplicacao()
+void Jardim::processaMultiplicacao() const
 {
     // Criamos um vetor temporário para armazenar onde as novas plantas devem nascer
     // Isso evita processar uma planta que acabou de nascer no mesmo turno
@@ -154,7 +159,7 @@ void Jardim::processaMultiplicacao()
                             {
                                 sementesParaPlantar.push_back({nl, nc, novaSemente});
                             }
-                            // Para a Roseira/Cacto, talvez queiras apenas 1 semente por turno
+                            // Para a Roseira/Cato, talvez queiras apenas 1 semente por turno
                             break;
                         }
                     }
@@ -178,7 +183,7 @@ void Jardim::processaMultiplicacao()
     }
 }
 
-void Jardim::processaFerramentasAleatorias()
+void Jardim::processaFerramentasAleatorias() const
 {
     int total = 0;
     for (int i = 0; i < linhas; ++i)
@@ -195,8 +200,8 @@ void Jardim::processaFerramentasAleatorias()
     // Mantém sempre 3 ferramentas no chão
     while (total < 3)
     {
-        int rl = rand() % linhas;
-        int rc = rand() % colunas;
+        int rl = rand() % linhas; // NOLINT
+        int rc = rand() % colunas; // NOLINT
         if (area[rl][rc].estaVazio() && !area[rl][rc].possuiJardineiro())
         {
             area[rl][rc].setFerramenta(gerarFerramentaAleatoria());
@@ -207,8 +212,7 @@ void Jardim::processaFerramentasAleatorias()
 
 Ferramenta *Jardim::gerarFerramentaAleatoria()
 {
-    int tipo = rand() % 4;
-    switch (tipo)
+    switch (rand() % 4) // NOLINT
     {
     case 0:
         return new Regador();
@@ -234,7 +238,7 @@ void Jardim::mostraJardim() const
     // Linhas de Letras
     cout << "| - | ";
     for (int c = 0; c < colunas; ++c)
-        cout << char('A' + c) << " ";
+        cout << static_cast<char>('A' + c) << " ";
     cout << "|\n";
 
     // Separador
@@ -246,7 +250,7 @@ void Jardim::mostraJardim() const
     // Jardim com Letras à esquerda
     for (int l = 0; l < linhas; ++l)
     {
-        cout << "| " << char('A' + l) << " | ";
+        cout << "| " << static_cast<char>('A' + l) << " | ";
 
         for (int c = 0; c < colunas; ++c)
         {
@@ -272,7 +276,7 @@ int Jardim::getColunas() const
     return colunas;
 }
 
-Solo &Jardim::getSolo(int l, int c)
+Solo &Jardim::getSolo(int l, int c) const
 {
     return area[l][c];
 }

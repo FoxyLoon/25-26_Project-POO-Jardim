@@ -2,9 +2,7 @@
 #define PLANTA_H
 
 #include <string>
-#include <sstream>
 #include "../jardim/Solo.h"
-#include "../Settings.h"
 using namespace std;
 
 // Forward declaration para evitar dependências circulares no header
@@ -13,34 +11,34 @@ class Solo;
 class Planta
 {
 private:
+    const string nomePlanta;
     int aguaInterna;
     int nutrientesInternos;
-    string nomePlanta;
-    char simbolo;
-    string beleza;
+    const char simbolo;
+    const string beleza;
 
 public:
     // Construtor
-    explicit Planta(const string nomePlanta, int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza);
+    explicit Planta(string nomePlanta, int agua_inicial, int nutrientes_inicial, char simbolo, string  beleza);
     virtual ~Planta() = default;
 
     // ========================================================
 
     // Informações sobre a planta
 
-    const string getNomePlanta() const;
-    const char getSimboloPlanta() const;
-    const string getBelezaPlanta() const;
-    virtual string getInfoPlanta() const = 0;
-    virtual string getInfoExtraPlanta() const = 0;
+    [[nodiscard]] string getNomePlanta() const;
+    [[nodiscard]] char getSimboloPlanta() const;
+    [[nodiscard]] string getBelezaPlanta() const;
+    [[nodiscard]] virtual string getInfoPlanta() const = 0;
+    [[nodiscard]] virtual string getInfoExtraPlanta() const = 0;
 
     // ========================================================
 
     // Interação com a planta
 
-    int getAguaInterna() const;
+    [[nodiscard]] int getAguaInterna() const;
     void setAguaInterna(int valor);
-    int getNutrientesInternos() const;
+    [[nodiscard]] int getNutrientesInternos() const;
     void setNutrientesInternos(int valor);
 
     void adicionarAguaInterna(int quantidade);
@@ -52,10 +50,10 @@ public:
 
     // Interação com o Solo
 
-    int obterAgua(Solo &solo, int quantidade);
-    int obterNutrientes(Solo &solo, int quantidade);
-    int depositarAgua(Solo &solo, int quantidade);
-    int depositarNutrientes(Solo &solo, int quantidade);
+    static int obterAgua(Solo &solo, int quantidade);
+    static int obterNutrientes(Solo &solo, int quantidade);
+    static int depositarAgua(Solo &solo, int quantidade);
+    static int depositarNutrientes(Solo &solo, int quantidade);
 
     // ========================================================
 
@@ -72,7 +70,7 @@ public:
     // ========================================================
 
     // Condições de Multiplicação (implementado na espécie da planta)
-    virtual bool podeMultiplicar() const = 0;
+    [[nodiscard]] virtual bool podeMultiplicar() const = 0;
     virtual Planta *gerarSemente() = 0;
 
     // ========================================================

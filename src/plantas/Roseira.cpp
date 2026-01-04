@@ -1,4 +1,6 @@
 #include "Roseira.h"
+#include <sstream>
+#include "../Settings.h"
 
 /*
 ROSEIRA

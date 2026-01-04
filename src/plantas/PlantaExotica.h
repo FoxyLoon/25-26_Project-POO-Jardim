@@ -10,12 +10,12 @@ Beleza: BONITA
 Comportamento por Fases:
 - Jovem (0-20): Absorve 3 água e 2 nutrientes.
 - Adulta (21-40): Dormência (não absorve nem produz).
-- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente internos.
+- Madura (41+): Produz 2 nutrientes para o solo, perde 2 água e 1 nutriente interno.
 
 Morte:
 - Água interna < 5 ou Nutrientes internos < 3.
 - Idade >= 80 instantes.
-- Ao morrer: Devolve 75% dos recursos ao solo.
+- Ao morrer: devolve 75% dos recursos ao solo.
 */
 
 class PlantaExotica : public Planta
@@ -25,11 +25,11 @@ private:
 
 public:
     PlantaExotica();
-    virtual ~PlantaExotica() = default;
+    ~PlantaExotica() override = default;
 
     // Informação da Planta
-    string getInfoPlanta() const override;
-    string getInfoExtraPlanta() const override;
+    [[nodiscard]] string getInfoPlanta() const override;
+    [[nodiscard]] string getInfoExtraPlanta() const override;
 
     // ========================================================
 
@@ -43,7 +43,7 @@ public:
     // ========================================================
 
     // Condições de Multiplicação
-    bool podeMultiplicar() const override;
+    [[nodiscard]] bool podeMultiplicar() const override;
     Planta *gerarSemente() override;
 
     // ========================================================

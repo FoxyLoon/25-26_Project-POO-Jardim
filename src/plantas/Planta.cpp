@@ -1,27 +1,29 @@
 #include "Planta.h"
+
+#include <utility>
 #include "../jardim/Solo.h"
 
-Planta::Planta(string nome, int agua_inicial, int nutrientes_inicial, char simbolo, const string beleza)
-    : nomePlanta(nome), aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), simbolo(simbolo), beleza(beleza) {}
+Planta::Planta(string nome, int agua_inicial, int nutrientes_inicial, char simbolo, string  beleza)
+    : nomePlanta(std::move(nome)),aguaInterna(agua_inicial), nutrientesInternos(nutrientes_inicial), simbolo(simbolo), beleza(std::move(beleza)) {}
 
 // ========================================================
 
 // Informações sobre a planta
 
 // Obtem o nome da planta
-const string Planta::getNomePlanta() const
+string Planta::getNomePlanta() const
 {
     return nomePlanta;
 }
 
-// Obtem o simbolo da planta
-const char Planta::getSimboloPlanta() const
+// Obtem o símbolo da planta
+char Planta::getSimboloPlanta() const
 {
     return simbolo;
 }
 
 // Obtem o tipo de beleza da planta
-const string Planta::getBelezaPlanta() const
+string Planta::getBelezaPlanta() const
 {
     return beleza;
 }

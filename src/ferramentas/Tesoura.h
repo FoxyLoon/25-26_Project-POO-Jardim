@@ -13,13 +13,13 @@
 class Tesoura : public Ferramenta {
 public:
     Tesoura();
-    virtual ~Tesoura() = default;
+    ~Tesoura() override = default;
 
     void usar() override;                   // Não faz nada
     void aplicarNoSolo(Solo& s) override;
-    bool estaGasta() const override;        // Sempre Falso
-    string getInfoFerramenta() const override;
-    string getInfoExtraFerramenta() const override;
+    [[nodiscard]] bool estaGasta() const override;        // Sempre Falso
+    [[nodiscard]] string getInfoFerramenta() const override;
+    [[nodiscard]] string getInfoExtraFerramenta() const override;
 };
 
 #endif

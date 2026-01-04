@@ -1,4 +1,6 @@
 #include "Regador.h"
+#include <sstream>
+#include "../Settings.h"
 
 Regador::Regador() : Ferramenta("Regador", 'g')
 {
@@ -32,7 +34,7 @@ void Regador::aplicarNoSolo(Solo &s)
     }
 }
 
-// Retorna true se a ferramenta estiver gastada
+// Retorna true se a ferramenta estiver gasta
 bool Regador::estaGasta() const
 {
     return aguaDisponivel <= 0;

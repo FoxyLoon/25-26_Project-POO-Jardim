@@ -1,4 +1,6 @@
 #include "Adubo.h"
+#include <sstream>
+#include "../Settings.h"
 
 Adubo::Adubo() : Ferramenta("Adubo", 'a')
 {
@@ -32,7 +34,7 @@ void Adubo::aplicarNoSolo(Solo &s)
     }
 }
 
-// Retorna true se a ferramenta estiver gastada
+// Retorna true se a ferramenta estiver gasta
 bool Adubo::estaGasta() const
 {
     return nutrientesDisponiveis <= 0;

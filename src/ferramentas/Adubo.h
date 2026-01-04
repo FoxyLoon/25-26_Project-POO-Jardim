@@ -18,12 +18,12 @@ class Adubo : public Ferramenta
 
 public:
     Adubo();
-    virtual ~Adubo() = default;
+    ~Adubo() override = default;
 
     void usar() override;
     void aplicarNoSolo(Solo& s) override;
-    bool estaGasta() const override;
-    string getInfoFerramenta() const override;
-    string getInfoExtraFerramenta() const override;
+    [[nodiscard]] bool estaGasta() const override;
+    [[nodiscard]] string getInfoFerramenta() const override;
+    [[nodiscard]] string getInfoExtraFerramenta() const override;
 };
 #endif
