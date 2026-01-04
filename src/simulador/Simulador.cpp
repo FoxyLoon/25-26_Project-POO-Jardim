@@ -1,6 +1,7 @@
 #include "Simulador.h"
 #include "fstream"
 #include <sys/stat.h>
+#include <iostream>
 
 #include "../plantas/Cacto.h"
 #include "../plantas/Roseira.h"

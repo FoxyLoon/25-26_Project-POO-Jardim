@@ -3,10 +3,8 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
 #include "../jardim/Solo.h"
 #include "../ferramentas/Ferramenta.h"
-#include "../Settings.h"
 
 using namespace std;
 
@@ -19,10 +17,10 @@ private:
     vector<Ferramenta *> inventario;
     Ferramenta *ferramentaNaMao;
 
-    int movimentosRestantes;
-    int entradasSaidasRestantes;
-    int plantacoesRestantes;
-    int colheitasRestantes;
+    int movimentosRestantes{};
+    int entradasSaidasRestantes{};
+    int plantacoesRestantes{};
+    int colheitasRestantes{};
 
 public:
     Jardineiro();
@@ -36,11 +34,11 @@ public:
 
     // Verificadores de Estado e Recursos
 
-    bool verificarPresenca() const;
-    bool podeMovimentar();
-    bool podeEntrarSair();
-    bool podePlantar();
-    bool podeColher();
+    [[nodiscard]] bool verificarPresenca() const;
+    [[nodiscard]] bool podeMovimentar() const;
+    [[nodiscard]] bool podeEntrarSair() const;
+    [[nodiscard]] bool podePlantar() const;
+    [[nodiscard]] bool podeColher() const;
 
     // ========================================================
     // ========================================================
@@ -48,7 +46,7 @@ public:
 
     // Ações de Movimento e Jardim
 
-    void usaMovimento(int novaL, int novaC, string direcao);
+    void usaMovimento(int novaL, int novaC, const string& direcao);
     void usaEntrar(int l, int c);
     void usaSair();
     void usaPlantar(Solo &s, Planta *novaPlanta);
@@ -67,7 +65,7 @@ public:
 
     // Consultas de Inventário
     void listarFerramentas() const;
-    Ferramenta *getFerramentaNaMao() const;
+    [[nodiscard]] Ferramenta *getFerramentaNaMao() const;
     void mostrarEstado() const;
 
     // ========================================================
@@ -75,9 +73,9 @@ public:
     // ========================================================
 
     // Getters de Posição
-    int getLinha() const;
-    int getColuna() const;
-    bool getEstaNoJardim() const;
+    [[nodiscard]] int getLinha() const;
+    [[nodiscard]] int getColuna() const;
+    [[nodiscard]] bool getEstaNoJardim() const;
 };
 
 #endif

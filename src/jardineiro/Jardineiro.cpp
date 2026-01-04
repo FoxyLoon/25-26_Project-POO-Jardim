@@ -1,4 +1,5 @@
 #include "Jardineiro.h"
+#include <iostream>
 
 using namespace std;
 
@@ -11,8 +12,8 @@ Jardineiro::~Jardineiro()
 {
     for (auto f : inventario)
         delete f;
-    if (ferramentaNaMao)
-        delete ferramentaNaMao;
+
+    delete ferramentaNaMao;
 }
 
 // ========================================================
@@ -40,7 +41,7 @@ bool Jardineiro::verificarPresenca() const
     return false;
 }
 
-bool Jardineiro::podeMovimentar()
+bool Jardineiro::podeMovimentar() const
 {
     if (movimentosRestantes > 0)
         return true;
@@ -48,7 +49,7 @@ bool Jardineiro::podeMovimentar()
     return false;
 }
 
-bool Jardineiro::podeEntrarSair()
+bool Jardineiro::podeEntrarSair() const
 {
     if (entradasSaidasRestantes > 0)
         return true;
@@ -56,7 +57,7 @@ bool Jardineiro::podeEntrarSair()
     return false;
 }
 
-bool Jardineiro::podePlantar()
+bool Jardineiro::podePlantar() const
 {
     if (plantacoesRestantes > 0)
         return true;
@@ -64,7 +65,7 @@ bool Jardineiro::podePlantar()
     return false;
 }
 
-bool Jardineiro::podeColher()
+bool Jardineiro::podeColher() const
 {
     if (colheitasRestantes > 0)
         return true;
@@ -78,7 +79,7 @@ bool Jardineiro::podeColher()
 
 // Ações de Movimento e Jardim
 
-void Jardineiro::usaMovimento(int novaL, int novaC, string direcao)
+void Jardineiro::usaMovimento(int novaL, int novaC, const string& direcao)
 {
     linha = novaL;
     coluna = novaC;
@@ -117,8 +118,7 @@ void Jardineiro::usaPlantar(Solo &s, Planta *novaPlanta)
 
 void Jardineiro::usaColher(Solo &s)
 {
-    Planta *p = s.removerPlanta();
-    if (p)
+    if (Planta *p = s.removerPlanta())
     {
         string nome = p->getNomePlanta();
         delete p;
@@ -153,7 +153,7 @@ void Jardineiro::selecionarFerramentaDoInventario(int ID_Ferramenta)
     {
         if (inventario[i]->getNumeroSerieFerramenta() == ID_Ferramenta)
         {
-            posicaoNoVetor = i;
+            posicaoNoVetor = static_cast<int>(i);
             break;
         }
     }
