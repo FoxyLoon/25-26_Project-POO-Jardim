@@ -150,8 +150,8 @@ void Jardim::processaMultiplicacao() const
                     vizinhos = {{linha_atual - 1, coluna_atual - 1}, {linha_atual - 1, coluna_atual + 1}, {linha_atual + 1, coluna_atual - 1}, {linha_atual + 1, coluna_atual + 1}};
                 }
                 else
-                { // Outras: Cima, Baixo, Esquerda, Direita
-                    vizinhos = {{linha_atual - 1, coluna_atual}, {linha_atual + 1, coluna_atual}, {linha_atual, coluna_atual - 1}, {linha_atual, coluna_atual + 1}};
+                { // Outras: Cima, Baixo, Esquerda, Direita e Diagonais
+                    vizinhos = {{linha_atual - 1, coluna_atual}, {linha_atual + 1, coluna_atual}, {linha_atual, coluna_atual - 1}, {linha_atual, coluna_atual + 1}, {linha_atual - 1, coluna_atual - 1}, {linha_atual - 1, coluna_atual + 1}, {linha_atual + 1, coluna_atual - 1}, {linha_atual + 1, coluna_atual + 1}};
                 }
 
                 // Escolher uma posição aleatória dos vizinhos válidos
@@ -208,7 +208,7 @@ void Jardim::processaMultiplicacao() const
         }
         else
         {
-            // Se o lugar foi ocupado entretanto (ex: por uma Erva Daninha), apaga a semente
+            // Se o lugar foi ocupado entretanto apaga a semente
             delete n.semente;
         }
     }
