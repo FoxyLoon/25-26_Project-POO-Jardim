@@ -16,12 +16,12 @@ public:
     class Jardim
     {
     public:
-        static const int agua_min = 80;
-        static const int agua_max = 100;
-        static const int nutrientes_min = 40;
-        static const int nutrientes_max = 50;
-        static const int probabilidade_planta = 10;     // em %
-        static const int probabilidade_ferramenta = 10; // em %
+        static constexpr int agua_min = 80;
+        static constexpr int agua_max = 100;
+        static constexpr int nutrientes_min = 40;
+        static constexpr int nutrientes_max = 50;
+        static constexpr int probabilidade_planta = 10;     // em %
+        static constexpr int probabilidade_ferramenta = 10; // em %
     };
 
     // ========================================================
@@ -30,10 +30,10 @@ public:
     class Jardineiro
     {
     public:
-        static const int max_movimentos = 10;
-        static const int max_entradas_saidas = 1;
-        static const int max_plantacoes = 2;
-        static const int max_colheitas = 5;
+        static constexpr int max_movimentos = 10;
+        static constexpr int max_entradas_saidas = 1;
+        static constexpr int max_plantacoes = 2;
+        static constexpr int max_colheitas = 5;
     };
 
     // ========================================================
@@ -42,25 +42,25 @@ public:
     class Regador
     {
     public:
-        static const int capacidade = 200;
-        static const int dose = 10;
+        static constexpr int capacidade = 200;
+        static constexpr int dose = 10;
     };
 
     class Adubo
     {
     public:
-        static const int capacidade = 100;
-        static const int dose = 10;
+        static constexpr int capacidade = 100;
+        static constexpr int dose = 10;
     };
 
     class FerramentaZ
     {
     public:
-        static const int capacidade = 50;
-        static const int otimo_agua = 90;
-        static const int otimo_nutrientes = 45;
-        static const int max_ajuste_agua = 15;
-        static const int max_ajuste_nutrientes = 10;
+        static constexpr int capacidade = 50;
+        static constexpr int otimo_agua = 90;
+        static constexpr int otimo_nutrientes = 45;
+        static constexpr int max_ajuste_agua = 15;
+        static constexpr int max_ajuste_nutrientes = 10;
     };
 
     // ========================================================
@@ -70,99 +70,99 @@ public:
     class Cacto
     {
     public:
-        static const int absorcao_agua_percentagem = 25; // 25% da água do solo
-        static const int absorcao_nutrientes = 5;
+        static constexpr int absorcao_agua_percentagem = 25; // 25% da água do solo
+        static constexpr int absorcao_nutrientes = 5;
 
         // Condições de morte
-        static const int morre_agua_solo_maior = 100;
-        static const int morre_agua_solo_instantes = 3;
-        static const int morre_nutrientes_solo_menor = 1;
-        static const int morre_nutrientes_solo_instantes = 3;
+        static constexpr int morre_agua_solo_maior = 100;
+        static constexpr int morre_agua_solo_instantes = 3;
+        static constexpr int morre_nutrientes_solo_menor = 1;
+        static constexpr int morre_nutrientes_solo_instantes = 3;
 
         // Multiplicação
-        static const int multiplica_nutrientes_maior = 100;
-        static const int multiplica_agua_maior = 50;
+        static constexpr int multiplica_nutrientes_maior = 100;
+        static constexpr int multiplica_agua_maior = 50;
     };
 
     class Roseira
     {
     public:
-        static const int inicial_agua = 25;
-        static const int inicial_nutrientes = 25;
+        static constexpr int inicial_agua = 25;
+        static constexpr int inicial_nutrientes = 25;
 
         // Metabolismo
-        static const int perda_agua = 4;
-        static const int perda_nutrientes = 4;
-        static const int absorcao_agua = 5;
-        static const int absorcao_nutrientes = 8;
+        static constexpr int perda_agua = 4;
+        static constexpr int perda_nutrientes = 4;
+        static constexpr int absorcao_agua = 5;
+        static constexpr int absorcao_nutrientes = 8;
 
         // Condições de morte
-        static const int morre_agua_menor = 1;
-        static const int morre_nutrientes_menor = 1;
-        static const int morre_nutrientes_maior = 199; // Morre se >= 200
+        static constexpr int morre_agua_menor = 1;
+        static constexpr int morre_nutrientes_menor = 1;
+        static constexpr int morre_nutrientes_maior = 199; // Morre se >= 200
 
         // Multiplicação
-        static const int multiplica_nutrientes_maior = 100;
-        static const int nova_nutrientes = 25;
-        static const int nova_agua_percentagem = 50; // 50% da água da mãe
-        static const int original_nutrientes = 100;
-        static const int original_agua_percentagem = 50; // 50% da água original
+        static constexpr int multiplica_nutrientes_maior = 100;
+        static constexpr int nova_nutrientes = 25;
+        static constexpr int nova_agua_percentagem = 50; // 50% da água da mãe
+        static constexpr int original_nutrientes = 100;
+        static constexpr int original_agua_percentagem = 50; // 50% da água original
     };
 
     class ErvaDaninha
     {
     public:
-        static const int inicial_agua = 5;
-        static const int inicial_nutrientes = 5;
+        static constexpr int inicial_agua = 5;
+        static constexpr int inicial_nutrientes = 5;
 
         // Absorção
-        static const int absorcao_agua = 1;
-        static const int absorcao_nutrientes = 1;
+        static constexpr int absorcao_agua = 1;
+        static constexpr int absorcao_nutrientes = 1;
 
         // Morte
-        static const int morre_instantes = 60;
+        static constexpr int morre_instantes = 60;
 
         // Multiplicação
-        static const int multiplica_nutrientes_maior = 30;
-        static const int multiplica_instantes = 5;
-        static const int nova_nutrientes = 5;
-        static const int original_nutrientes = 5;
+        static constexpr int multiplica_nutrientes_maior = 30;
+        static constexpr int multiplica_instantes = 5;
+        static constexpr int nova_nutrientes = 5;
+        static constexpr int original_nutrientes = 5;
     };
 
     class PlantaExotica
     {
     public:
         // Valores iniciais
-        static const int inicial_agua = 30;
-        static const int inicial_nutrientes = 30;
+        static constexpr int inicial_agua = 30;
+        static constexpr int inicial_nutrientes = 30;
 
         // Fases de crescimento
-        static const int fim_jovem = 20;  // 0-20: JOVEM
-        static const int fim_adulta = 40; // 21-40: ADULTA (dormência)
+        static constexpr int fim_jovem = 20;  // 0-20: JOVEM
+        static constexpr int fim_adulta = 40; // 21-40: ADULTA (dormência)
                                           // 41+: MADURA (produção)
 
         // Absorção (fases JOVEM e MADURA)
-        static const int jovem_abs_agua = 3;
-        static const int jovem_abs_nutrientes = 2;
+        static constexpr int jovem_abs_agua = 3;
+        static constexpr int jovem_abs_nutrientes = 2;
 
         // Metabolismo (todas as fases)
-        static const int madura_perda_agua = 2;
-        static const int madura_perda_nutrientes = 1;
+        static constexpr int madura_perda_agua = 2;
+        static constexpr int madura_perda_nutrientes = 1;
 
         // Produção (fase MADURA)
-        static const int madura_prod_nutrientes_solo = 2;
+        static constexpr int madura_prod_nutrientes_solo = 2;
 
         // Morte
-        static const int morre_agua_menor = 5;
-        static const int morre_nutrientes_menor = 3;
-        static const int tempo_vida_max = 80;
-        static const int percentagem_recursos_pos_morte = 75; // Devolve 75%
+        static constexpr int morre_agua_menor = 5;
+        static constexpr int morre_nutrientes_menor = 3;
+        static constexpr int tempo_vida_max = 80;
+        static constexpr int percentagem_recursos_pos_morte = 75; // Devolve 75%
 
         // Multiplicação
-        static const int multiplica_nutrientes_maior = 70;
-        static const int multiplica_agua_maior = 60;
-        static const int nova_agua = 30;
-        static const int nova_nutrientes = 30;
+        static constexpr int multiplica_nutrientes_maior = 70;
+        static constexpr int multiplica_agua_maior = 60;
+        static constexpr int nova_agua = 30;
+        static constexpr int nova_nutrientes = 30;
     };
 };
 
